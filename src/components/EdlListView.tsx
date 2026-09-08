@@ -26,13 +26,18 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
     setLoading(true);
     setError(null);
     const fd = new FormData(e.currentTarget as HTMLFormElement);
-    const res = await createEtatDesLieux(fd);
-    setLoading(false);
-    if ('error' in res) {
-      setError(res.error);
-      return;
+    try {
+      const res = await createEtatDesLieux(fd);
+      if ('error' in res) {
+        setError(res.error);
+        return;
+      }
+      router.push(`/edl/${res.id}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    router.push(`/edl/${res.id}`);
   }
 
   return (

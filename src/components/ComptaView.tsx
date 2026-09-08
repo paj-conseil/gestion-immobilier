@@ -78,18 +78,23 @@ export function ComptaView({
   async function onCategoriserAuto() {
     setCategorisation(true);
     setCategorisationMsg(null);
-    const res = await categoriserAutomatiquement();
-    setCategorisation(false);
-    if ('error' in res) {
-      setCategorisationMsg(res.error);
-      return;
+    try {
+      const res = await categoriserAutomatiquement();
+      if ('error' in res) {
+        setCategorisationMsg(res.error);
+        return;
+      }
+      setCategorisationMsg(
+        res.nbMisAJour > 0
+          ? `${res.nbMisAJour} transaction(s) catégorisée(s) automatiquement (loyers / mensualités).`
+          : 'Aucune nouvelle transaction reconnue.',
+      );
+      router.refresh();
+    } catch (e) {
+      setCategorisationMsg(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setCategorisation(false);
     }
-    setCategorisationMsg(
-      res.nbMisAJour > 0
-        ? `${res.nbMisAJour} transaction(s) catégorisée(s) automatiquement (loyers / mensualités).`
-        : 'Aucune nouvelle transaction reconnue.',
-    );
-    router.refresh();
   }
 
   async function onFile(file: File | undefined) {
@@ -98,23 +103,36 @@ export function ComptaView({
     setImportMsg(null);
     const fd = new FormData();
     fd.set('fichier', file);
-    const res = await importReleve(compteImportId, fd);
-    setImporting(false);
-    if ('error' in res) {
-      setImportMsg(res.error);
-    } else {
-      setImportMsg(`${res.imported} transaction(s) importée(s)${res.ignored ? `, ${res.ignored} ligne(s) ignorée(s)` : ''}.`);
-      router.refresh();
+    try {
+      const res = await importReleve(compteImportId, fd);
+      if ('error' in res) {
+        setImportMsg(res.error);
+      } else {
+        setImportMsg(`${res.imported} transaction(s) importée(s)${res.ignored ? `, ${res.ignored} ligne(s) ignorée(s)` : ''}.`);
+        router.refresh();
+      }
+    } catch (e) {
+      setImportMsg(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setImporting(false);
     }
   }
 
   async function onChangePoste(txId: string, posteId: string) {
-    await updateTransaction(txId, { posteId: posteId || null });
-    router.refresh();
+    try {
+      await updateTransaction(txId, { posteId: posteId || null });
+      router.refresh();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Une erreur est survenue');
+    }
   }
   async function onChangeBien(txId: string, bienId: string) {
-    await updateTransaction(txId, { bienId: bienId || null });
-    router.refresh();
+    try {
+      await updateTransaction(txId, { bienId: bienId || null });
+      router.refresh();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Une erreur est survenue');
+    }
   }
 
   return (
@@ -292,10 +310,15 @@ function AddCompteForm({ onDone }: { onDone: () => void }) {
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);
-        const res = await createCompteBancaire(new FormData(e.currentTarget));
-        setLoading(false);
-        if ('error' in res) setError(res.error);
-        else onDone();
+        try {
+          const res = await createCompteBancaire(new FormData(e.currentTarget));
+          if ('error' in res) setError(res.error);
+          else onDone();
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       <div className="field" style={{ marginBottom: 0 }}>
@@ -334,10 +357,15 @@ function ManuelForm({
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);
-        const res = await createTransactionManuelle(new FormData(e.currentTarget));
-        setLoading(false);
-        if ('error' in res) setError(res.error);
-        else onDone();
+        try {
+          const res = await createTransactionManuelle(new FormData(e.currentTarget));
+          if ('error' in res) setError(res.error);
+          else onDone();
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       {error && <div className="auth-error">{error}</div>}

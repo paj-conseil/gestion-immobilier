@@ -60,28 +60,38 @@ export function PretFormModal({
     setLoading(true);
     setError(null);
     const fd = new FormData(e.currentTarget as HTMLFormElement);
-    const result = isEdit ? await updatePret(defaults!.id!, fd) : await createPret(bienId, fd);
-    setLoading(false);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      const result = isEdit ? await updatePret(defaults!.id!, fd) : await createPret(bienId, fd);
+      if ('error' in result) {
+        setError(result.error);
+        return;
+      }
+      router.refresh();
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    router.refresh();
-    onClose();
   }
 
   async function onDelete() {
     if (!defaults?.id) return;
     if (!confirm('Supprimer ce prêt ?')) return;
     setLoading(true);
-    const result = await deletePret(defaults.id);
-    setLoading(false);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      const result = await deletePret(defaults.id);
+      if ('error' in result) {
+        setError(result.error);
+        return;
+      }
+      router.refresh();
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    router.refresh();
-    onClose();
   }
 
   return (

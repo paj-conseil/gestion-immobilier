@@ -60,17 +60,21 @@ export function BienFormModal({
     setError(null);
     const fd = new FormData(e.currentTarget as HTMLFormElement);
 
-    const result = isEdit ? await updateBien(defaults!.id!, fd) : await createBien(fd);
-
-    setLoading(false);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      const result = isEdit ? await updateBien(defaults!.id!, fd) : await createBien(fd);
+      if ('error' in result) {
+        setError(result.error);
+        return;
+      }
+      setOpen(false);
+      formRef.current?.reset();
+      router.refresh();
+      onSaved?.();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    setOpen(false);
-    formRef.current?.reset();
-    router.refresh();
-    onSaved?.();
   }
 
   return (

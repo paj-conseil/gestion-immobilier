@@ -78,18 +78,23 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
     setGenerated(null);
     setSendResult(null);
     const fd = new FormData(e.currentTarget);
-    const res = await generateDocument(fd);
-    setLoading(false);
-    if ('error' in res) {
-      setError(res.error);
-      return;
+    try {
+      const res = await generateDocument(fd);
+      if ('error' in res) {
+        setError(res.error);
+        return;
+      }
+      setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl });
+      const nomDest = currentLocataire ? `${currentLocataire.prenom} ${currentLocataire.nom}` : 'Madame, Monsieur';
+      setDestinataire(res.destinataireEmail ?? '');
+      setCorps(
+        `Bonjour ${nomDest},\n\nVeuillez trouver ci-joint : ${(TYPE_LABEL[type] ?? type).toLowerCase()}.\n\nN'hésitez pas à revenir vers moi pour toute question.\n\nCordialement,\nPierre Jaubert`,
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue lors de la génération');
+    } finally {
+      setLoading(false);
     }
-    setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl });
-    const nomDest = currentLocataire ? `${currentLocataire.prenom} ${currentLocataire.nom}` : 'Madame, Monsieur';
-    setDestinataire(res.destinataireEmail ?? '');
-    setCorps(
-      `Bonjour ${nomDest},\n\nVeuillez trouver ci-joint : ${(TYPE_LABEL[type] ?? type).toLowerCase()}.\n\nN'hésitez pas à revenir vers moi pour toute question.\n\nCordialement,\nPierre Jaubert`,
-    );
   }
 
   async function onSend() {
@@ -99,13 +104,18 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
     const fd = new FormData();
     fd.set('destinataire', destinataire);
     fd.set('corps', corps);
-    const res = await sendGeneratedDocument(generated.documentGenereId, fd);
-    setSending(false);
-    if ('error' in res) {
-      setSendResult(`Erreur : ${res.error}`);
-      return;
+    try {
+      const res = await sendGeneratedDocument(generated.documentGenereId, fd);
+      if ('error' in res) {
+        setSendResult(`Erreur : ${res.error}`);
+        return;
+      }
+      setSendResult(res.emailStatus === 'ENVOYE' ? 'Email envoyé avec succès.' : `Échec de l'envoi : ${res.emailError}`);
+    } catch (e) {
+      setSendResult(`Erreur : ${e instanceof Error ? e.message : 'Une erreur est survenue'}`);
+    } finally {
+      setSending(false);
     }
-    setSendResult(res.emailStatus === 'ENVOYE' ? 'Email envoyé avec succès.' : `Échec de l'envoi : ${res.emailError}`);
   }
 
   if (biens.length === 0) {

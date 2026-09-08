@@ -22,14 +22,19 @@ export function LocataireFormModal({ biens }: { biens: BienOption[] }) {
     const fd = new FormData(e.currentTarget as HTMLFormElement);
     if (!attacherBien) fd.delete('bienId');
 
-    const result = await createLocataire(fd);
-    setLoading(false);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      const result = await createLocataire(fd);
+      if ('error' in result) {
+        setError(result.error);
+        return;
+      }
+      setOpen(false);
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    setOpen(false);
-    router.refresh();
   }
 
   return (

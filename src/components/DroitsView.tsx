@@ -164,10 +164,15 @@ function InviteForm({
         e.preventDefault();
         setLoading(true);
         setError(null);
-        const res = await inviteToScope(scopeId, new FormData(e.currentTarget));
-        setLoading(false);
-        if ('error' in res) setError(res.error);
-        else onDone(res);
+        try {
+          const res = await inviteToScope(scopeId, new FormData(e.currentTarget));
+          if ('error' in res) setError(res.error);
+          else onDone(res);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       <div className="field" style={{ marginBottom: 0 }}>
@@ -206,10 +211,15 @@ function CreateScopeForm({ onDone }: { onDone: () => void }) {
         setLoading(true);
         setError(null);
         const fd = new FormData(e.currentTarget);
-        const res = await createScope(String(fd.get('nom') ?? ''));
-        setLoading(false);
-        if ('error' in res) setError(res.error);
-        else onDone();
+        try {
+          const res = await createScope(String(fd.get('nom') ?? ''));
+          if ('error' in res) setError(res.error);
+          else onDone();
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       <div className="field" style={{ marginBottom: 0, flex: 1 }}>

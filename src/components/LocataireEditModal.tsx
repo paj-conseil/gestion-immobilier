@@ -84,11 +84,21 @@ export function LocataireEditModal({
   async function onFileChosen(type: string, file: File | undefined) {
     if (!file) return;
     setUploading(type);
+    setError(null);
     const fd = new FormData();
     fd.set('fichier', file);
-    await uploadLocataireDocument(locataire.id, type as never, fd);
-    setUploading(null);
-    router.refresh();
+    try {
+      const res = await uploadLocataireDocument(locataire.id, type as never, fd);
+      if ('error' in res) {
+        setError(res.error);
+        return;
+      }
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Échec de l'envoi du document");
+    } finally {
+      setUploading(null);
+    }
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -97,22 +107,25 @@ export function LocataireEditModal({
     setError(null);
     const fd = new FormData(e.currentTarget);
 
-    const res1 = await updateLocataire(locataire.id, fd);
-    if ('error' in res1) {
-      setLoading(false);
-      setError(res1.error);
-      return;
-    }
-    if (bail) {
-      const res2 = await updateBail(bail.id, fd);
-      if ('error' in res2) {
-        setLoading(false);
-        setError(res2.error);
+    try {
+      const res1 = await updateLocataire(locataire.id, fd);
+      if ('error' in res1) {
+        setError(res1.error);
         return;
       }
+      if (bail) {
+        const res2 = await updateBail(bail.id, fd);
+        if ('error' in res2) {
+          setError(res2.error);
+          return;
+        }
+      }
+      onSaved();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    onSaved();
   }
 
   return (
@@ -352,13 +365,18 @@ function BailForm({ locataireId, biens, onDone }: { locataireId: string; biens: 
     fd.set('loyerHC', loyerRef.current.value);
     fd.set('charges', chargesRef.current?.value ?? '');
     fd.set('dateDebut', dateDebutRef.current.value);
-    const result = await createBail(locataireId, fd);
-    setLoading(false);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      const result = await createBail(locataireId, fd);
+      if ('error' in result) {
+        setError(result.error);
+        return;
+      }
+      onDone();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
     }
-    onDone();
   }
 
   return (
