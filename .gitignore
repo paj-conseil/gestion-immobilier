@@ -7,6 +7,8 @@ dist
 storage/
 prisma/dev.db
 prisma/dev.db-journal
+prisma/dev.db.backup-*
+prisma/migrations_sqlite_backup
 *.log
 .DS_Store
 *.tsbuildinfo

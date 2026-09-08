@@ -1,21 +1,17 @@
 // Schéma Prisma — Pilotage locatif
-// Datasource SQLite en dev. Pour la mise en production cloud, remplacer
-// `provider = "sqlite"` par `provider = "postgresql"` et `DATABASE_URL` par
-// l'URL de la base managée (Neon/Supabase).
+// Datasource PostgreSQL (Neon).
 //
-// Note : SQLite ne supporte pas le type `enum` de Prisma. Les champs qui
-// seraient naturellement des enums (rôle, statut, type de document...) sont
-// donc des `String`, validés côté application via les unions TypeScript
-// définies dans `src/lib/enums.ts`. Ce choix reste compatible avec un passage
-// ultérieur à PostgreSQL (les enums pourraient alors être réintroduits, mais
-// ce n'est pas nécessaire).
+// Note : les champs qui seraient naturellement des enums (rôle, statut, type
+// de document...) sont restés des `String`, validés côté application via les
+// unions TypeScript définies dans `src/lib/enums.ts` — hérité de l'époque où
+// le projet tournait sur SQLite (qui ne supporte pas le type `enum` Prisma).
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
