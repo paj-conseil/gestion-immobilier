@@ -527,6 +527,10 @@ tr:last-child td {
 .table-zebra tbody tr:nth-child(even) {
   background: var(--stone-50);
 }
+.table-zebra th,
+.table-zebra td {
+  padding: 6px 10px;
+}
 .table-compact th,
 .table-compact td {
   padding: 5px 10px;
