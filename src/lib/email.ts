@@ -1,7 +1,7 @@
 import 'server-only';
-import nodemailer from 'nodemailer';
+import nodemailer, { type Transporter } from 'nodemailer';
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter | null = null;
 
 function getTransporter() {
   if (!process.env.SMTP_PASSWORD) return null;

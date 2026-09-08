@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { mkdir, writeFile, readFile as fsReadFile, unlink } from 'node:fs/promises';
 
-const STORAGE_DIR = path.resolve(process.env.STORAGE_DIR ?? './storage');
+const STORAGE_DIR = path.resolve(/*turbopackIgnore: true*/ process.env.STORAGE_DIR ?? './storage');
 
 export type StorageCategory = 'photos' | 'locataires' | 'generated' | 'edl' | 'compta';
 
@@ -22,7 +22,7 @@ export async function saveFile(
   opts: { scopeId: string; category: StorageCategory; filename: string },
 ): Promise<string> {
   const key = `${opts.category}/${opts.scopeId}/${randomUUID()}-${sanitize(opts.filename)}`;
-  const fullPath = path.join(STORAGE_DIR, key);
+  const fullPath = path.join(/*turbopackIgnore: true*/ STORAGE_DIR, key);
   await mkdir(path.dirname(fullPath), { recursive: true });
   await writeFile(fullPath, buffer);
   return key;
@@ -40,7 +40,7 @@ export async function deleteStoredFile(key: string): Promise<void> {
 
 /** Empêche toute traversée de répertoire (../..) depuis une clé stockée en base. */
 function resolveSafePath(key: string): string {
-  const fullPath = path.join(STORAGE_DIR, key);
+  const fullPath = path.join(/*turbopackIgnore: true*/ STORAGE_DIR, key);
   const normalizedRoot = path.normalize(STORAGE_DIR + path.sep);
   const normalizedPath = path.normalize(fullPath);
   if (!normalizedPath.startsWith(normalizedRoot)) {

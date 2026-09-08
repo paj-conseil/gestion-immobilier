@@ -8,7 +8,7 @@ import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { EtatLieuxDoc } from '@/lib/documents/pdf/EtatLieuxDoc';
 import { EDL_TEMPLATE } from '@/lib/edl-templates';
-import type { EtatItem } from '@/lib/enums';
+import type { EtatItem, TypeEDL } from '@/lib/enums';
 
 export async function createEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
   const ctx = await getCurrentContext();
@@ -102,7 +102,7 @@ export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl:
   const pdfBuffer = await renderPdf(
     EtatLieuxDoc({
       data: {
-        type: edl.type,
+        type: edl.type as TypeEDL,
         date: edl.date,
         bienAdresse: bienLabel(edl.bien),
         bienCodePostal: edl.bien.codePostal,
@@ -111,7 +111,7 @@ export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl:
         numeroCompteur: edl.bien.numeroCompteur,
         pieces: edl.pieces.map((p) => ({
           nom: p.nom,
-          items: p.items.map((i) => ({ label: i.label, etat: i.etat, commentaire: i.commentaire })),
+          items: p.items.map((i) => ({ label: i.label, etat: i.etat as EtatItem, commentaire: i.commentaire })),
         })),
       },
     }),
