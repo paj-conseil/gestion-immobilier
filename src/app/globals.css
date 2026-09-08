@@ -32,6 +32,7 @@ body {
   font-family: 'Public Sans', sans-serif;
   background: var(--stone-50);
   color: var(--ink);
+  overflow-x: hidden;
 }
 
 .mono {
@@ -60,6 +61,68 @@ button {
   position: sticky;
   top: 0;
   height: 100vh;
+}
+.mobile-topbar {
+  display: none;
+}
+
+/* ---------- MOBILE NAV (sidebar becomes a slide-in drawer) ---------- */
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--green-900);
+    color: #fff;
+    padding: 12px 16px;
+  }
+  .mobile-topbar .brand-mark {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+  .mobile-topbar strong {
+    font-size: 14.5px;
+  }
+  .mobile-menu-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    padding: 4px;
+    display: flex;
+  }
+  .mobile-menu-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    max-width: 82vw;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    z-index: 45;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 29, 20, 0.45);
+    z-index: 44;
+  }
+  .main {
+    padding: 18px 16px 40px;
+  }
 }
 .brand {
   display: flex;
@@ -215,6 +278,20 @@ button {
   color: var(--ink-soft);
   font-size: 13.6px;
 }
+@media (max-width: 560px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .topbar > *:last-child:not(:only-child) {
+    align-self: stretch;
+  }
+  .topbar > *:last-child:not(:only-child) .btn,
+  .topbar > *:last-child:not(:only-child).btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
 .btn {
   display: inline-flex;
   align-items: center;
@@ -261,6 +338,16 @@ button {
   gap: 14px;
   margin-bottom: 26px;
 }
+@media (max-width: 860px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 420px) {
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
 .kpi {
   background: var(--white);
   border: 1px solid var(--line);
@@ -304,6 +391,7 @@ button {
   padding: 16px 20px;
   border-bottom: 1px solid var(--line);
   gap: 12px;
+  flex-wrap: wrap;
 }
 .panel-head h2 {
   font-size: 15px;
@@ -424,6 +512,11 @@ button {
 @media (max-width: 900px) {
   .bien-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .bien-grid {
+    grid-template-columns: 1fr;
   }
 }
 .bien-card {
@@ -930,6 +1023,11 @@ th.col-doc {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+@media (max-width: 560px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}
 .modal-foot {
   padding: 16px 22px;
   border-top: 1px solid var(--line);
@@ -1012,6 +1110,7 @@ th.col-doc {
   gap: 4px;
   border-bottom: 1px solid var(--line);
   margin-bottom: 16px;
+  overflow-x: auto;
 }
 .tab-row button {
   background: none;
@@ -1022,6 +1121,8 @@ th.col-doc {
   font-weight: 600;
   color: var(--ink-soft);
   border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .tab-row button.active {
   color: var(--green-700);
@@ -1031,6 +1132,11 @@ th.col-doc {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 18px;
+}
+@media (max-width: 480px) {
+  .dt {
+    grid-template-columns: 1fr;
+  }
 }
 .dt div {
   font-size: 12px;

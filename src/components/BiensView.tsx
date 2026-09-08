@@ -168,7 +168,7 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
 
   return (
     <>
-      <div className="kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+      <div className="kpi-row" style={{ gap: 10, marginBottom: 14 }}>
         {[
           { label: 'Emprunt restant', value: formatMontant(kpiEmpruntRestant) },
           { label: 'Mensualités', value: formatMontant(kpiMensualites) },

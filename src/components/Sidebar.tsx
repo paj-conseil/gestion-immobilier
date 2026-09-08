@@ -13,6 +13,7 @@ import {
   IconEcheances,
   IconEdl,
   IconLocataires,
+  IconMenu,
 } from '@/components/icons';
 import { setActiveScope } from '@/lib/actions/scope-actions';
 
@@ -54,6 +55,7 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
   const [switching, setSwitching] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [, startTransition] = useTransition();
 
   function handleSwitch(newScopeId: string) {
@@ -71,7 +73,18 @@ export function Sidebar({
   const badgeValue = (key?: 'documents' | 'echeances') => (key ? badges[key] : undefined);
 
   return (
-    <aside className="sidebar">
+    <>
+      <div className="mobile-topbar">
+        <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Ouvrir le menu">
+          <IconMenu />
+        </button>
+        <div className="brand-mark">PL</div>
+        <strong>Gestion immo</strong>
+      </div>
+
+      {mobileOpen && <div className="sidebar-backdrop" onClick={() => setMobileOpen(false)} />}
+
+      <aside className={`sidebar${mobileOpen ? ' mobile-open' : ''}`}>
       <div className="brand">
         <div className="brand-mark">PL</div>
         <div className="brand-text">
@@ -86,7 +99,12 @@ export function Sidebar({
           const active = pathname.startsWith(item.href);
           const badge = badgeValue(item.badgeKey);
           return (
-            <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`nav-item${active ? ' active' : ''}`}
+              onClick={() => setMobileOpen(false)}
+            >
               <Icon />
               {item.label}
               {!!badge && <span className="badge">{badge}</span>}
@@ -136,6 +154,7 @@ export function Sidebar({
           Se déconnecter
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
