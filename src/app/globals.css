@@ -414,7 +414,12 @@ button {
 .bien-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
+}
+@media (min-width: 1200px) {
+  .bien-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 @media (max-width: 900px) {
   .bien-grid {
@@ -433,7 +438,7 @@ button {
   width: 100%;
 }
 .bien-photo {
-  height: 104px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -446,36 +451,36 @@ button {
   object-fit: cover;
 }
 .bien-photo svg {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   opacity: 0.85;
 }
 .bien-body {
-  padding: 14px 16px 16px;
+  padding: 9px 12px 10px;
 }
 .bien-body .addr {
   font-weight: 700;
-  font-size: 13.6px;
-  margin-bottom: 2px;
+  font-size: 13px;
+  margin-bottom: 1px;
 }
 .bien-body .type {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--ink-soft);
-  margin-bottom: 12px;
+  margin-bottom: 7px;
 }
 .bien-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--ink-soft);
   border-top: 1px solid var(--stone-100);
-  padding-top: 10px;
+  padding-top: 7px;
 }
 .bien-meta b {
   display: block;
   color: var(--ink);
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
+  font-size: 12.3px;
   font-weight: 600;
 }
 .status-pill {

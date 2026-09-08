@@ -168,31 +168,20 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
 
   return (
     <>
-      <div className="kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 20 }}>
-        <div className="panel panel-body pad">
-          <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>
-            Emprunt restant
+      <div className="kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+        {[
+          { label: 'Emprunt restant', value: formatMontant(kpiEmpruntRestant) },
+          { label: 'Mensualités', value: formatMontant(kpiMensualites) },
+          { label: 'Revenus HC', value: formatMontant(kpiRevenusHC) },
+          { label: 'Rendement brut', value: kpiRendementBrut !== null ? `${kpiRendementBrut.toFixed(1)} %` : '—' },
+        ].map((kpi) => (
+          <div className="panel" key={kpi.label} style={{ padding: '10px 14px' }}>
+            <div style={{ fontSize: 10.5, color: 'var(--ink-soft)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 3 }}>
+              {kpi.label}
+            </div>
+            <div style={{ fontSize: 18, fontWeight: 700 }}>{kpi.value}</div>
           </div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>{formatMontant(kpiEmpruntRestant)}</div>
-        </div>
-        <div className="panel panel-body pad">
-          <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>
-            Mensualités
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>{formatMontant(kpiMensualites)}</div>
-        </div>
-        <div className="panel panel-body pad">
-          <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>
-            Revenus HC
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>{formatMontant(kpiRevenusHC)}</div>
-        </div>
-        <div className="panel panel-body pad">
-          <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>
-            Rendement brut
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>{kpiRendementBrut !== null ? `${kpiRendementBrut.toFixed(1)} %` : '—'}</div>
-        </div>
+        ))}
       </div>
 
       <div className="bien-grid">
