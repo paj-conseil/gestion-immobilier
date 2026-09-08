@@ -25,9 +25,12 @@ type TransactionVM = {
   bien: { id: string; adresse: string } | null;
 };
 type PivotTransactionVM = {
+  id: string;
   date: string;
+  libelle: string;
   montant: number;
   bienId: string | null;
+  bien: { adresse: string; complement?: string | null } | null;
   poste: { nom: string; type: string } | null;
 };
 
@@ -137,7 +140,15 @@ export function ComptaView({
 
   return (
     <>
-      <div className="accounts-row">
+      <ComptaPivot transactions={toutesTransactions} biens={biens} />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '-10px 0 16px' }}>
+        <a href="#donnees" className="link-row">
+          + Ajouter / gérer les données ↓
+        </a>
+      </div>
+
+      <div id="donnees" className="accounts-row">
         {comptes.map((c) => (
           <div className="account-chip" key={c.id}>
             <span className="dot" />
@@ -183,8 +194,6 @@ export function ComptaView({
         </>
       )}
 
-      <ComptaPivot transactions={toutesTransactions} biens={biens} />
-
       <div className="panel">
         <div className="panel-head">
           <h2>Dernières opérations</h2>
@@ -214,7 +223,7 @@ export function ComptaView({
           />
         )}
         <div className="table-wrap">
-          <table>
+          <table className="table-compact">
             <thead>
               <tr>
                 <th>Date</th>
@@ -227,13 +236,13 @@ export function ComptaView({
             <tbody>
               {transactions.map((t) => (
                 <tr key={t.id}>
-                  <td className="mono">{formatDate(t.date)}</td>
+                  <td className="mono" style={{ whiteSpace: 'nowrap' }}>{formatDate(t.date)}</td>
                   <td>{t.libelle}</td>
                   <td>
                     <select
                       value={t.bien?.id ?? ''}
                       onChange={(e) => onChangeBien(t.id, e.target.value)}
-                      style={{ border: 'none', background: 'none', fontSize: 12.5, padding: 0 }}
+                      style={{ border: 'none', background: 'none', fontSize: 12.3, padding: 0 }}
                     >
                       <option value="">—</option>
                       {biens.map((b) => (
@@ -247,7 +256,7 @@ export function ComptaView({
                     <select
                       value={t.poste?.id ?? ''}
                       onChange={(e) => onChangePoste(t.id, e.target.value)}
-                      style={{ border: 'none', background: 'none', fontSize: 12.5, padding: 0 }}
+                      style={{ border: 'none', background: 'none', fontSize: 12.3, padding: 0 }}
                     >
                       <option value="">Non catégorisé</option>
                       {postes.map((p) => (
@@ -431,6 +440,7 @@ function ordrePoste(nom: string): number {
 
 function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM[]; biens: BienVM[] }) {
   const [bienId, setBienId] = useState<string>('ALL');
+  const [posteOuvert, setPosteOuvert] = useState<string | null>(null);
 
   const filtrees = bienId === 'ALL' ? transactions : transactions.filter((t) => t.bienId === bienId);
 
@@ -473,15 +483,23 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
   return (
     <div className="panel">
       <div className="panel-head">
-        <h2>État consolidé par bien</h2>
-        <select value={bienId} onChange={(e) => setBienId(e.target.value)} style={{ maxWidth: 260 }}>
-          <option value="ALL">Tous les biens (consolidé)</option>
+        <h2>État consolidé</h2>
+      </div>
+      <div className="panel-body pad" style={{ paddingBottom: 0 }}>
+        <div className="toggle-pair" style={{ flexWrap: 'wrap', margin: 0 }}>
+          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => { setBienId('ALL'); setPosteOuvert(null); }}>
+            Tous les biens
+          </button>
           {biens.map((b) => (
-            <option key={b.id} value={b.id}>
+            <button
+              key={b.id}
+              className={bienId === b.id ? 'active' : ''}
+              onClick={() => { setBienId(b.id); setPosteOuvert(null); }}
+            >
               {bienLabel(b)}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
       <div className="panel-body">
         {annees.length === 0 ? (
@@ -503,8 +521,17 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
                 </thead>
                 <tbody>
                   {postesTries.map((nom) => (
-                    <tr key={nom}>
-                      <td style={{ whiteSpace: 'nowrap' }}>{nom}</td>
+                    <tr
+                      key={nom}
+                      onClick={() => setPosteOuvert(posteOuvert === nom ? null : nom)}
+                      style={{ cursor: 'pointer', background: posteOuvert === nom ? 'var(--green-100)' : undefined }}
+                      title="Cliquer pour voir le détail des transactions de ce poste"
+                    >
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span className="link-row" style={{ fontWeight: posteOuvert === nom ? 700 : undefined }}>
+                          {nom}
+                        </span>
+                      </td>
                       {annees.map((a) => {
                         const v = parPoste.get(nom)?.get(a) ?? 0;
                         return (
@@ -554,6 +581,14 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
               </table>
             </div>
 
+            {posteOuvert && (
+              <PosteDetail
+                nom={posteOuvert}
+                transactions={filtrees.filter((t) => (t.poste?.nom ?? 'Non catégorisé') === posteOuvert)}
+                onClose={() => setPosteOuvert(null)}
+              />
+            )}
+
             <div style={{ display: 'flex', gap: 16, alignItems: 'center', margin: '18px 0 4px', fontSize: 11.5, color: 'var(--ink-soft)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green-400)', display: 'inline-block' }} />
@@ -591,6 +626,76 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function PosteDetail({
+  nom,
+  transactions,
+  onClose,
+}: {
+  nom: string;
+  transactions: PivotTransactionVM[];
+  onClose: () => void;
+}) {
+  const triees = [...transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const total = triees.reduce((s, t) => s + t.montant, 0);
+
+  return (
+    <div style={{ border: '1px solid var(--line)', borderRadius: 'var(--radius-m)', margin: '14px 0', overflow: 'hidden' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px 14px',
+          background: 'var(--stone-50)',
+          borderBottom: '1px solid var(--line)',
+        }}
+      >
+        <div style={{ fontSize: 12.8, fontWeight: 700 }}>
+          Détail — {nom}
+          <span style={{ fontWeight: 400, color: 'var(--ink-soft)', marginLeft: 8 }}>
+            {triees.length} transaction{triees.length > 1 ? 's' : ''} · {formatMontant(total)}
+          </span>
+        </div>
+        <button className="link-row" onClick={onClose}>
+          Fermer ✕
+        </button>
+      </div>
+      <div className="table-wrap" style={{ maxHeight: 320, overflowY: 'auto' }}>
+        <table className="table-compact">
+          <thead>
+            <tr>
+              <th style={{ whiteSpace: 'nowrap' }}>Date</th>
+              <th>Libellé</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Bien</th>
+              <th style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            {triees.map((t) => (
+              <tr key={t.id}>
+                <td className="mono" style={{ whiteSpace: 'nowrap' }}>{formatDate(t.date)}</td>
+                <td>{t.libelle}</td>
+                <td style={{ whiteSpace: 'nowrap' }}>{t.bien ? bienLabel(t.bien) : '—'}</td>
+                <td className={`mono ${t.montant >= 0 ? 'amount-pos' : 'amount-neg'}`} style={{ textAlign: 'right' }}>
+                  {t.montant >= 0 ? '+' : ''}
+                  {formatMontant(t.montant, { decimals: true })}
+                </td>
+              </tr>
+            ))}
+            {triees.length === 0 && (
+              <tr>
+                <td colSpan={4} style={{ color: 'var(--ink-soft)' }}>
+                  Aucune transaction pour ce poste.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

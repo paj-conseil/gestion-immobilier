@@ -17,7 +17,15 @@ export default async function ComptaPage() {
     }),
     prisma.transaction.findMany({
       where: { compte: { scopeId: ctx.scopeId } },
-      select: { date: true, montant: true, bienId: true, poste: { select: { nom: true, type: true } } },
+      select: {
+        id: true,
+        date: true,
+        libelle: true,
+        montant: true,
+        bienId: true,
+        bien: { select: { adresse: true, complement: true } },
+        poste: { select: { nom: true, type: true } },
+      },
       orderBy: { date: 'asc' },
     }),
     prisma.poste.findMany({ where: { scopeId: ctx.scopeId }, orderBy: { nom: 'asc' } }),
