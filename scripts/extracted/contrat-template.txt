@@ -1,0 +1,87 @@
+﻿R17: A17=CONTRAT DE 
+R18: A18=LOCATION MEUBLEE
+R20: A20=11 RUE DES CAILLOUX
+R21: A21=92110 CLICHY
+R60: A60=Contrat de location meublée
+R62: A62=Entre les soussignés
+R63: B63=MONSIEUR & MADAME PIERRE JAUBERT
+R64: A64=demeurant au
+R65: B65=96 RUE MICHELET
+R66: B66=37000 TOURS
+R68: A68=propriétaires du BIEN d’habitation situé au :
+R69: B69=11 RUE DES CAILLOUX
+R70: B70=92110 CLICHY
+R72: A72=Ci-après dénommé LE BAILLEUR
+R74: A74=ET
+R76: B76=ALEXI MAZARD
+R77: A77=demeurant au
+R78: B78=11 RUE DES CAILLOUX
+R79: B79=92110 CLICHY
+R81: A81=Ci-après dénommé LE LOCATAIRE
+R86: B86=Date: | C86=46271
+R102: A102=Il a été convenu ce qui suit : Le présent contrat est soumis aux dispositions de la loi n°89-462 du 6 juillet 1989 tendant à améliorer les rapports locatifs, notamment ses articles 25-3 et suivants relatifs à la location meublée, ainsi qu'aux dispositions du Code civil, et notamment les articles 1709 et suivants.
+R108: A108=Le BIEN loué est composé de :
+R109: A109=System.Xml.XmlElement
+R120: A120=Le BIEN dispose de tous les équipements de confort prévu dans le cadre d’un logement meublé :
+R122: A122=ENTREE  - un porte-manteau SALLE DE BAIN - un WC suspendu,  un lavabo, un miroir, une douche, un chauffe serviette, un chauffe-eau, CUISINE - un frigo/congélateur, four, micro-onde, plaques électriques, lave-linge, vaisselles, couverts, ustensiles de cuisine, nombreux meubles de rangements… SALON/ SALLE A MANGER  - un canapé et une table basse - un radiateur CHAMBRE - un lit double avec matelas, couette et oreiller, un sommier avec coffre de rangement intégré et un dressing avec cintres  - un radiateur
+R148: A148=Informations utiles
+R149: A149=Numéro de compteur électrique | C149=21552677190619
+R150: A150=(pour mise en place abonnement EDF)
+R152: A152=Numéro de téléphone | C152=01.47.37.58.28
+R153: A153=(pour abonnement internet)
+R155: A155=Durée du contrat
+R156: A156=Le présent contrat est conclu pour une durée de | E156=1 an
+R157: A157=renouvelable par tacite reconduction, conformément à l'article 25-7 de la loi du 6 juillet 1989.
+R160: A160=Le présent contrat prendra effet le  | C160=46284
+R161: A161=pour se terminer le | C161=46648
+R164: A164=Préavis
+R165: A165=Le congé de location devra être signifié de part et d'autre par lettre recommandée avec accusé de réception.  Le locataire devra respecter un préavis de 1 mois à l’égard du bailleur. Le délai de préavis à respecter par le bailleur pour prévenir Le preneur est de 1 mois (partant de la date de réception de l'acte). 
+R172: A172=Montant du loyer et des charges 
+R173: A173=Le loyer mensuel est fixé à  | C173=1005 €
+R174: A174=Loyer hors charges | C174=930 €
+R175: A175=Charges  | C175=75 €
+R176: A176=La paiement du loyer se fera à échoir le 1er de chaque mois.
+R177: A177=Charges complémentaires : les frais d’électricité et d’abonnement internet restent à la charge du locataire.
+R181: A181=Révision du loyer
+R182: A182=Le loyer sera indexé automatiquement et sans préavis, à la date anniversaire du contrat.  Pour calculer l'indexation, les parties prendront l'indice de référence des loyers (IRL) publié chaque trimestre par l’INSEE.  L'IRL correspond à la moyenne sur l'ensemble des mois depuis la date de la dernière révision de prix, de l'évolution des prix à la consommation hors tabac et hors loyers. 
+R189: A189=Dépôt de garantie 
+R190: A190=Le dépôt de garantie est de  | C190=1860 €
+R191: A191=et correspond à 2 mois de loyer hors charges.
+R193: A193=Ce dépôt ne dispense en aucun cas le locataire du paiement du loyer et des charges aux dates fixées. Il sera restitué dans le délai maximum de deux mois (ou d'un mois si l'état des lieux de sortie est conforme à l'état des lieux d'entrée), conformément à l'article 22 de la loi du 6 juillet 1989,à compter du départ du locataire, déduction faite, le cas échéant, des sommes restantes dues au bailleur et des paiements dont ce dernier pourraient être tenu responsable aux lieux et place du locataire.
+R208: A208=Clauses résolutoires 
+R209: A209=A défaut de paiement du loyer ou des charges aux termes convenus ou à défaut de versement du dépôt de garantie, il est prévu que le bail sera résilié de plein droit sans qu’il soit besoin d’aucune formalité judiciaire. De même en cas de non-respect d’une des clauses du bail, celui sera résilié de plein droit. Défaut d’assurance : à défaut d’assurance des risques locatifs par le locataire, il est prévu que le bail sera résilié de plein droit.
+R217: A217=Obligations du bailleur 
+R218: A218=Le bailleur s’oblige : 1. Délivrer au locataire les locaux en bon état d'usage et de réparations, ainsi que les équipements mentionnés au contrat en bon état de fonctionnement.    2. Assurer au locataire la jouissance paisible des locaux loués ; toutefois, sa responsabilité ne pourra pas être recherchée en raison des voies de fait dont les autres locataires ou des tiers se rendraient coupables à l'égard du locataire.   3. Entretenir les locaux en état de servir à l'usage prévu et y faire toutes les réparations nécessaires autres que locatives.   4. Ne pas s'opposer aux aménagements réalisés par le locataire, dès lors que ceux-ci ne constituent pas une transformation de la chose louée.   5. Remettre gratuitement une quittance au locataire lorsqu'il en fait la demande.
+R235: A235=Obligations du locataire 
+R236: A236=Le locataire s’oblige :
+R237: A237=1. Payer le loyer et les charges récupérables aux termes convenus. Le paiement mensuel est de droit s'il en fait la demande.
+R240: A240=2. User PAISIBLEMENT des locaux et équipements loués suivant la destination prévue au contrat. En particulier, il s'engage à respecter les stipulations prévues à cet égard par le règlement intérieur de l'immeuble et par le règlement de copropriété, dont il déclare avoir pris connaissance. Il s'engage également à respecter toutes les décisions, prises à compter de son entrée en jouissance, par l'assemblée générale des copropriétaires.
+R246: A246=3. Répondre des dégradations et pertes survenant pendant la durée du contrat dans les locaux dont il a la jouissance exclusive, à moins qu'il ne prouve qu'elles aient eu lieu par cas de force majeure, par la faute du bailleur ou par le fait d'un tiers qu'il n'a pas introduit dans le logement.
+R251: A251=4. Prendre à sa charge l'entretien courant du logement, des équipements mentionnés au contrat et les menues réparations ainsi que l'ensemble des réparations locatives, sauf si elles sont occasionnées par vétusté, malfaçon, vice de construction, cas fortuit ou force majeure.
+R255: A255=5. Ne pas céder le contrat de location, ni sous-louer le local, sauf avec l'accord écrit du bailleur, y compris sur le prix du loyer. En cas de cessation du contrat principal, le sous-locataire ne pourra se prévaloir d'aucun droit à l'encontre du bailleur, ni d'aucun titre d'occupation.
+R260: A260=6. Laisser exécuter dans les lieux loués les travaux d'amélioration des parties communes ou des parties privatives du même immeuble, ainsi que les travaux nécessaires au maintien en état et à l'entretien normal des locaux loués, les dispositions des deuxièmes et troisièmes alinéas de l'article 1724 du Code civil étant applicables à ces travaux.
+R265: A265=7. Ne pas transformer les locaux et équipements loués sans l'accord écrit du propriétaire, lequel pourra subordonner cet accord et l'exécution des travaux à l'avis et à la surveillance d'un architecte de son choix, dont les honoraires seront payés par le locataire. En cas de méconnaissance par le locataire de cette obligation, le bailleur pourra exiger la remise en état des lieux ou des équipements au départ du locataire ou conserver les transformations effectuées, sans que le locataire puisse réclamer une indemnisation pour les frais engagés.
+R272: A272=Si les transformations opérées mettent en péril le bon fonctionnement des équipements ou la sécurité du local, le bailleur pourra exiger, aux frais du locataire, la remise immédiate des lieux en l'état. 
+R276: A276=8. S'assurer contre les risques locatifs dont il doit répondre en sa qualité de locataire : incendie, dégât des eaux, et en justifier au bailleur à la remise des clés, en lui transmettant l'attestation émise par son assureur ou son représentant. Il devra en justifier ainsi chaque année, à la demande du bailleur.
+R281: A281=9. Accepter la réalisation par le bailleur des réparations urgentes et qui ne peuvent être différées jusqu'à la fin du contrat de location ; conformément à l'article 1724 du Code civil. Si ces réparations durent plus de 40 jours, le loyer, à l'exclusion des charges, sera diminué en proportion du temps et de la partie de la chose louée dont le locataire aura été privé.
+R286: A286=10. Informer immédiatement le bailleur de tout sinistre et des dégradations se produisant dans les lieux loués, même s'il n'en résulte aucun dommage apparent.
+R289: A289=12. Acquitter toutes les contributions et taxes lui incombant personnellement (notamment la taxe d'habitation) de manière que le bailleur ne soit pas inquiété à ce sujet. Le locataire devra, avant tout déménagement, justifier du paiement des impôts dont le bailleur pourrait être tenu responsable.
+R294: A294=13. Ne pas déménager, sans s'être conformé à ses obligations, ni sans avoir auparavant présenté au bailleur les quittances justifiant du paiement de la taxe d'habitation (article 1686 du CGI).
+R298: A298=14. Remettre au bailleur, dès son départ, toutes les clés des locaux loués et lui faire connaître sa nouvelle adresse. 
+R313: A313=Cautionnement
+R314: A314=L’exécution du présent bail est garantie par :
+R315: B315=DAVID MAZARD
+R316: A316=Demeurant au | B316=40 CHEMIN DE PARENTY
+R317: B317=69250 NEUVILLE-SUR-SÂONE
+R318: A318=de nationalité | B318=Française
+R319: A319=en qualité de caution.
+R321: A321=Il s’agit d’un cautionnement solidaire par lequel la caution renonce aux bénéfices de discussion et de division pour les obligations que le locataire a contractées en signant le présent bail. Son engagement est à durée déterminée et prendra fin à date d’expiration du dit bail, ou et de son renouvellement éventuel. L’engagement de caution est annexé aux présentes.
+R329: A329=Pieces jointes 
+R330: B330=RIB pour le versement du loyer
+R331: B331=Etat des lieux d’entrée
+R332: B332=Reçu de dépôt de garantie
+R333: B333=Engagement de la caution
+R335: A335=Fait à …................................. | C335=le ….......................
+R337: A337=Le(s) locataire(s)	 | D337=Le bailleur
+R338: A338=Signature(s) | D338=Signature(s)
+R339: A339=« Bon pour accord, lu et approuvé » | D339=« Bon pour accord, lu et approuvé »

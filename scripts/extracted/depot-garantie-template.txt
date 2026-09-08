@@ -1,0 +1,14 @@
+﻿R2: A2=PIERRE JAUBERT
+R3: A3=96 RUE MICHELET
+R4: A4=37000 TOURS
+R6: E6=ALEXI MAZARD
+R8: E8=11 RUE DES CAILLOUX
+R9: E9=92110 CLICHY
+R12: A12=Reçu dépôt de garantie
+R15: A15=Je soussigné Pierre JAUBERT, bailleur du bien situé au 11 RUE DES CAILLOUX - 92110 CLICHY, déclare sur l’honneur avoir reçu ce jour la somme de MILLE HUIT CENT SOIXANTE  EUROS (1860 €) de la part de Alexi MAZARD au titre de dépôt de garantie  correspondant à 2 mois de loyer hors charges.
+R21: A21=Ce dépôt de garantie sera conservé par le propriétaire pendant toute la durée de la location. Il sera alors restitué sous deux mois suivant l’état des lieux de sortie.
+R25: A25=À noter que celui-ci pourra être réduit d’éventuels impayés et frais de remise en état selon la législation en vigueur.
+R28: A28=Je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.
+R32: A32=Fait à : | B32=System.Xml.XmlElement
+R33: A33=Le :  | B33=46271
+R34: D34=Pierre JAUBERT

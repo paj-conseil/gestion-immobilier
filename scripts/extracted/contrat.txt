@@ -1,0 +1,25 @@
+﻿R1: B1=GESTION LOCATIVE | M1=46271
+R6: C6=Logement concerné | F6=11 RUE DES CAILLOUX - 4EME
+R8: C8=Coordonnées propriétaire | H8=Coordonnées locataire
+R9: C9=Nom | D9=JAUBERT | H9=Nom | I9=MAZARD
+R10: C10=Prénom | D10=Pierre | H10=Prénom | I10=Alexi
+R11: C11=Adresse | D11=96 RUE MICHELET | H11=Adresse | I11=11 RUE DES CAILLOUX
+R12: C12=CP, Ville | D12=37000 TOURS | H12=CP, Ville | I12=92110 CLICHY
+R13: H13=Email | I13=alexi.mazard@gmail.com
+R14: H14=Tél. | I14=06.52.48.53.80
+R16: C16=Loyer | G16=Réel
+R17: C17=Loyer (hors charges) | E17=930 | G17=820€ | H17=Total loyer | J17=1005
+R18: C18=Charges | E18=75 | G18=178€ | H18=vs total coûts/mois | K18=997.74833333333333
+R19: K19=7.2516666666666652
+R20: C20=Contrat
+R21: C21=Durée | E21=1 | F21=an(s) | G21=23 | H21=mois en moyenne
+R22: C22=Date d'effet | E22=46284 | G22=1.9166666666666667 | H22=année(s) en moyenne
+R24: C24=Coordonnées caution
+R25: C25=Nom | D25=MAZARD | H25=Adresse | I25=40 chemin de Parenty
+R26: C26=Prénom | D26=David | H26=CP, Ville | I26=69250 Neuville-sur-Sâone
+R27: C27=Nationalité | D27=Française
+R29: C29=Pièces jointes
+R30: C30=RIB pour le versement du loyer | F30=1
+R31: C31=Etat des lieux d’entrée | F31=0
+R32: C32=Reçu de dépôt de garantie | F32=0
+R33: C33=Engagement de la caution | F33=1

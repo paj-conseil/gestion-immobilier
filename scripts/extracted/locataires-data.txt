@@ -1,0 +1,36 @@
+﻿R1: A1=Nom du bien | B1=Nom locataire | C1=Prénom locataire | D1=Email | E1=Tel | F1=Caution nom | G1=Caution prenom | H1=Caution adresse | I1=Caution CP Ville | J1=Caution nationalité | K1=Contrat loyer hors charges | L1=Contrat charges | M1=Contrat durée | N1=Contrat date début  | O1=Contrat date fin  | P1=Actif? | Q1=Durée (mois)
+R2: A2=11 RUE DES CAILLOUX - 4EME | B2=ZION | C2=Axel | D2=zion.axel@gmail.com | K2=890 | L2=60 | M2=3 | N2=42846 | O2=43169 | P2=inactif | Q2=11
+R3: A3=22 RUE CHANCE MILLY | B3=DRUMEL | C3=Marion | D3=drumelm@gmail.com | E3=06.76.89.16.04 | K3=730 | L3=50 | M3=3 | N3=43556 | O3=18/12/2021 | P3=inactif | Q3=33
+R4: A4=11 RUE DES CAILLOUX - 4EME | B4=NALBHOLTZ ET CHARLES | C4=Justine et Thibault | D4=justine.nabholtz@gmail.com / tibcharles@hotmail.fr | E4=06.59.98.24.81 | K4=890 | L4=60 | M4=3 | N4=43169 | O4=21/12/2020 | P4=inactif | Q4=34
+R5: A5=11 RUE DES CAILLOUX - 4EME | B5=PAUGET | C5=Laura | D5=laura.pauget@hotmail.fr | E5=06.42.06.21.25 | K5=890 | L5=70 | M5=3 | N5=44186 | O5=20/03/2022 | P5=inactif | Q5=15
+R6: A6=22 RUE CHANCE MILLY | B6=VANDROME | C6=Camille | D6=camille.vandrome@gmail.com | E6=06.22.43.20.24 | K6=730 | L6=65 | M6=3 | N6=44548 | O6=25/08/2022 | P6=inactif | Q6=8
+R7: A7=22 RUE CHANCE MILLY | B7=GARRAULT | C7=Salomé | D7=garrault.salome@gmail.com | E7=06.78.52.05.20 | K7=730 | L7=50 | M7=3 | N7=43449 | O7=43555 | P7=inactif | Q7=4
+R8: A8=22 RUE CHANCE MILLY | B8=BRUNO | C8=Lucie | D8=lucie.bruno@gmail.com | E8=06.78.52.05.20 | K8=730 | L8=50 | M8=3 | N8=43143 | O8=43448 | P8=inactif | Q8=10
+R9: A9=11 RUE DES CAILLOUX - 4EME | B9=GUILLAUME BONDINI | C9=Manon MARCHAL & | D9=guillaume.bondini@gmail.com | E9=06.69.01.40.07 | K9=900 | L9=75 | M9=3 | N9=44640 | O9=18/05/2025 | P9=inactif | Q9=39
+R10: A10=22 RUE CHANCE MILLY | B10=HILAIRE | C10=Mélanie | D10=m.hilaire@tbs-education.org | E10=06.06.66.11.27 | F10=HILAIRE | G10=Patrick | H10=75 CHEMIN DES ÉCUREUILS | I10=42210 BELLEGRADE-EN-FOREZ | J10=Française | K10=730 | L10=65 | M10=3 | N10=44798 | O10=26/09/2024 | P10=inactif | Q10=25
+R11: A11=11 RUE DES CAILLOUX - 5EME | B11=FIORI | C11=Francesco | D11=francescofiori91an@gmail.com | E11=393470654424 | K11=880 | L11=75 | M11=3 | N11=44772 | P11=actif | Q11=50
+R12: A12=FOYER SAINTE MARIE | B12=MARES | C12=Capucine | F12=MARES | G12=Aude | J12=Française | K12=355 | L12=80 | M12=1 | N12=44872 | O12=45107 | P12=inactif | Q12=8
+R13: A13=FOYER SAINTE MARIE | B13=TIRANT de BURY | C13=Charlotte | F13=MARES | G13=Aude | J13=Française | K13=355 | L13=80 | M13=1 | N13=44872 | O13=45107 | P13=inactif | Q13=8
+R14: A14=FOYER SAINTE MARIE | B14=LACASSAGNE | C14=Blandine | F14=MARES | G14=Aude | J14=Française | K14=355 | L14=80 | M14=1 | N14=44872 | O14=45107 | P14=inactif | Q14=8
+R15: A15=FOYER SAINTE MARIE | B15=PINON | C15=Bénédicte | F15=MARES | G15=Aude | J15=Française | K15=355 | L15=80 | M15=1 | N15=44872 | O15=45107 | P15=inactif | Q15=8
+R16: A16=FOYER SAINTE MARIE | B16=GRAUVOGEL | C16=Clémence | F16=MARES | G16=Aude | J16=Française | K16=355 | L16=80 | M16=1 | N16=44872 | O16=45107 | P16=inactif | Q16=8
+R17: A17=FOYER SAINTE MARIE | B17=CHOMBART | C17=Alix | F17=MARES | G17=Aude | J17=Française | K17=355 | L17=80 | M17=1 | N17=45170 | O17=45473 | P17=inactif | Q17=10
+R18: A18=FOYER SAINTE MARIE | B18=BERTRAND | C18=Capucine | F18=MARES | G18=Aude | J18=Française | K18=355 | L18=80 | M18=1 | N18=45170 | O18=45473 | P18=inactif | Q18=10
+R19: A19=FOYER SAINTE MARIE | B19=COMBEUIL | C19=Philomène | F19=MARES | G19=Aude | J19=Française | K19=355 | L19=80 | M19=1 | N19=45170 | O19=45473 | P19=inactif | Q19=10
+R20: A20=FOYER SAINTE MARIE | B20=PINON | C20=Bénédicte | F20=MARES | G20=Aude | J20=Française | K20=355 | L20=80 | M20=1 | N20=45170 | O20=45473 | P20=inactif | Q20=10
+R21: A21=FOYER SAINTE MARIE | B21=BLAISE | C21=Margaux | F21=MARES | G21=Aude | J21=Française | K21=355 | L21=80 | M21=1 | N21=45170 | O21=45473 | P21=inactif | Q21=10
+R22: A22=FOYER SAINTE MARIE | B22=CHOMBART | C22=Alix | F22=MARES | G22=Aude | J22=Française | K22=355 | L22=80 | M22=1 | N22=45536 | O22=45838 | P22=inactif | Q22=10
+R23: A23=FOYER SAINTE MARIE | B23=THERY | C23=Blanche | F23=MARES | G23=Aude | J23=Française | K23=355 | L23=80 | M23=1 | N23=45536 | O23=45838 | P23=inactif | Q23=10
+R24: A24=FOYER SAINTE MARIE | B24=PORTE | C24=Daphné | F24=MARES | G24=Aude | J24=Française | K24=355 | L24=80 | M24=1 | N24=45536 | O24=45838 | P24=inactif | Q24=10
+R25: A25=FOYER SAINTE MARIE | B25=TIERNY | C25=Ombeline | F25=MARES | G25=Aude | J25=Française | K25=355 | L25=80 | M25=1 | N25=45536 | O25=45838 | P25=inactif | Q25=10
+R26: A26=FOYER SAINTE MARIE | B26=DELAFON | C26=Sophie | F26=MARES | G26=Aude | J26=Française | K26=355 | L26=80 | M26=1 | N26=45536 | O26=45838 | P26=inactif | Q26=10
+R27: A27=FOYER SAINTE MARIE | B27=CHOMBART | C27=Alix | F27=MARES | G27=Aude | J27=Française | K27=355 | L27=80 | M27=1 | N27=45536 | O27=45838 | P27=inactif | Q27=10
+R28: A28=FOYER SAINTE MARIE | B28=THERY | C28=Blanche | F28=MARES | G28=Aude | J28=Française | K28=355 | L28=80 | M28=1 | N28=45536 | O28=45838 | P28=inactif | Q28=10
+R29: A29=FOYER SAINTE MARIE | B29=PATURLE | C29=Athanaïs | F29=MARES | G29=Aude | J29=Française | K29=355 | L29=80 | M29=1 | N29=45536 | O29=45838 | P29=inactif | Q29=10
+R30: A30=FOYER SAINTE MARIE | B30=SAISON | C30=Augustine | F30=MARES | G30=Aude | J30=Française | K30=355 | L30=80 | M30=1 | N30=45536 | O30=45838 | P30=inactif | Q30=10
+R31: A31=FOYER SAINTE MARIE | B31=DELAFON | C31=Sophie | F31=MARES | G31=Aude | J31=Française | K31=355 | L31=80 | M31=1 | N31=45536 | O31=45838 | P31=inactif | Q31=10
+R32: A32=22 RUE CHANCE MILLY | B32=GOSSELIN | C32=Camille | D32=camille50120@hotmail.fr | E32=06.64.75.71.68 | F32=DESCHAMPS | G32=Julien | H32=17 RUE CARNOT | I32=50120 EQUEUDREVILLE | K32=760 | L32=65 | M32=3 | N32=45561 | O32=45904 | P32=inactif | Q32=11
+R33: A33=11 RUE DES CAILLOUX - 4EME | B33=RATELADE | C33=Camille | D33=c.ratelade@orange.fr | E33=06.51.45.76.32 | F33=RATELADE | G33=Denis | H33=148 RUE DE LA PAGÈRE | I33=69500 BRON | J33=Française | K33=915 | L33=75 | M33=3 | N33=45795 | O33=19/09/2026 | P33=inactif | Q33=16
+R34: A34=22 RUE CHANCE MILLY | B34=DEBEC | C34=Fanny | D34=fanny.debec@gmail.com | E34=06.58.51.40.88 | F34=THOBY | G34=Stéphanie | H34=25 AVENUE ARISTIDE BRIAND | I34=44490 Le Croisic | J34=Française | K34=770 | L34=65 | M34=3 | N34=45904 | P34=actif | Q34=12
+R35: A35=FOYER SAINTE MARIE | B35=PASQUIER | C35=Anne-Lys | D35= annelyspasquier@gmail.com | K35=375 | L35=80 | M35=1 | N35=46266 | P35=actif | Q35=0
+R36: A36=11 RUE DES CAILLOUX - 4EME | B36=MAZARD | C36=Alexi | D36=alexi.mazard@gmail.com | E36=06.52.48.53.80 | F36=MAZARD | G36=David | H36=40 CHEMIN DE PARENTY | I36=69250 Neuville-sur-Sâone | J36=Française | K36=930 | L36=75 | M36=1 | N36=46284 | P36=actif | Q36=0

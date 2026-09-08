@@ -1,0 +1,519 @@
+﻿R1: A1=Date | B1=Description | C1=Compte | D1=Montant | E1=Catégorie | F1=Sous-Catégorie | G1=Note | H1=Pointée | J1=Pointage
+R2: A2=25/08/2017 | B2=Vir Cpte A Cpte Emis /motif /ben Jaubert /refdo /refben | C2=22 CHANCE MILLY | D2=-91000 | E2=Retraits, Chq. et Vir. | F2=Virements | H2=Non
+R3: A3=25/08/2017 | B3=Vir Cpte A Cpte Recu /de Jaubert /motif /ref | C3=22 CHANCE MILLY | D3=91000 | E3=Entrées d'argent | F3=Virements internes | H3=Non
+R4: A4=05/09/2017 | B4=Prlv Sepa Cardif Assurance Vie Id Emett | C4=22 CHANCE MILLY | D4=-10.75 | E4=Banque | F4=Epargne | H4=Non | J4=Assurance prêt
+R5: A5=06/09/2017 | B5=Prlv Sepa Cardif Assurance Vie Id Emett | C5=22 CHANCE MILLY | D5=-10.75 | E5=Banque | F5=Epargne | H5=Non | J5=Assurance prêt
+R6: A6=18/09/2017 | B6=Vir Cpte A Cpte Recu /de Jaubert /motif Virement /ref | C6=22 CHANCE MILLY | D6=100 | E6=Entrées d'argent | F6=Virements internes | H6=Non
+R7: A7=03/10/2017 | B7=Frais De Tenue De Compte | C7=22 CHANCE MILLY | D7=-2.5 | E7=Banque | F7=Frais bancaires | H7=Non | J7=Frais bancaires
+R8: A8=05/10/2017 | B8=Prlv Sepa Cardif Assurance Vie Id Emett | C8=22 CHANCE MILLY | D8=-10.75 | E8=Banque | F8=Epargne | H8=Non | J8=Assurance prêt
+R9: A9=03/11/2017 | B9=Frais De Tenue De Compte | C9=22 CHANCE MILLY | D9=-2.5 | E9=Banque | F9=Frais bancaires | H9=Non | J9=Frais bancaires
+R10: A10=06/11/2017 | B10=Prlv Sepa Cardif Assurance Vie Id Emett | C10=22 CHANCE MILLY | D10=-10.75 | E10=Banque | F10=Epargne | H10=Non | J10=Assurance prêt
+R11: A11=27/11/2017 | B11=Retrocession Produit Reclamations Non Justifiees Mt | C11=22 CHANCE MILLY | D11=5 | E11=Entrées d'argent | F11=Remboursements | H11=Non | J11=Frais bancaires
+R12: A12=04/12/2017 | B12=Frais De Tenue De Compte | C12=22 CHANCE MILLY | D12=-2.5 | E12=Banque | F12=Frais bancaires | H12=Non | J12=Frais bancaires
+R13: A13=05/12/2017 | B13=Prlv Sepa Cardif Assurance Vie Id Emett | C13=22 CHANCE MILLY | D13=-10.75 | E13=Banque | F13=Epargne | H13=Non | J13=Assurance prêt
+R14: A14=07/12/2017 | B14=Interets Minimum Forfaitaire D Agios | C14=22 CHANCE MILLY | D14=-7 | E14=Banque | F14=Frais bancaires | H14=Non | J14=Frais bancaires
+R15: A15=03/01/2018 | B15=Frais De Tenue De Compte | C15=22 CHANCE MILLY | D15=-2.5 | E15=Banque | F15=Frais bancaires | H15=Non | J15=Frais bancaires
+R16: A16=04/01/2018 | B16=Frais Prelevement Participation Financiere Cre | C16=22 CHANCE MILLY | D16=-1022.1 | E16=Banque | F16=Remboursement emprunt | H16=Non
+R17: A17=04/01/2018 | B17=Frais Prelevement Participation Financiere Cre | C17=22 CHANCE MILLY | D17=-637.62 | E17=Banque | F17=Remboursement emprunt | H17=Non
+R18: A18=05/01/2018 | B18=Vir Cpte A Cpte Recu /de Jaubert /motif Achat Chance Milly | C18=22 CHANCE MILLY | D18=2000 | E18=Entrées d'argent | F18=Virements internes | H18=Non
+R19: A19=05/01/2018 | B19=Prlv Sepa Cardif Assurance Vie Id Emett | C19=22 CHANCE MILLY | D19=-10.75 | E19=Banque | F19=Epargne | H19=Non | J19=Assurance prêt
+R20: A20=25/01/2018 | B20=Retrocession Produit Reclamations Non Justifiees Mt | C20=22 CHANCE MILLY | D20=12 | E20=Entrées d'argent | F20=Remboursements | H20=Non | J20=Frais bancaires
+R21: A21=01/02/2018 | B21=Vir Cpte A Cpte Recu /de Jaubert /motif Courant /ref | C21=22 CHANCE MILLY | D21=600 | E21=Entrées d'argent | F21=Virements internes | H21=Non
+R22: A22=05/02/2018 | B22=Echeance Pret (capital Du Eur) | C22=22 CHANCE MILLY | D22=-581.27 | E22=Banque | F22=Remboursement emprunt | H22=Non | J22=Mensualités
+R23: A23=05/02/2018 | B23=Echeance Pret | C23=22 CHANCE MILLY | D23=-562.85 | E23=Logement | F23=Loyer | H23=Non | J23=Mensualités
+R24: A24=05/02/2018 | B24=Prlv Sepa Axa Id | C24=22 CHANCE MILLY | D24=-90.02 | E24=Auto & Transports | F24=Assurance véhicule | H24=Non | J24=Assurance logement
+R25: A25=05/02/2018 | B25=Prlv Sepa Cardif Assurance Vie Id Emett | C25=22 CHANCE MILLY | D25=-10.75 | E25=Banque | F25=Epargne | H25=Non | J25=Assurance prêt
+R26: A26=13/02/2018 | B26=Vir Cpte A Cpte Recu /de Jaubert /motif Epargne /ref | C26=22 CHANCE MILLY | D26=500 | E26=Entrées d'argent | F26=Virements internes | H26=Non
+R27: A27=16/02/2018 | B27=Vir Sepa Recu /de Bruno /motif Loyer Fevrier Pror | C27=22 CHANCE MILLY | D27=474 | E27=Entrées d'argent | F27=Loyers reçus | H27=Non | J27=Loyers
+R28: A28=27/02/2018 | B28=Mise A Disposition Pret Rembt Fact Sasu Rfppe | C28=22 CHANCE MILLY | D28=8000 | E28=Entrées d'argent | F28=Autres rentrées | H28=Non
+R29: A29=28/02/2018 | B29=Vir Cpte A Cpte Emis /motif Remboursement Travaux /ben Jaubert /refdo /refben | C29=22 CHANCE MILLY | D29=-8000 | E29=Retraits, Chq. et Vir. | F29=Virements | H29=Non
+R30: A30=01/03/2018 | B30=Vir Sepa Recu /de Bruno /motif Mars Bruno /ref | C30=22 CHANCE MILLY | D30=780 | E30=Entrées d'argent | F30=Autres rentrées | H30=Non | J30=Loyers
+R31: A31=05/03/2018 | B31=Echeance Pret (capital Du Eur) | C31=22 CHANCE MILLY | D31=-402.22 | E31=Banque | F31=Remboursement emprunt | H31=Non | J31=Mensualités
+R32: A32=05/03/2018 | B32=Echeance Pret | C32=22 CHANCE MILLY | D32=-232.26 | E32=Logement | F32=Loyer | H32=Non | J32=Mensualités
+R33: A33=07/03/2018 | B33=Interets Minimum Forfaitaire D Agios | C33=22 CHANCE MILLY | D33=-7 | E33=Banque | F33=Frais bancaires | H33=Non | J33=Frais bancaires
+R34: A34=23/03/2018 | B34=Commissions D Intervention | C34=22 CHANCE MILLY | D34=-8 | E34=Banque | F34=Frais bancaires | H34=Non | J34=Frais bancaires
+R35: A35=26/03/2018 | B35=Remise Cheques Bordereau | C35=22 CHANCE MILLY | D35=780 | E35=Entrées d'argent | F35=Dépôt d'argent | H35=Non | J35=Encaissement caution
+R36: A36=04/04/2018 | B36=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C36=22 CHANCE MILLY | D36=780 | E36=Entrées d'argent | F36=Autres rentrées | H36=Non | J36=Loyers
+R37: A37=05/04/2018 | B37=Echeance Pret (capital Du Eur) | C37=22 CHANCE MILLY | D37=-402.22 | E37=Banque | F37=Remboursement emprunt | H37=Non | J37=Mensualités
+R38: A38=05/04/2018 | B38=Echeance Pret | C38=22 CHANCE MILLY | D38=-232.26 | E38=Logement | F38=Loyer | H38=Non | J38=Mensualités
+R39: A39=05/04/2018 | B39=Prlv Sepa Cardif Assurance Vie Id Emett | C39=22 CHANCE MILLY | D39=-10.75 | E39=Banque | F39=Epargne | H39=Non | J39=Assurance prêt
+R40: A40=05/04/2018 | B40=Prlv Sepa Cardif Assurance Vie Id Emett | C40=22 CHANCE MILLY | D40=-10.75 | E40=Banque | F40=Epargne | H40=Non | J40=Assurance prêt
+R41: A41=13/04/2018 | B41=Virement Sepa Emis /motif Jaubert Charges Studio /ben Sdc | C41=22 CHANCE MILLY | D41=-239.11 | E41=Retraits, Chq. et Vir. | F41=Virements | H41=Non | J41=Charges copropriété
+R42: A42=02/05/2018 | B42=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C42=22 CHANCE MILLY | D42=780 | E42=Entrées d'argent | F42=Autres rentrées | H42=Non | J42=Loyers
+R43: A43=07/05/2018 | B43=Prlv Sepa Cardif Assurance Vie Id Emett | C43=22 CHANCE MILLY | D43=-10.75 | E43=Banque | F43=Epargne | H43=Non | J43=Assurance prêt
+R44: A44=07/05/2018 | B44=Echeance Pret (capital Du Eur) | C44=22 CHANCE MILLY | D44=-402.22 | E44=Banque | F44=Remboursement emprunt | H44=Non | J44=Mensualités
+R45: A45=07/05/2018 | B45=Echeance Pret | C45=22 CHANCE MILLY | D45=-232.26 | E45=Logement | F45=Loyer | H45=Non | J45=Mensualités
+R46: A46=17/05/2018 | B46=Retrocession Produit Reclamations Non Justifiees Mt | C46=22 CHANCE MILLY | D46=216.36 | E46=Entrées d'argent | F46=Remboursements | H46=Non
+R47: A47=29/05/2018 | B47=Changement De Domiciliation | C47=22 CHANCE MILLY | D47=-1851.45 | E47=Banque | F47=Frais bancaires | H47=Non
+R48: A48=29/05/2018 | B48=Changement De Domiciliation | C48=22 CHANCE MILLY | D48=1851.45 | E48=Entrées d'argent | F48=Autres rentrées | H48=Non
+R49: A49=01/06/2018 | B49=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C49=22 CHANCE MILLY | D49=780 | E49=Entrées d'argent | F49=Autres rentrées | H49=Non | J49=Loyers
+R50: A50=05/06/2018 | B50=Echeance Pret (capital Du Eur) | C50=22 CHANCE MILLY | D50=-402.22 | E50=Banque | F50=Remboursement emprunt | H50=Non | J50=Mensualités
+R51: A51=05/06/2018 | B51=Echeance Pret | C51=22 CHANCE MILLY | D51=-232.26 | E51=Logement | F51=Loyer | H51=Non | J51=Mensualités
+R52: A52=05/06/2018 | B52=Prlv Sepa Cardif Assurance Vie Id Emett | C52=22 CHANCE MILLY | D52=-10.75 | E52=Banque | F52=Epargne | H52=Non | J52=Assurance prêt
+R53: A53=27/06/2018 | B53=Mise A Disposition Pret Rbt Sur Fact N Sasu R F P R E | C53=22 CHANCE MILLY | D53=4000 | E53=Entrées d'argent | F53=Autres rentrées | H53=Non
+R54: A54=28/06/2018 | B54=Vir Cpte A Cpte Emis /motif Epargne /ben Jaubert /refdo /refb | C54=22 CHANCE MILLY | D54=-1000 | E54=Retraits, Chq. et Vir. | F54=Virements | H54=Non
+R55: A55=28/06/2018 | B55=Vir Cpte A Cpte Emis /motif Epargne /ben Jaubert /refdo /refb | C55=22 CHANCE MILLY | D55=-3000 | E55=Retraits, Chq. et Vir. | F55=Virements | H55=Non
+R56: A56=03/07/2018 | B56=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C56=22 CHANCE MILLY | D56=780 | E56=Entrées d'argent | F56=Autres rentrées | H56=Non | J56=Loyers
+R57: A57=05/07/2018 | B57=Echeance Pret (capital Du Eur) | C57=22 CHANCE MILLY | D57=-402.22 | E57=Banque | F57=Remboursement emprunt | H57=Non | J57=Mensualités
+R58: A58=05/07/2018 | B58=Echeance Pret | C58=22 CHANCE MILLY | D58=-243.59 | E58=Logement | F58=Loyer | H58=Non | J58=Mensualités
+R59: A59=05/07/2018 | B59=Prlv Sepa Cardif Assurance Vie Id Emett | C59=22 CHANCE MILLY | D59=-10.75 | E59=Banque | F59=Epargne | H59=Non | J59=Assurance prêt
+R60: A60=09/07/2018 | B60=Virement Sepa Emis /motif Jaubert Charges Trimestrielles | C60=22 CHANCE MILLY | D60=-377.06 | E60=Retraits, Chq. et Vir. | F60=Virements | H60=Non | J60=Charges copropriété
+R61: A61=01/08/2018 | B61=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C61=22 CHANCE MILLY | D61=780 | E61=Entrées d'argent | F61=Autres rentrées | H61=Non | J61=Loyers
+R62: A62=06/08/2018 | B62=Echeance Pret (capital Du Eur) | C62=22 CHANCE MILLY | D62=-402.22 | E62=Banque | F62=Remboursement emprunt | H62=Non | J62=Mensualités
+R63: A63=06/08/2018 | B63=Echeance Pret | C63=22 CHANCE MILLY | D63=-243.59 | E63=Logement | F63=Loyer | H63=Non | J63=Mensualités
+R64: A64=06/08/2018 | B64=Prlv Sepa Cardif Assurance Vie Id Emett | C64=22 CHANCE MILLY | D64=-11.07 | E64=Banque | F64=Epargne | H64=Non | J64=Assurance prêt
+R65: A65=03/09/2018 | B65=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C65=22 CHANCE MILLY | D65=780 | E65=Entrées d'argent | F65=Autres rentrées | H65=Non | J65=Loyers
+R66: A66=05/09/2018 | B66=Echeance Pret (capital Du Eur) | C66=22 CHANCE MILLY | D66=-402.22 | E66=Banque | F66=Remboursement emprunt | H66=Non | J66=Mensualités
+R67: A67=05/09/2018 | B67=Echeance Pret | C67=22 CHANCE MILLY | D67=-243.59 | E67=Logement | F67=Loyer | H67=Non | J67=Mensualités
+R68: A68=05/09/2018 | B68=Prlv Sepa Cardif Assurance Vie Id Emett | C68=22 CHANCE MILLY | D68=-11.07 | E68=Banque | F68=Epargne | H68=Non | J68=Assurance prêt
+R69: A69=02/10/2018 | B69=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C69=22 CHANCE MILLY | D69=780 | E69=Entrées d'argent | F69=Autres rentrées | H69=Non | J69=Loyers
+R70: A70=05/10/2018 | B70=Echeance Pret (capital Du Eur) | C70=22 CHANCE MILLY | D70=-402.22 | E70=Banque | F70=Remboursement emprunt | H70=Non | J70=Mensualités
+R71: A71=05/10/2018 | B71=Echeance Pret | C71=22 CHANCE MILLY | D71=-243.59 | E71=Logement | F71=Loyer | H71=Non | J71=Mensualités
+R72: A72=05/10/2018 | B72=Prlv Sepa Cardif Assurance Vie Id Emett | C72=22 CHANCE MILLY | D72=-11.07 | E72=Banque | F72=Epargne | H72=Non | J72=Assurance prêt
+R73: A73=11/10/2018 | B73=Virement Sepa Emis /motif Jaubert Charges T | C73=22 CHANCE MILLY | D73=-467.4 | E73=Retraits, Chq. et Vir. | F73=Virements | H73=Non | J73=Charges copropriété
+R74: A74=02/11/2018 | B74=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C74=22 CHANCE MILLY | D74=780 | E74=Entrées d'argent | F74=Autres rentrées | H74=Non | J74=Loyers
+R75: A75=05/11/2018 | B75=Echeance Pret (capital Du Eur) | C75=22 CHANCE MILLY | D75=-402.22 | E75=Banque | F75=Remboursement emprunt | H75=Non | J75=Mensualités
+R76: A76=05/11/2018 | B76=Echeance Pret | C76=22 CHANCE MILLY | D76=-243.59 | E76=Logement | F76=Loyer | H76=Non | J76=Mensualités
+R77: A77=05/11/2018 | B77=Prlv Sepa Cardif Assurance Vie Id Emett | C77=22 CHANCE MILLY | D77=-11.07 | E77=Banque | F77=Epargne | H77=Non | J77=Assurance prêt
+R78: A78=03/12/2018 | B78=Vir Sepa Recu /de Garrault Salome /motif /ref | C78=22 CHANCE MILLY | D78=1887 | E78=Entrées d'argent | F78=Salaires | H78=Non | J78=Encaissement caution
+R79: A79=04/12/2018 | B79=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C79=22 CHANCE MILLY | D79=390 | E79=Entrées d'argent | F79=Autres rentrées | H79=Non | J79=Loyers
+R80: A80=05/12/2018 | B80=Echeance Pret (capital Du Eur) | C80=22 CHANCE MILLY | D80=-402.22 | E80=Banque | F80=Remboursement emprunt | H80=Non | J80=Mensualités
+R81: A81=05/12/2018 | B81=Echeance Pret | C81=22 CHANCE MILLY | D81=-243.59 | E81=Logement | F81=Loyer | H81=Non | J81=Mensualités
+R82: A82=05/12/2018 | B82=Prlv Sepa Cardif Assurance Vie Id Emett | C82=22 CHANCE MILLY | D82=-11.07 | E82=Banque | F82=Epargne | H82=Non | J82=Assurance prêt
+R83: A83=18/12/2018 | B83=Virement Sepa Emis /motif Restitution Caution /ben Mle Brun | C83=22 CHANCE MILLY | D83=-730 | E83=Retraits, Chq. et Vir. | F83=Virements | H83=Non | J83=Remboursement caution
+R84: A84=02/01/2019 | B84=Vir Sepa Recu /de Garrault Salome /motif Virement Loyer /ref | C84=22 CHANCE MILLY | D84=780 | E84=Entrées d'argent | F84=Autres rentrées | H84=Non | J84=Loyers
+R85: A85=02/01/2019 | B85=Vir Sepa Recu /de Mlle Bruno Lucie /motif /ref | C85=22 CHANCE MILLY | D85=390 | E85=Entrées d'argent | F85=Autres rentrées | H85=Non | J85=Loyers
+R86: A86=04/01/2019 | B86=Virement Sepa Emis /motif Erreur Virement Janvier /ben Mle Bruno Lucie /refdo /refben | C86=22 CHANCE MILLY | D86=-390 | E86=Logement | F86=Loyer | H86=Non | J86=Loyers
+R87: A87=07/01/2019 | B87=Prlv Sepa Axa Id | C87=22 CHANCE MILLY | D87=-98.48 | E87=Auto & Transports | F87=Assurance véhicule | H87=Non | J87=Assurance logement
+R88: A88=07/01/2019 | B88=Prlv Sepa Cardif Assurance Vie Id | C88=22 CHANCE MILLY | D88=-11.07 | E88=Banque | F88=Epargne | H88=Non | J88=Assurance prêt
+R89: A89=07/01/2019 | B89=Echeance Pret (capital Du Eur) | C89=22 CHANCE MILLY | D89=-402.22 | E89=Banque | F89=Remboursement emprunt | H89=Non | J89=Mensualités
+R90: A90=07/01/2019 | B90=Echeance Pret | C90=22 CHANCE MILLY | D90=-243.59 | E90=Logement | F90=Loyer | H90=Non | J90=Mensualités
+R91: A91=11/01/2019 | B91=Virement Sepa Emis /motif Charges Trimestrielles Pierre Jaubert /ben Sdc Rue Chance Milly /refdo /refben | C91=22 CHANCE MILLY | D91=-180.3 | E91=Retraits, Chq. et Vir. | F91=Virements | H91=Non | J91=Charges copropriété
+R92: A92=04/02/2019 | B92=Vir Sepa Recu /de Garrault Salome /motif Virement Loyer /ref | C92=22 CHANCE MILLY | D92=780 | E92=Entrées d'argent | F92=Autres rentrées | H92=Non | J92=Loyers
+R93: A93=04/02/2019 | B93=Frais Tenue De Compte Avec Remise | C93=22 CHANCE MILLY | D93=-2 | E93=Banque | F93=Frais bancaires | H93=Non | J93=Frais bancaires
+R94: A94=05/02/2019 | B94=Echeance Pret (capital Du Eur) | C94=22 CHANCE MILLY | D94=-402.22 | E94=Banque | F94=Remboursement emprunt | H94=Non | J94=Mensualités
+R95: A95=05/02/2019 | B95=Echeance Pret | C95=22 CHANCE MILLY | D95=-243.59 | E95=Logement | F95=Loyer | H95=Non | J95=Mensualités
+R96: A96=05/02/2019 | B96=Prlv Sepa Cardif Assurance Vie Id | C96=22 CHANCE MILLY | D96=-11.07 | E96=Banque | F96=Epargne | H96=Non | J96=Assurance prêt
+R97: A97=04/03/2019 | B97=Vir Sepa Recu /de Garrault Salome /motif Virement Loyer /ref | C97=22 CHANCE MILLY | D97=780 | E97=Entrées d'argent | F97=Autres rentrées | H97=Non | J97=Loyers
+R98: A98=04/03/2019 | B98=Frais Tenue De Compte Avec Remise | C98=22 CHANCE MILLY | D98=-2 | E98=Banque | F98=Frais bancaires | H98=Non | J98=Frais bancaires
+R99: A99=05/03/2019 | B99=Echeance Pret (capital Du Eur) | C99=22 CHANCE MILLY | D99=-402.22 | E99=Banque | F99=Remboursement emprunt | H99=Non | J99=Mensualités
+R100: A100=05/03/2019 | B100=Echeance Pret | C100=22 CHANCE MILLY | D100=-243.59 | E100=Logement | F100=Loyer | H100=Non | J100=Mensualités
+R101: A101=05/03/2019 | B101=Prlv Sepa Cardif Assurance Vie Id | C101=22 CHANCE MILLY | D101=-11.07 | E101=Banque | F101=Epargne | H101=Non | J101=Assurance prêt
+R102: A102=12/03/2019 | B102=Vir Sepa Recu /de Mle Manon Drumel /motif Depot De Garantie Drumel /ref | C102=22 CHANCE MILLY | D102=1460 | E102=Entrées d'argent | F102=Autres rentrées | H102=Non | J102=Encaissement caution
+R103: A103=28/03/2019 | B103=Virement Sepa Emis /motif Jaubert Appel De Charges A /ben Sdc Rue Chance Milly /refdo /refben | C103=22 CHANCE MILLY | D103=-266.86 | E103=Retraits, Chq. et Vir. | F103=Virements | H103=Non | J103=Charges copropriété
+R104: A104=01/04/2019 | B104=Virement Sepa Emis /motif Remboursement Caution Location Salome Garrault /ben Garrault Salome /refdo /refben | C104=22 CHANCE MILLY | D104=-1420 | E104=Retraits, Chq. et Vir. | F104=Virements | H104=Non | J104=Remboursement caution
+R105: A105=01/04/2019 | B105=Vir Sepa Recu /de Mle Manon Drumel /motif Vir De Mle Manon Drumel /ref | C105=22 CHANCE MILLY | D105=780 | E105=Entrées d'argent | F105=Autres rentrées | H105=Non | J105=Loyers
+R106: A106=01/04/2019 | B106=Vir Cpte A Cpte Emis /motif Gestion Entree Sortie Locataire Marc /ben Jaubert /refdo /refben | C106=22 CHANCE MILLY | D106=-50 | E106=Retraits, Chq. et Vir. | F106=Virements internes | H106=Non | J106=Autres
+R107: A107=01/04/2019 | B107=Vir Cpte A Cpte Emis /motif Reparation Marc /ben Jaubert /refdo /refben | C107=22 CHANCE MILLY | D107=-20 | E107=Retraits, Chq. et Vir. | F107=Virements internes | H107=Non | J107=Autres
+R108: A108=02/04/2019 | B108=Frais Tenue De Compte Avec Remise | C108=22 CHANCE MILLY | D108=-2 | E108=Banque | F108=Frais bancaires | H108=Non | J108=Frais bancaires
+R109: A109=05/04/2019 | B109=Echeance Pret (capital Du Eur) | C109=22 CHANCE MILLY | D109=-402.22 | E109=Banque | F109=Remboursement emprunt | H109=Non | J109=Mensualités
+R110: A110=05/04/2019 | B110=Echeance Pret | C110=22 CHANCE MILLY | D110=-243.59 | E110=Logement | F110=Loyer | H110=Non | J110=Mensualités
+R111: A111=05/04/2019 | B111=Prlv Sepa Cardif Assurance Vie Id | C111=22 CHANCE MILLY | D111=-11.07 | E111=Banque | F111=Epargne | H111=Non | J111=Assurance prêt
+R112: A112=10/04/2019 | B112=Operations Diverses Changement De Domiciliation | C112=22 CHANCE MILLY | D112=-2558.64 | E112=Banque | F112=Epargne | H112=Non
+R113: A113=10/04/2019 | B113=Changement De Domiciliation | C113=22 CHANCE MILLY | D113=2558.64 | E113=Entrées d'argent | F113=Autres rentrées | H113=Non
+R114: A114=25/04/2019 | B114=Retrocession Produit Tenue De Compte Particulier Mt Ht E Tva E (tx Tva %) | C114=22 CHANCE MILLY | D114=6 | E114=Entrées d'argent | F114=Remboursements | H114=Non | J114=Frais bancaires
+R115: A115=29/04/2019 | B115=Vir Sepa Recu /de Mle Manon Drumel /motif Vir De Mle Manon Drumel /ref | C115=22 CHANCE MILLY | D115=780 | E115=Entrées d'argent | F115=Autres rentrées | H115=Non | J115=Loyers
+R116: A116=06/05/2019 | B116=Prlv Sepa Cardif Assurance Vie Id | C116=22 CHANCE MILLY | D116=-11.07 | E116=Banque | F116=Epargne | H116=Non | J116=Assurance prêt
+R117: A117=06/05/2019 | B117=Echeance Pret (capital Du Eur) | C117=22 CHANCE MILLY | D117=-402.22 | E117=Banque | F117=Remboursement emprunt | H117=Non | J117=Mensualités
+R118: A118=06/05/2019 | B118=Echeance Pret | C118=22 CHANCE MILLY | D118=-243.59 | E118=Logement | F118=Loyer | H118=Non | J118=Mensualités
+R119: A119=31/05/2019 | B119=Vir Sepa Recu /de Mle Manon Drumel /motif Loyer Juin /ref | C119=22 CHANCE MILLY | D119=780 | E119=Entrées d'argent | F119=Loyers reçus | H119=Non | J119=Loyers
+R120: A120=05/06/2019 | B120=Echeance Pret (capital Du Eur) | C120=22 CHANCE MILLY | D120=-402.22 | E120=Banque | F120=Remboursement emprunt | H120=Non | J120=Mensualités
+R121: A121=05/06/2019 | B121=Echeance Pret | C121=22 CHANCE MILLY | D121=-243.59 | E121=Logement | F121=Loyer | H121=Non | J121=Mensualités
+R122: A122=05/06/2019 | B122=Prlv Sepa Cardif Assurance Vie Id | C122=22 CHANCE MILLY | D122=-11.07 | E122=Banque | F122=Epargne | H122=Non | J122=Assurance prêt
+R123: A123=01/07/2019 | B123=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Juillet /ref | C123=22 CHANCE MILLY | D123=780 | E123=Entrées d'argent | F123=Loyers reçus | H123=Non | J123=Loyers
+R124: A124=05/07/2019 | B124=Echeance Pret (capital Du Eur) | C124=22 CHANCE MILLY | D124=-402.22 | E124=Banque | F124=Remboursement emprunt | H124=Non | J124=Mensualités
+R125: A125=05/07/2019 | B125=Echeance Pret | C125=22 CHANCE MILLY | D125=-243.59 | E125=Logement | F125=Loyer | H125=Non | J125=Mensualités
+R126: A126=05/07/2019 | B126=Prlv Sepa Cardif Assurance Vie Id | C126=22 CHANCE MILLY | D126=-11.07 | E126=Banque | F126=Epargne | H126=Non | J126=Assurance prêt
+R127: A127=12/07/2019 | B127=Virement Sepa Emis /motif Jaubert Pierre /ben Sdc Rue Chance Milly /refdo /refben | C127=22 CHANCE MILLY | D127=-102.58 | E127=Retraits, Chq. et Vir. | F127=Virements | H127=Non | J127=Charges copropriété
+R128: A128=01/08/2019 | B128=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Aout /ref | C128=22 CHANCE MILLY | D128=780 | E128=Entrées d'argent | F128=Loyers reçus | H128=Non | J128=Loyers
+R129: A129=05/08/2019 | B129=Echeance Pret (capital Du Eur) | C129=22 CHANCE MILLY | D129=-402.22 | E129=Banque | F129=Remboursement emprunt | H129=Non | J129=Mensualités
+R130: A130=05/08/2019 | B130=Echeance Pret | C130=22 CHANCE MILLY | D130=-243.59 | E130=Logement | F130=Loyer | H130=Non | J130=Mensualités
+R131: A131=12/08/2019 | B131=Prlv Sepa Cardif Assurance Vie Id | C131=22 CHANCE MILLY | D131=-10.37 | E131=Banque | F131=Epargne | H131=Non | J131=Assurance prêt
+R132: A132=02/09/2019 | B132=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Septembre /ref | C132=22 CHANCE MILLY | D132=780 | E132=Entrées d'argent | F132=Loyers reçus | H132=Non | J132=Loyers
+R133: A133=05/09/2019 | B133=Echeance Pret (capital Du Eur) | C133=22 CHANCE MILLY | D133=-402.22 | E133=Banque | F133=Remboursement emprunt | H133=Non | J133=Mensualités
+R134: A134=05/09/2019 | B134=Echeance Pret | C134=22 CHANCE MILLY | D134=-243.59 | E134=Logement | F134=Loyer | H134=Non | J134=Mensualités
+R135: A135=05/09/2019 | B135=Prlv Sepa Cardif Assurance Vie Id | C135=22 CHANCE MILLY | D135=-10.37 | E135=Banque | F135=Epargne | H135=Non | J135=Assurance prêt
+R136: A136=01/10/2019 | B136=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Octobre /ref | C136=22 CHANCE MILLY | D136=780 | E136=Entrées d'argent | F136=Loyers reçus | H136=Non | J136=Loyers
+R137: A137=07/10/2019 | B137=Prlv Sepa Cardif Assurance Vie Id | C137=22 CHANCE MILLY | D137=-10.37 | E137=Banque | F137=Epargne | H137=Non | J137=Assurance prêt
+R138: A138=07/10/2019 | B138=Echeance Pret (capital Du Eur) | C138=22 CHANCE MILLY | D138=-402.22 | E138=Banque | F138=Remboursement emprunt | H138=Non | J138=Mensualités
+R139: A139=07/10/2019 | B139=Echeance Pret | C139=22 CHANCE MILLY | D139=-243.59 | E139=Logement | F139=Loyer | H139=Non | J139=Mensualités
+R140: A140=15/10/2019 | B140=Virement Sepa Emis /motif Jaubert Appel Charges /ben Sdc Rue Chance Milly /refdo /refben | C140=22 CHANCE MILLY | D140=-266.86 | E140=Retraits, Chq. et Vir. | F140=Virements | H140=Non | J140=Charges copropriété
+R141: A141=25/10/2019 | B141=Vir Cpte A Cpte Emis /motif Taxe Fonciere /ben Jaubert /refdo /refben | C141=22 CHANCE MILLY | D141=-261 | E141=Retraits, Chq. et Vir. | F141=Virements internes | H141=Non | J141=Taxe foncière
+R142: A142=31/10/2019 | B142=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Novembre /ref | C142=22 CHANCE MILLY | D142=780 | E142=Entrées d'argent | F142=Loyers reçus | H142=Non | J142=Loyers
+R143: A143=05/11/2019 | B143=Echeance Pret (capital Du Eur) | C143=22 CHANCE MILLY | D143=-402.22 | E143=Banque | F143=Remboursement emprunt | H143=Non | J143=Mensualités
+R144: A144=05/11/2019 | B144=Echeance Pret | C144=22 CHANCE MILLY | D144=-243.59 | E144=Logement | F144=Loyer | H144=Non | J144=Mensualités
+R145: A145=05/11/2019 | B145=Prlv Sepa Cardif Assurance Vie Id | C145=22 CHANCE MILLY | D145=-10.37 | E145=Banque | F145=Epargne | H145=Non | J145=Assurance prêt
+R146: A146=14/11/2019 | B146=Virement Sepa Emis /motif Jaubert Appel De Fond Exceptionnel /ben Sdc Rue Chance Milly /refdo /refben | C146=22 CHANCE MILLY | D146=-216.32 | E146=Retraits, Chq. et Vir. | F146=Virements | H146=Non | J146=Charges copropriété
+R147: A147=02/12/2019 | B147=Vir Sepa Recu /de Mle Drumel Manon /motif Loyer Decembre /ref | C147=22 CHANCE MILLY | D147=780 | E147=Entrées d'argent | F147=Loyers reçus | H147=Non | J147=Loyers
+R148: A148=05/12/2019 | B148=Prlv Sepa Cardif Assurance Vie Id | C148=22 CHANCE MILLY | D148=-10.37 | E148=Banque | F148=Epargne | H148=Non | J148=Assurance prêt
+R149: A149=05/12/2019 | B149=Echeance Pret (capital Du Eur) | C149=22 CHANCE MILLY | D149=-402.22 | E149=Banque | F149=Remboursement emprunt | H149=Non | J149=Mensualités
+R150: A150=05/12/2019 | B150=Echeance Pret | C150=22 CHANCE MILLY | D150=-243.59 | E150=Logement | F150=Loyer | H150=Non | J150=Mensualités
+R151: A151=02/01/2020 | B151=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER JANVIER 2020 - REF : VK00014077KVF301 | C151=22 CHANCE MILLY | D151=780 | J151=Loyers
+R152: A152=06/01/2020 | B152=PRELEVEMENT AXA DU 06/01 - MOTIF : I0000429084887-CONTRAT0000010157163304 - REF : I0000429084887 LIB | C152=22 CHANCE MILLY | D152=-101.31 | J152=Assurance logement
+R153: A153=06/01/2020 | B153=PRELEVEMENT CARDIF ASSURANCE VIE DU 06/01 - MOTIF : WY0202999660227735820501200T1 - REF : WY0202999660227735820501200T1352207 LIB | C153=22 CHANCE MILLY | D153=-10.37 | J153=Assurance prêt
+R154: A154=06/01/2020 | B154=ECHEANCE PRET 00891 60971384 (CAPITAL DU 37020,48 EUR) | C154=22 CHANCE MILLY | D154=-402.22 | J154=Mensualités
+R155: A155=06/01/2020 | B155=ECHEANCE PRET 00891 60971287 | C155=22 CHANCE MILLY | D155=-243.59 | J155=Mensualités
+R156: A156=15/01/2020 | B156=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : 000217 0020 02 - JAUBERT APPEL DE CHARGES JANV MARS 2020 | C156=22 CHANCE MILLY | D156=-278.45999999999998 | J156=Charges copropriété
+R157: A157=03/02/2020 | B157=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER FEVRIER 2020 - REF : VK003223897VDL01 | C157=22 CHANCE MILLY | D157=780 | J157=Loyers
+R158: A158=05/02/2020 | B158=ECHEANCE PRET 00891 60971384 (CAPITAL DU 36650,65 EUR) | C158=22 CHANCE MILLY | D158=-402.22 | J158=Mensualités
+R159: A159=05/02/2020 | B159=ECHEANCE PRET 00891 60971287 | C159=22 CHANCE MILLY | D159=-243.59 | J159=Mensualités
+R160: A160=05/02/2020 | B160=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/02 - MOTIF : WY0202999660230615950502200T1 - REF : WY0202999660230615950502200T1347246 LIB | C160=22 CHANCE MILLY | D160=-10.37 | J160=Assurance prêt
+R161: A161=02/03/2020 | B161=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER MARS 2020 - REF : VK00602PA3LXZ301 | C161=22 CHANCE MILLY | D161=780 | J161=Loyers
+R162: A162=05/03/2020 | B162=ECHEANCE PRET 00891 60971384 (CAPITAL DU 36280,50 EUR) | C162=22 CHANCE MILLY | D162=-402.22 | J162=Mensualités
+R163: A163=05/03/2020 | B163=ECHEANCE PRET 00891 60971287 | C163=22 CHANCE MILLY | D163=-243.59 | J163=Mensualités
+R164: A164=05/03/2020 | B164=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/03 - MOTIF : WY0202999660233487870503200T1 - REF : WY0202999660233487870503200T1184958 LIB | C164=22 CHANCE MILLY | D164=-10.37 | J164=Assurance prêt
+R165: A165=02/04/2020 | B165=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER AVRIL 2020 - REF : VK00922C5LTPB901 | C165=22 CHANCE MILLY | D165=780 | J165=Loyers
+R166: A166=06/04/2020 | B166=PRELEVEMENT CARDIF ASSURANCE VIE DU 06/04 - MOTIF : WY0202999660236149710504200T1 - REF : WY0202999660236149710504200T1310597 LIB | C166=22 CHANCE MILLY | D166=-10.37 | J166=Assurance prêt
+R167: A167=06/04/2020 | B167=ECHEANCE PRET 00891 60971384 (CAPITAL DU 35910,03 EUR) | C167=22 CHANCE MILLY | D167=-402.22 | J167=Mensualités
+R168: A168=06/04/2020 | B168=ECHEANCE PRET 00891 60971287 | C168=22 CHANCE MILLY | D168=-243.59 | J168=Mensualités
+R169: A169=04/05/2020 | B169=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER MAI 2020 - REF : VK01214G6WPLB701 | C169=22 CHANCE MILLY | D169=780 | J169=Loyers
+R170: A170=05/05/2020 | B170=ECHEANCE PRET 00891 60971384 (CAPITAL DU 35539,23 EUR) | C170=22 CHANCE MILLY | D170=-402.22 | J170=Mensualités
+R171: A171=05/05/2020 | B171=ECHEANCE PRET 00891 60971287 | C171=22 CHANCE MILLY | D171=-243.59 | J171=Mensualités
+R172: A172=05/05/2020 | B172=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/05 - MOTIF : WY0202999660238984770505200T1 - REF : WY0202999660238984770505200T1299208 LIB | C172=22 CHANCE MILLY | D172=-10.37 | J172=Assurance prêt
+R173: A173=19/05/2020 | B173=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : 000217 0020 02 - CHARGES TRIMESTRIELLES | C173=22 CHANCE MILLY | D173=-278.45999999999998 | J173=Charges copropriété
+R174: A174=02/06/2020 | B174=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : LOYER JUIN 2020 | C174=22 CHANCE MILLY | D174=780 | J174=Loyers
+R175: A175=05/06/2020 | B175=ECHEANCE PRET 00891 60971384 (CAPITAL DU 35168,11 EUR) | C175=22 CHANCE MILLY | D175=-402.22 | J175=Mensualités
+R176: A176=05/06/2020 | B176=ECHEANCE PRET 00891 60971287 | C176=22 CHANCE MILLY | D176=-243.59 | J176=Mensualités
+R177: A177=05/06/2020 | B177=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/06 - MOTIF : WY0202999660241685780506200T1 - REF : WY0202999660241685780506200T1290549 LIB | C177=22 CHANCE MILLY | D177=-10.37 | J177=Assurance prêt
+R178: A178=01/07/2020 | B178=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER JUILLET 2020 - REF : VK01823B3UT8RH01 | C178=22 CHANCE MILLY | D178=780 | J178=Loyers
+R179: A179=06/07/2020 | B179=ECHEANCE PRET 00891 60971384 (CAPITAL DU 34796,66 EUR) | C179=22 CHANCE MILLY | D179=-402.22 | J179=Mensualités
+R180: A180=06/07/2020 | B180=ECHEANCE PRET 00891 60971287 | C180=22 CHANCE MILLY | D180=-243.59 | J180=Mensualités
+R181: A181=06/07/2020 | B181=PRELEVEMENT CARDIF ASSURANCE VIE DU 06/07 - MOTIF : WY0202999660244403410507200T1 - REF : WY0202999660244403410507200T1292473 LIB | C181=22 CHANCE MILLY | D181=-10.37 | J181=Assurance prêt
+R182: A182=15/07/2020 | B182=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : CHARGES TRIMESTRIELLES 000217 0020 02 | C182=22 CHANCE MILLY | D182=-278.45999999999998 | J182=Charges copropriété
+R183: A183=29/07/2020 | B183=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER AOUT 2020 - REF : VK02111X33S70D01 | C183=22 CHANCE MILLY | D183=780 | J183=Loyers
+R184: A184=05/08/2020 | B184=ECHEANCE PRET 00891 60971384 (CAPITAL DU 34424,89 EUR) | C184=22 CHANCE MILLY | D184=-402.22 | J184=Mensualités
+R185: A185=05/08/2020 | B185=ECHEANCE PRET 00891 60971287 | C185=22 CHANCE MILLY | D185=-243.59 | J185=Mensualités
+R186: A186=05/08/2020 | B186=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/08 - MOTIF : WY0202999660247089690508200T1 - REF : WY0202999660247089690508200T1285685 LIB | C186=22 CHANCE MILLY | D186=-10.050000000000001 | J186=Assurance prêt
+R187: A187=28/08/2020 | B187=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER SEPTEMBRE 2020 - REF : VK02411TV529VF01 | C187=22 CHANCE MILLY | D187=780 | J187=Loyers
+R188: A188='07/09/2020 | B188=PRELEVEMENT CARDIF ASSURANCE VIE DU 07/09 - MOTIF : WY0202999660249794680509200T1 - REF : WY0202999660249794680509200T1264348 LIB | C188=22 CHANCE MILLY | D188=-10.050000000000001 | J188=Assurance prêt
+R189: A189='07/09/2020 | B189=ECHEANCE PRET 00891 60971384 (CAPITAL DU 34052,79 EUR) | C189=22 CHANCE MILLY | D189=-402.22 | J189=Mensualités
+R190: A190='07/09/2020 | B190=ECHEANCE PRET 00891 60971287 | C190=22 CHANCE MILLY | D190=-243.59 | J190=Mensualités
+R191: A191='30/09/2020 | B191=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER OCTOBRE 2020 - REF : LOYER OCTOBRE 2020 | C191=22 CHANCE MILLY | D191=780 | J191=Loyers
+R192: A192='01/10/2020 | B192=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : CHARGES TRIMESTRIELLES 000217 0020 02 | C192=22 CHANCE MILLY | D192=-278.45999999999998 | J192=Charges copropriété
+R193: A193='05/10/2020 | B193=ECHEANCE PRET 00891 60971384 (CAPITAL DU 33680,37 EUR) | C193=22 CHANCE MILLY | D193=-402.22 | J193=Mensualités
+R194: A194='05/10/2020 | B194=ECHEANCE PRET 00891 60971287 | C194=22 CHANCE MILLY | D194=-243.59 | J194=Mensualités
+R195: A195='05/10/2020 | B195=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/10 - MOTIF : WY0202999660252516770510200T1 - REF : WY0202999660252516770510200T1287646 LIB | C195=22 CHANCE MILLY | D195=-10.050000000000001 | J195=Assurance prêt
+R196: A196='15/10/2020 | B196=VIREMENT INTERNE VERS JAUBERT - MOTIF : TAXES FONCIERES | C196=22 CHANCE MILLY | D196=-265 | J196=Taxe foncière
+R197: A197='30/10/2020 | B197=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER NOVEMBRE 2020 - REF : LOYER NOVEMBRE 2020 | C197=22 CHANCE MILLY | D197=780 | J197=Loyers
+R198: A198='05/11/2020 | B198=ECHEANCE PRET 00891 60971384 (CAPITAL DU 33307,62 EUR) | C198=22 CHANCE MILLY | D198=-402.22 | J198=Mensualités
+R199: A199='05/11/2020 | B199=ECHEANCE PRET 00891 60971287 | C199=22 CHANCE MILLY | D199=-243.59 | J199=Mensualités
+R200: A200='05/11/2020 | B200=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/11 - MOTIF : WY0202999660255219090511200T1 - REF : WY0202999660255219090511200T1246035 LIB | C200=22 CHANCE MILLY | D200=-10.050000000000001 | J200=Assurance prêt
+R201: A201='30/11/2020 | B201=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : LOYER DECEMBRE 2020 | C201=22 CHANCE MILLY | D201=780 | J201=Loyers
+R202: A202='07/12/2020 | B202=PRELEVEMENT CARDIF ASSURANCE VIE DU 07/12 - MOTIF : WY0202999660257890620512200T1 - REF : WY0202999660257890620512200T1242167 LIB | C202=22 CHANCE MILLY | D202=-10.050000000000001 | J202=Assurance prêt
+R203: A203='07/12/2020 | B203=ECHEANCE PRET 00891 60971384 (CAPITAL DU 32934,54 EUR) | C203=22 CHANCE MILLY | D203=-402.22 | J203=Mensualités
+R204: A204='07/12/2020 | B204=ECHEANCE PRET 00891 60971287 | C204=22 CHANCE MILLY | D204=-243.59 | J204=Mensualités
+R205: A205=01/01/2021 | B205=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER JANVIER 2021 - REF : VK03643VTC32SZ01 | C205=22 CHANCE MILLY | D205=780 | J205=Loyers
+R206: A206='05/01/2021 | B206=PRELEVEMENT AXA DU 05/01 - MOTIF : I0000500326699-CONTRAT0000010157163304 - REF : I0000500326699 LIB | C206=22 CHANCE MILLY | D206=-107.32 | J206=Assurance logement
+R207: A207='05/01/2021 | B207=ECHEANCE PRET 00891 60971287 | C207=22 CHANCE MILLY | D207=-243.59 | J207=Mensualités
+R208: A208='05/01/2021 | B208=ECHEANCE PRET 00891 60971384 (CAPITAL DU 32561,14 EUR) | C208=22 CHANCE MILLY | D208=-402.22 | J208=Mensualités
+R209: A209='01/02/2021 | B209=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER FEVRIER 2021 - REF : VK10292K4NDBC001 | C209=22 CHANCE MILLY | D209=780 | J209=Loyers
+R210: A210='02/02/2021 | B210=VIREMENT INTERNE VERS JAUBERT - MOTIF : CHARGES TRIMESTRIELLES 000217 0020 02 - JANV MAR 2021 | C210=22 CHANCE MILLY | D210=-266.55 | J210=Charges copropriété
+R211: A211='05/02/2021 | B211=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/02 - MOTIF : WY0202999660260632400002210T1 - REF : WY0202999660260632400002210T1354826 LIB | C211=22 CHANCE MILLY | D211=-10.050000000000001 | J211=Assurance prêt
+R212: A212='05/02/2021 | B212=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/02 - MOTIF : WY0202999660263319660002210T1 - REF : WY0202999660263319660002210T1300047 LIB | C212=22 CHANCE MILLY | D212=-10.050000000000001 | J212=Assurance prêt
+R213: A213='05/02/2021 | B213=ECHEANCE PRET 00891 60971287 | C213=22 CHANCE MILLY | D213=-243.59 | J213=Mensualités
+R214: A214='05/02/2021 | B214=ECHEANCE PRET 00891 60971384 (CAPITAL DU 32187,41 EUR) | C214=22 CHANCE MILLY | D214=-402.22 | J214=Mensualités
+R215: A215='01/03/2021 | B215=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER MARS 2021 - REF : VK10581ZZ6QMCS01 | C215=22 CHANCE MILLY | D215=780 | J215=Loyers
+R216: A216='05/03/2021 | B216=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/03 - MOTIF : WY0202999660266115110003210T1 - REF : WY0202999660266115110003210T1297175 LIB | C216=22 CHANCE MILLY | D216=-10.050000000000001 | J216=Assurance prêt
+R217: A217='05/03/2021 | B217=ECHEANCE PRET 00891 60971287 | C217=22 CHANCE MILLY | D217=-243.59 | J217=Mensualités
+R218: A218='05/03/2021 | B218=ECHEANCE PRET 00891 60971384 (CAPITAL DU 31813,35 EUR) | C218=22 CHANCE MILLY | D218=-402.22 | J218=Mensualités
+R219: A219='30/03/2021 | B219=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : VK108829YY5EC201 | C219=22 CHANCE MILLY | D219=780 | J219=Loyers
+R220: A220='01/04/2021 | B220=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : CHARGES TRIMESTRIELLES 000217 0020 02 - AVR JUIN 2021 | C220=22 CHANCE MILLY | D220=-194.21 | J220=Charges copropriété
+R221: A221='06/04/2021 | B221=ECHEANCE PRET 00891 60971287 | C221=22 CHANCE MILLY | D221=-243.59 | J221=Mensualités
+R222: A222='06/04/2021 | B222=ECHEANCE PRET 00891 60971384 (CAPITAL DU 31438,97 EUR) | C222=22 CHANCE MILLY | D222=-402.22 | J222=Mensualités
+R223: A223='06/04/2021 | B223=PRELEVEMENT CARDIF ASSURANCE VIE DU 06/04 - MOTIF : WY0202999660268745900004210T1 - REF : WY0202999660268745900004210T1254467 LIB | C223=22 CHANCE MILLY | D223=-10.050000000000001 | J223=Assurance prêt
+R224: A224='30/04/2021 | B224=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER MAI 2021 - REF : VK111933DA9ZHF01 | C224=22 CHANCE MILLY | D224=780 | J224=Loyers
+R225: A225='05/05/2021 | B225=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/05 - MOTIF : WY0202999660271484280505210T1 - REF : WY0202999660271484280505210T1270848 LIB | C225=22 CHANCE MILLY | D225=-10.050000000000001 | J225=Assurance prêt
+R226: A226='05/05/2021 | B226=ECHEANCE PRET 00891 60971287 | C226=22 CHANCE MILLY | D226=-243.59 | J226=Mensualités
+R227: A227='05/05/2021 | B227=ECHEANCE PRET 00891 60971384 (CAPITAL DU 31064,26 EUR) | C227=22 CHANCE MILLY | D227=-402.22 | J227=Mensualités
+R228: A228='31/05/2021 | B228=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER JUIN 2021 - REF : VK11492YAJ5E5D01 | C228=22 CHANCE MILLY | D228=780 | J228=Loyers
+R229: A229='07/06/2021 | B229=ECHEANCE PRET 00891 60971287 | C229=22 CHANCE MILLY | D229=-243.59 | J229=Mensualités
+R230: A230='07/06/2021 | B230=ECHEANCE PRET 00891 60971384 (CAPITAL DU 30689,22 EUR) | C230=22 CHANCE MILLY | D230=-402.22 | J230=Mensualités
+R231: A231='07/06/2021 | B231=PRELEVEMENT CARDIF ASSURANCE VIE DU 07/06 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660274164630506210T1 - REF : WY0202999660274164630506210T1243759 LIB | C231=22 CHANCE MILLY | D231=-10.050000000000001 | J231=Assurance prêt
+R232: A232='29/06/2021 | B232=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER JUILLET 2021 - REF : LOYER JUILLET 2021 | C232=22 CHANCE MILLY | D232=780 | J232=Loyers
+R233: A233='05/07/2021 | B233=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/07 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660276918750507210T1 - REF : WY0202999660276918750507210T1190782 LIB | C233=22 CHANCE MILLY | D233=-10.050000000000001 | J233=Assurance prêt
+R234: A234='05/07/2021 | B234=ECHEANCE PRET 00891 60971287 | C234=22 CHANCE MILLY | D234=-243.59 | J234=Mensualités
+R235: A235='05/07/2021 | B235=ECHEANCE PRET 00891 60971384 (CAPITAL DU 30313,85 EUR) | C235=22 CHANCE MILLY | D235=-402.22 | J235=Mensualités
+R236: A236='02/08/2021 | B236=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER AOUT 2021 - REF : VK12112W82SVX401 | C236=22 CHANCE MILLY | D236=780 | J236=Loyers
+R237: A237='05/08/2021 | B237=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/08 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660279602680508210T1 - REF : WY0202999660279602680508210T1259343 LIB | C237=22 CHANCE MILLY | D237=-9.82 | J237=Assurance prêt
+R238: A238='05/08/2021 | B238=ECHEANCE PRET 00891 60971287 | C238=22 CHANCE MILLY | D238=-243.59 | J238=Mensualités
+R239: A239='05/08/2021 | B239=ECHEANCE PRET 00891 60971384 (CAPITAL DU 29938,15 EUR) | C239=22 CHANCE MILLY | D239=-402.22 | J239=Mensualités
+R240: A240='30/08/2021 | B240=VIREMENT DE MLE DRUMEL MANON MOTIF: LOYER SEPTEMBRE 2021 - REF : VK124026QBYZDT01 | C240=22 CHANCE MILLY | D240=780 | J240=Loyers
+R241: A241='06/09/2021 | B241=ECHEANCE PRET 00891 60971287 | C241=22 CHANCE MILLY | D241=-243.59 | J241=Mensualités
+R242: A242='06/09/2021 | B242=ECHEANCE PRET 00891 60971384 (CAPITAL DU 29562,13 EUR) | C242=22 CHANCE MILLY | D242=-402.22 | J242=Mensualités
+R243: A243='08/09/2021 | B243=PRELEVEMENT CARDIF ASSURANCE VIE DU 08/09 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660282238870509210T1 - REF : WY0202999660282238870509210T1250907 LIB | C243=22 CHANCE MILLY | D243=-9.82 | J243=Assurance prêt
+R244: A244='08/09/2021 | B244=REMISE CHEQUES BORDEREAU 08527960 | C244=22 CHANCE MILLY | D244=150
+R245: A245='29/09/2021 | B245=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : LOYER OCTOBRE 2021 | C245=22 CHANCE MILLY | D245=780 | J245=Loyers
+R246: A246='05/10/2021 | B246=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/10 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660284963470510210T1 - REF : WY0202999660284963470510210T1249483 LIB | C246=22 CHANCE MILLY | D246=-9.82 | J246=Assurance prêt
+R247: A247='05/10/2021 | B247=ECHEANCE PRET 00891 60971287 | C247=22 CHANCE MILLY | D247=-243.59 | J247=Mensualités
+R248: A248='05/10/2021 | B248=ECHEANCE PRET 00891 60971384 (CAPITAL DU 29185,78 EUR) | C248=22 CHANCE MILLY | D248=-402.22 | J248=Mensualités
+R249: A249='15/10/2021 | B249=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : 000217 0020 02 - CHARGES TRIMESTRIELLES | C249=22 CHANCE MILLY | D249=-533.1 | J249=Charges copropriété
+R250: A250='15/10/2021 | B250=TRESOR PUBLIC | C250=22 CHANCE MILLY | D250=-265 | J250=Taxe foncière
+R251: A251='29/10/2021 | B251=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : LOYER NOVEMBRE 2021 | C251=22 CHANCE MILLY | D251=780 | J251=Loyers
+R252: A252='05/11/2021 | B252=PRELEVEMENT CARDIF ASSURANCE VIE DU 05/11 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660287650550511210T1 - REF : WY0202999660287650550511210T1247016 LIB | C252=22 CHANCE MILLY | D252=-9.82 | J252=Assurance prêt
+R253: A253='05/11/2021 | B253=ECHEANCE PRET 00891 60971287 | C253=22 CHANCE MILLY | D253=-243.59 | J253=Mensualités
+R254: A254='05/11/2021 | B254=ECHEANCE PRET 00891 60971384 (CAPITAL DU 28809,10 EUR) | C254=22 CHANCE MILLY | D254=-402.22 | J254=Mensualités
+R255: A255='29/11/2021 | B255=VIREMENT DE MLE DRUMEL MANON MOTIF: VIR DE MLE DRUMEL MANON - REF : LOYER DECEMBRE 2021 | C255=22 CHANCE MILLY | D255=780 | J255=Loyers
+R256: A256='02/12/2021 | B256=FRAIS TENUE DE COMPTE | C256=22 CHANCE MILLY | D256=-2.5 | J256=Frais bancaires
+R257: A257='06/12/2021 | B257=PRELEVEMENT CARDIF ASSURANCE VIE DU 06/12 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660290212800512210T1 - REF : WY0202999660290212800512210T1244089 LIB | C257=22 CHANCE MILLY | D257=-9.82 | J257=Assurance prêt
+R258: A258='06/12/2021 | B258=ECHEANCE PRET 00891 60971287 | C258=22 CHANCE MILLY | D258=-243.59 | J258=Mensualités
+R259: A259='06/12/2021 | B259=ECHEANCE PRET 00891 60971384 (CAPITAL DU 28432,09 EUR) | C259=22 CHANCE MILLY | D259=-402.22 | J259=Mensualités
+R260: A260='21/12/2021 | B260=VIR CPTE A CPTE RECU /DE JAUBERT /MOTIF 21.12 333,00 LOYER DECEMBRE CAMILLE VANDROME /REF | C260=22 CHANCE MILLY | D260=333 | J260=Loyers
+R261: A261='21/12/2021 | B261=VIR CPTE A CPTE RECU /DE JAUBERT /MOTIF 21.12 1 460,00 CAUTION CAMILLE VANDROME /REF | C261=22 CHANCE MILLY | D261=1460 | J261=Encaissement caution
+R262: A262='04/01/2022 | B262=*FRAIS TENUE DE COMPTE | C262=22 CHANCE MILLY | D262=-2.5 | J262=Frais bancaires
+R263: A263='05/01/2022 | B263=PRLV SEPA AXA ECH/050122 ID 05.01 114,02 EMETTEUR/FR14ZZZ391832 MDT/00AX000000000011453804 REF/I0000576353615 LIB/I0000576353615-CONTRAT00000101571633 04 | C263=22 CHANCE MILLY | D263=-114.02 | J263=Assurance logement
+R264: A264='05/01/2022 | B264=ECHEANCE PRET 00891 60971287 | C264=22 CHANCE MILLY | D264=-243.59 | J264=Mensualités
+R265: A265='05/01/2022 | B265=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.01 402,22 28054,75 EUR) | C265=22 CHANCE MILLY | D265=-402.22 | J265=Mensualités
+R266: A266='05/01/2022 | B266=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 05.01 795,00 /MOTIF LOYER /REF | C266=22 CHANCE MILLY | D266=795 | J266=Loyers
+R267: A267='06/01/2022 | B267=PRLV SEPA CARDIF ASSURANCE VIE 06.01 9,82 ECH/060122 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660292769630501220T1503063 LIB/WY0202999660292769630501220T1 | C267=22 CHANCE MILLY | D267=-9.82 | J267=Assurance logement
+R268: A268='14/01/2022 | B268=VIREMENT SEPA EMIS /MOTIF RELIQUAT LOYER 14.01 302,00 DECEMBRE 2021 /BEN DRUMEL MANON /REFDO /REFBEN | C268=22 CHANCE MILLY | D268=-302 | J268=Loyers
+R269: A269='14/01/2022 | B269=VIREMENT SEPA EMIS /MOTIF REM /BEN 14.01 1 460,00 DRUMEL MANON /REFDO /REFBEN | C269=22 CHANCE MILLY | D269=-1460 | J269=Remboursement caution
+R270: A270='17/01/2022 | B270=VIR CPTE A CPTE RECU /DE JAUBERT /MOTIF 17.01 266,65 000217 0020 02 - CHARGES TRIMESTRIELLES JANV A MARS 2022 /REF | C270=22 CHANCE MILLY | D270=266.64999999999998 | J270=Charges copropriété
+R271: A271='02/02/2022 | B271=*FRAIS TENUE DE COMPTE | C271=22 CHANCE MILLY | D271=-2.5 | J271=Frais bancaires
+R272: A272='07/02/2022 | B272=ECHEANCE PRET 00891 60971287 | C272=22 CHANCE MILLY | D272=-243.59 | J272=Mensualités
+R273: A273='07/02/2022 | B273=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.02 402,22 27677,08 EUR) | C273=22 CHANCE MILLY | D273=-402.22 | J273=Mensualités
+R274: A274='07/02/2022 | B274=PRLV SEPA CARDIF ASSURANCE VIE 07.02 9,82 ECH/070222 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660295356590502220T1236364 LIB/WY0202999660295356590502220T1 | C274=22 CHANCE MILLY | D274=-9.82 | J274=Assurance logement
+R275: A275='07/02/2022 | B275=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 07.03 795,00 /MOTIF LOYER - 22 RUE CHANCE MILLY /REF 032022063261895630000001 | C275=22 CHANCE MILLY | D275=795 | J275=Loyers
+R276: A276='02/03/2022 | B276=*FRAIS TENUE DE COMPTE | C276=22 CHANCE MILLY | D276=-2.5 | J276=Frais bancaires
+R277: A277='07/03/2022 | B277=PRLV SEPA CARDIF ASSURANCE VIE 05.04 9,82 ECH/050422 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660300379260504220T121 | C277=22 CHANCE MILLY | D277=-243.59 | J277=Mensualités
+R278: A278='07/03/2022 | B278=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.03 402,22 27299,08 EUR) | C278=22 CHANCE MILLY | D278=-402.22 | J278=Mensualités
+R279: A279='07/03/2022 | B279=PRLV SEPA CARDIF ASSURANCE VIE 07.03 9,82 ECH/070322 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660297941240503220T1240176 LIB/WY0202999660297941240503220T1 | C279=22 CHANCE MILLY | D279=-9.82 | J279=Assurance logement
+R280: A280='07/03/2022 | B280=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 07.03 795,00 /MOTIF LOYER - 22 RUE CHANCE MILLY /REF 032022063261895630000001 | C280=22 CHANCE MILLY | D280=795 | J280=Loyers
+R281: A281='04/04/2022 | B281=*FRAIS TENUE DE COMPTE | C281=22 CHANCE MILLY | D281=-2.5 | J281=Frais bancaires
+R282: A282='05/04/2022 | B282=PRLV SEPA CARDIF ASSURANCE VIE 05.04 9,82 ECH/050422 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660300379260504220T121 | C282=22 CHANCE MILLY | D282=-9.82 | J282=Assurance logement
+R283: A283='05/04/2022 | B283=ECHEANCE PRET 00891 60971287 | C283=22 CHANCE MILLY | D283=-243.59 | J283=Mensualités
+R284: A284='05/04/2022 | B284=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.04 402,22 26920,75 EUR) | C284=22 CHANCE MILLY | D284=-402.22 | J284=Mensualités
+R285: A285='06/04/2022 | B285=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 06.04 795,00 /MOTIF LOYER 22 RUE CHANCE MILLY /REF 032022095385567940000001 | C285=22 CHANCE MILLY | D285=795 | J285=Loyers
+R286: A286='03/05/2022 | B286=*FRAIS TENUE DE COMPTE | C286=22 CHANCE MILLY | D286=-2.5 | J286=Frais bancaires
+R287: A287='05/05/2022 | B287=PRLV SEPA CARDIF ASSURANCE VIE 05.05 9,82 ECH/050522 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660302938410505220T1226317 LIB/WY0202999660302938410505220T1 | C287=22 CHANCE MILLY | D287=-9.82 | J287=Assurance logement
+R288: A288='05/05/2022 | B288=ECHEANCE PRET 00891 60971287 | C288=22 CHANCE MILLY | D288=-243.59 | J288=Mensualités
+R289: A289='05/05/2022 | B289=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.05 402,22 26542,09 EUR) | C289=22 CHANCE MILLY | D289=-402.22 | J289=Mensualités
+R290: A290='05/05/2022 | B290=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 05.05 795,00 /MOTIF LOYER - 22 RUE CHANCE MILLY /REF 032022124496099230000001 | C290=22 CHANCE MILLY | D290=795 | J290=Loyers
+R291: A291='02/06/2022 | B291=*FRAIS TENUE DE COMPTE | C291=22 CHANCE MILLY | D291=-2.5 | J291=Frais bancaires
+R292: A292='03/06/2022 | B292=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 03.06 795,00 /MOTIF LOYER 22 RUE CHANCE MILLY /REF 032022153610362910000001 | C292=22 CHANCE MILLY | D292=795 | J292=Loyers
+R293: A293='07/06/2022 | B293=ECHEANCE PRET 00891 60971287 | C293=22 CHANCE MILLY | D293=-243.59 | J293=Mensualités
+R294: A294='07/06/2022 | B294=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.06 402,22 26163,09 EUR) | C294=22 CHANCE MILLY | D294=-402.22 | J294=Mensualités
+R295: A295='07/06/2022 | B295=PRLV SEPA CARDIF ASSURANCE VIE 07.06 9,82 ECH/070622 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660305291670506220T1216622 LIB/WY0202999660305291670506220T1 | C295=22 CHANCE MILLY | D295=-9.82 | J295=Assurance logement
+R296: A296='04/07/2022 | B296=*FRAIS TENUE DE COMPTE | C296=22 CHANCE MILLY | D296=-2.5 | J296=Frais bancaires
+R297: A297='05/07/2022 | B297=PRLV SEPA CARDIF ASSURANCE VIE 05.07 9,82 ECH/050722 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660307806030507220T1221891 LIB/WY0202999660307806030507220T1 | C297=22 CHANCE MILLY | D297=-9.82 | J297=Assurance logement
+R298: A298='05/07/2022 | B298=ECHEANCE PRET 00891 60971287 | C298=22 CHANCE MILLY | D298=-243.59 | J298=Mensualités
+R299: A299='05/07/2022 | B299=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.07 402,22 25783,76 EUR) | C299=22 CHANCE MILLY | D299=-402.22 | J299=Mensualités
+R300: A300='06/07/2022 | B300=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 06.07 795,00 /MOTIF LOYER - 22 RUE CHANCE MILLY /REF 032022185743619790000001 | C300=22 CHANCE MILLY | D300=795 | J300=Loyers
+R301: A301='02/08/2022 | B301=*FRAIS TENUE DE COMPTE | C301=22 CHANCE MILLY | D301=-2.5 | J301=Frais bancaires
+R302: A302='05/08/2022 | B302=PRLV SEPA CARDIF ASSURANCE VIE 05.08 9,68 ECH/050822 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660310254320508220T1212158 LIB/WY0202999660310254320508220T1 | C302=22 CHANCE MILLY | D302=-9.68 | J302=Assurance logement
+R303: A303='05/08/2022 | B303=ECHEANCE PRET 00891 60971287 | C303=22 CHANCE MILLY | D303=-243.59 | J303=Mensualités
+R304: A304='05/08/2022 | B304=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.08 402,22 25404,10 EUR) | C304=22 CHANCE MILLY | D304=-402.22 | J304=Mensualités
+R305: A305='10/08/2022 | B305=VIR SEPA RECU /DE MLLE CAMILLE VANDROME 10.08 641,00 /MOTIF /REF 032022221890019230000001 | C305=22 CHANCE MILLY | D305=641 | J305=Loyers
+R306: A306='25/08/2022 | B306=VIR SEPA RECU /DE MLE MELANIE HILAIRE 25.08 1 613,00 /MOTIF VIR DE MLE MELANIE HILAIRE /REF VH22292D6SLHQD01 | C306=22 CHANCE MILLY | D306=153 | J306=Loyers
+R307: A307='25/08/2022 | B307=VIR SEPA RECU /DE MLE MELANIE HILAIRE 25.08 1 613,00 /MOTIF VIR DE MLE MELANIE HILAIRE /REF VH22292D6SLHQD01 | C307=22 CHANCE MILLY | D307=1460 | J307=Encaissement caution
+R308: A308='02/09/2022 | B308=*FRAIS TENUE DE COMPTE | C308=22 CHANCE MILLY | D308=-2.5 | J308=Frais bancaires
+R309: A309='05/09/2022 | B309=PRLV SEPA CARDIF ASSURANCE VIE 05.09 9,68 ECH/050922 ID EMETTEUR/FR28ZZZ110086 MDT/FR28ZZZ1100862017082604272562CDIF REF/WY0202999660312616240509220T1213639 LIB/WY0202999660312616240509220T1 | C309=22 CHANCE MILLY | D309=-9.68 | J309=Assurance logement
+R310: A310='05/09/2022 | B310=ECHEANCE PRET 00891 60971287 | C310=22 CHANCE MILLY | D310=-243.59 | J310=Mensualités
+R311: A311='05/09/2022 | B311=ECHEANCE PRET 00891 60971384 (CAPITAL DU 05.09 402,22 25024,11 EUR) | C311=22 CHANCE MILLY | D311=-402.22 | J311=Mensualités
+R312: A312='30/09/2022 | B312=VIREMENT VERS CAMILLE VANDROME  - MOTIF : REMBOURSEMENT CAUTION CAMILLE VANDROME | C312=22 CHANCE MILLY | D312=-1460 | J312=Remboursement caution
+R313: A313='04/10/2022 | B313=FRAIS TENUE DE COMPTE | C313=22 CHANCE MILLY | D313=-2.5 | J313=Frais bancaires
+R314: A314='04/10/2022 | B314=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH22771LF74KZ101 | C314=22 CHANCE MILLY | D314=795 | J314=Loyers
+R315: A315='05/10/2022 | B315=ECHEANCE PRET 00891 60971287 | C315=22 CHANCE MILLY | D315=-243.59 | J315=Mensualités
+R316: A316='05/10/2022 | B316=ECHEANCE PRET 00891 60971384 (CAPITAL DU 24643,79 EUR) | C316=22 CHANCE MILLY | D316=-402.22 | J316=Mensualités
+R317: A317='10/10/2022 | B317=PRELEVEMENT BNP PARIBAS CARDIF DU 10/10 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660315027540510220T1 - REF : WY0202999660315027540510220T1205506 LIB | C317=22 CHANCE MILLY | D317=-9.68 | J317=Assurance prêt
+R318: A318='03/11/2022 | B318=FRAIS TENUE DE COMPTE | C318=22 CHANCE MILLY | D318=-2.5 | J318=Frais bancaires
+R319: A319='04/11/2022 | B319=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH23073QPU2FSH01 | C319=22 CHANCE MILLY | D319=795 | J319=Loyers
+R320: A320='07/11/2022 | B320=ECHEANCE PRET 00891 60971287 | C320=22 CHANCE MILLY | D320=-243.59 | J320=Mensualités
+R321: A321='07/11/2022 | B321=ECHEANCE PRET 00891 60971384 (CAPITAL DU 24263,13 EUR) | C321=22 CHANCE MILLY | D321=-402.22 | J321=Mensualités
+R322: A322='07/11/2022 | B322=PRELEVEMENT BNP PARIBAS CARDIF DU 07/11 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660317392100511220T1 - REF : WY0202999660317392100511220T1130470 LIB | C322=22 CHANCE MILLY | D322=-9.68 | J322=Assurance prêt
+R323: A323='02/12/2022 | B323=FRAIS TENUE DE COMPTE | C323=22 CHANCE MILLY | D323=-2.5 | J323=Frais bancaires
+R324: A324='05/12/2022 | B324=PRELEVEMENT BNP PARIBAS CARDIF DU 05/12 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660319744450512220T1 - REF : WY0202999660319744450512220T1205700 LIB | C324=22 CHANCE MILLY | D324=-9.68 | J324=Assurance prêt
+R325: A325='05/12/2022 | B325=ECHEANCE PRET 00891 60971287 | C325=22 CHANCE MILLY | D325=-243.59 | J325=Mensualités
+R326: A326='05/12/2022 | B326=ECHEANCE PRET 00891 60971384 (CAPITAL DU 23882,14 EUR) | C326=22 CHANCE MILLY | D326=-402.22 | J326=Mensualités
+R327: A327='05/12/2022 | B327=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH23372R5ZZ0H201 | C327=22 CHANCE MILLY | D327=795 | J327=Loyers
+R328: A328='03/01/2023 | B328=FRAIS TENUE DE COMPTE | C328=22 CHANCE MILLY | D328=-2.5 | J328=Frais bancaires
+R329: A329='04/01/2023 | B329=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH30034A6JUB6501 | C329=22 CHANCE MILLY | D329=795 | J329=Loyers
+R330: A330='05/01/2023 | B330=PRELEVEMENT BNP PARIBAS CARDIF DU 05/01 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660322053130501230T1 - REF : WY0202999660322053130501230T1180307 LIB | C330=22 CHANCE MILLY | D330=-9.68 | J330=Assurance prêt
+R331: A331='05/01/2023 | B331=PRELEVEMENT AXA DU 05/01 - EMETTEUR : FR14ZZZ391832 MDT - MOTIF : I0000656596168-CONTRAT0000010157163304 - REF : I0000656596168 LIB | C331=22 CHANCE MILLY | D331=-121.62 | J331=Assurance logement
+R332: A332='05/01/2023 | B332=ECHEANCE PRET 00891 60971287 | C332=22 CHANCE MILLY | D332=-243.59 | J332=Mensualités
+R333: A333='05/01/2023 | B333=ECHEANCE PRET 00891 60971384 (CAPITAL DU 23500,82 EUR) | C333=22 CHANCE MILLY | D333=-402.22 | J333=Mensualités
+R334: A334='26/01/2023 | B334=VIREMENT INTERNE VERS JAUBERT  - MOTIF : PAIEMENT EXPERT COMPTABLE | C334=22 CHANCE MILLY | D334=-1500
+R335: A335='02/02/2023 | B335=FRAIS TENUE DE COMPTE | C335=22 CHANCE MILLY | D335=-2.5 | J335=Frais bancaires
+R336: A336='06/02/2023 | B336=ECHEANCE PRET 00891 60971287 | C336=22 CHANCE MILLY | D336=-243.59 | J336=Mensualités
+R337: A337='06/02/2023 | B337=ECHEANCE PRET 00891 60971384 (CAPITAL DU 23119,16 EUR) | C337=22 CHANCE MILLY | D337=-402.22 | J337=Mensualités
+R338: A338='06/02/2023 | B338=PRELEVEMENT BNP PARIBAS CARDIF DU 06/02 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660324366560502230T1 - REF : WY0202999660324366560502230T1192542 LIB | C338=22 CHANCE MILLY | D338=-9.68 | J338=Assurance prêt
+R339: A339='06/02/2023 | B339=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH303441K96YA601 | C339=22 CHANCE MILLY | D339=795 | J339=Loyers
+R340: A340='02/03/2023 | B340=FRAIS TENUE DE COMPTE | C340=22 CHANCE MILLY | D340=-2.5 | J340=Frais bancaires
+R341: A341='06/03/2023 | B341=ECHEANCE PRET 00891 60971287 | C341=22 CHANCE MILLY | D341=-243.59 | J341=Mensualités
+R342: A342='06/03/2023 | B342=ECHEANCE PRET 00891 60971384 (CAPITAL DU 22737,17 EUR) | C342=22 CHANCE MILLY | D342=-402.22 | J342=Mensualités
+R343: A343='06/03/2023 | B343=PRELEVEMENT BNP PARIBAS CARDIF DU 06/03 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660326799660503230T1 - REF : WY0202999660326799660503230T1221156 LIB | C343=22 CHANCE MILLY | D343=-9.68 | J343=Assurance prêt
+R344: A344='06/03/2023 | B344=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH30622WCDZ23J01 | C344=22 CHANCE MILLY | D344=795 | J344=Loyers
+R345: A345='04/04/2023 | B345=FRAIS TENUE DE COMPTE | C345=22 CHANCE MILLY | D345=-2.5 | J345=Frais bancaires
+R346: A346='05/04/2023 | B346=PRELEVEMENT BNP PARIBAS CARDIF DU 05/04 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660328978160504230T1 - REF : WY0202999660328978160504230T1140341 LIB | C346=22 CHANCE MILLY | D346=-9.68 | J346=Assurance prêt
+R347: A347='05/04/2023 | B347=ECHEANCE PRET 00891 60971287 | C347=22 CHANCE MILLY | D347=-243.59 | J347=Mensualités
+R348: A348='05/04/2023 | B348=ECHEANCE PRET 00891 60971384 (CAPITAL DU 22354,85 EUR) | C348=22 CHANCE MILLY | D348=-402.22 | J348=Mensualités
+R349: A349='06/04/2023 | B349=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH30953W8ZEW7H01 | C349=22 CHANCE MILLY | D349=795 | J349=Loyers
+R350: A350='03/05/2023 | B350=FRAIS TENUE DE COMPTE | C350=22 CHANCE MILLY | D350=-2.5 | J350=Frais bancaires
+R351: A351='05/05/2023 | B351=PRELEVEMENT BNP PARIBAS CARDIF DU 05/05/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660331295270505230T1 - REF : WY0202999660331295270505230T1482892 LIB | C351=22 CHANCE MILLY | D351=-9.68 | J351=Assurance prêt
+R352: A352='05/05/2023 | B352=ECHEANCE PRET 00891 60971287 | C352=22 CHANCE MILLY | D352=-243.59 | J352=Mensualités
+R353: A353='05/05/2023 | B353=ECHEANCE PRET 00891 60971384 (CAPITAL DU 21972,19 EUR) | C353=22 CHANCE MILLY | D353=-402.22 | J353=Mensualités
+R354: A354='05/05/2023 | B354=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH31243M08LN5Z01 | C354=22 CHANCE MILLY | D354=795 | J354=Loyers
+R355: A355='02/06/2023 | B355=FRAIS TENUE DE COMPTE | C355=22 CHANCE MILLY | D355=-2.5 | J355=Frais bancaires
+R356: A356='05/06/2023 | B356=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660333464330506230T1 - REF : WY0202999660333464330506230T1137254 LIB | C356=22 CHANCE MILLY | D356=-9.68 | J356=Assurance prêt
+R357: A357='05/06/2023 | B357=ECHEANCE PRET 00891 60971287 | C357=22 CHANCE MILLY | D357=-243.59 | J357=Mensualités
+R358: A358='05/06/2023 | B358=ECHEANCE PRET 00891 60971384 (CAPITAL DU 21589,20 EUR) | C358=22 CHANCE MILLY | D358=-402.22 | J358=Mensualités
+R359: A359='06/06/2023 | B359=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH31564F6EGY3A01 | C359=22 CHANCE MILLY | D359=795 | J359=Loyers
+R360: A360='05/07/2023 | B360=PRELEVEMENT BNP PARIBAS CARDIF DU 05/07/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660335302110507230T1 - REF : WY0202999660335302110507230T1136095 LIB | C360=22 CHANCE MILLY | D360=-9.68 | J360=Assurance prêt
+R361: A361='05/07/2023 | B361=ECHEANCE PRET 00891 60971287 | C361=22 CHANCE MILLY | D361=-243.59 | J361=Mensualités
+R362: A362='05/07/2023 | B362=ECHEANCE PRET 00891 60971384 (CAPITAL DU 21205,87 EUR) | C362=22 CHANCE MILLY | D362=-402.22 | J362=Mensualités
+R363: A363='06/07/2023 | B363=FRAIS TENUE DE COMPTE | C363=22 CHANCE MILLY | D363=-2.5 | J363=Frais bancaires
+R364: A364='11/07/2023 | B364=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH319140ZCWEDV01 | C364=22 CHANCE MILLY | D364=795 | J364=Loyers
+R365: A365='02/08/2023 | B365=FRAIS TENUE DE COMPTE | C365=22 CHANCE MILLY | D365=-2.5 | J365=Frais bancaires
+R366: A366='07/08/2023 | B366=ECHEANCE PRET 00891 60971287 | C366=22 CHANCE MILLY | D366=-243.59 | J366=Mensualités
+R367: A367='07/08/2023 | B367=ECHEANCE PRET 00891 60971384 (CAPITAL DU 20822,21 EUR) | C367=22 CHANCE MILLY | D367=-402.22 | J367=Mensualités
+R368: A368='07/08/2023 | B368=PRELEVEMENT BNP PARIBAS CARDIF DU 07/08/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660336870220508230T1 - REF : WY0202999660336870220508230T1141329 LIB | C368=22 CHANCE MILLY | D368=-9.5399999999999991 | J368=Assurance prêt
+R369: A369='01/09/2023 | B369=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH324420AKD85Z01 | C369=22 CHANCE MILLY | D369=795 | J369=Loyers
+R370: A370='04/09/2023 | B370=FRAIS TENUE DE COMPTE | C370=22 CHANCE MILLY | D370=-2.5 | J370=Frais bancaires
+R371: A371='05/09/2023 | B371=PRELEVEMENT BNP PARIBAS CARDIF DU 05/09/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660338381930509230T1 - REF : WY0202999660338381930509230T1143828 LIB | C371=22 CHANCE MILLY | D371=-9.5399999999999991 | J371=Assurance prêt
+R372: A372='05/09/2023 | B372=ECHEANCE PRET 00891 60971287 | C372=22 CHANCE MILLY | D372=-243.59 | J372=Mensualités
+R373: A373='05/09/2023 | B373=ECHEANCE PRET 00891 60971384 (CAPITAL DU 20438,21 EUR) | C373=22 CHANCE MILLY | D373=-402.22 | J373=Mensualités
+R374: A374='02/10/2023 | B374=VIREMENT INSTANTANE RECU DE HALLE BERTRAND GERALDINE   MOTIF: PAYLIB SG00Y61NKG ANNIV MARIE EVA - REF : 032023274902516170000001 | C374=22 CHANCE MILLY | D374=10
+R375: A375='03/10/2023 | B375=FRAIS TENUE DE COMPTE | C375=22 CHANCE MILLY | D375=-2.5 | J375=Frais bancaires
+R376: A376='05/10/2023 | B376=PRELEVEMENT BNP PARIBAS CARDIF DU 05/10/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660339888970510230T1 - REF : WY0202999660339888970510230T1130192 LIB | C376=22 CHANCE MILLY | D376=-9.5399999999999991 | J376=Assurance prêt
+R377: A377='05/10/2023 | B377=ECHEANCE PRET 00891 60971287 | C377=22 CHANCE MILLY | D377=-243.59 | J377=Mensualités
+R378: A378='05/10/2023 | B378=ECHEANCE PRET 00891 60971384 (CAPITAL DU 20053,87 EUR) | C378=22 CHANCE MILLY | D378=-402.22 | J378=Mensualités
+R379: A379='10/10/2023 | B379=VIREMENT DE MLE MELANIE HILAIRE   MOTIF: VIR DE MLE MELANIE HILAIRE  - REF : VH32823J30LAXH01 | C379=22 CHANCE MILLY | D379=795 | J379=Loyers
+R380: A380=31/10/2023 | B380=VIREMENT PAIEMENT TAXE FONCIERE | C380=22 CHANCE MILLY | D380=-232 | J380=Taxe foncière
+R381: A381='03/11/2023 | B381=FRAIS TENUE DE COMPTE | C381=22 CHANCE MILLY | D381=-2.5 | J381=Frais bancaires
+R382: A382='06/11/2023 | B382=ECHEANCE PRET 00891 60971384 (CAPITAL DU 19669,20 EUR) | C382=22 CHANCE MILLY | D382=-402.22 | J382=Mensualités
+R383: A383='06/11/2023 | B383=ECHEANCE PRET 00891 60971287 | C383=22 CHANCE MILLY | D383=-243.59 | J383=Mensualités
+R384: A384='07/11/2023 | B384=PRELEVEMENT BNP PARIBAS CARDIF DU 07/11/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660341340640511230T1 - REF : WY0202999660341340640511230T1137407 LIB | C384=22 CHANCE MILLY | D384=-9.5399999999999991 | J384=Assurance prêt
+R385: A385='28/11/2023 | B385=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH33313P18F68Y01 | C385=22 CHANCE MILLY | D385=795 | J385=Loyers
+R386: A386='04/12/2023 | B386=FRAIS TENUE DE COMPTE | C386=22 CHANCE MILLY | D386=-2.5 | J386=Frais bancaires
+R387: A387='05/12/2023 | B387=ECHEANCE PRET 00891 60971384 (CAPITAL DU 19284,19 EUR) | C387=22 CHANCE MILLY | D387=-402.22 | J387=Mensualités
+R388: A388='05/12/2023 | B388=ECHEANCE PRET 00891 60971287 | C388=22 CHANCE MILLY | D388=-243.59 | J388=Mensualités
+R389: A389='05/12/2023 | B389=PRELEVEMENT BNP PARIBAS CARDIF DU 05/12/23 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660342856060512230T1 - REF : WY0202999660342856060512230T1140574 LIB | C389=22 CHANCE MILLY | D389=-9.5399999999999991 | J389=Assurance prêt
+R390: A390='27/12/2023 | B390=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH3360248Y2APC01 | C390=22 CHANCE MILLY | D390=795 | J390=Loyers
+R391: A391='03/01/2024 | B391=FRAIS TENUE DE COMPTE | C391=22 CHANCE MILLY | D391=-2.5 | J391=Frais bancaires
+R392: A392='05/01/2024 | B392=ECHEANCE PRET 00891 60971384 (CAPITAL DU 18898,84 EUR) | C392=22 CHANCE MILLY | D392=-402.22 | J392=Mensualités
+R393: A393='05/01/2024 | B393=ECHEANCE PRET 00891 60971287 | C393=22 CHANCE MILLY | D393=-243.59 | J393=Mensualités
+R394: A394='05/01/2024 | B394=PRELEVEMENT AXA DU 05/01/24 - EMETTEUR : FR14ZZZ391832 MDT - MOTIF : I0000742084577-CONTRAT0000010157163304 - REF : I0000742084577 LIB | C394=22 CHANCE MILLY | D394=-133.35 | J394=Assurance logement
+R395: A395='08/01/2024 | B395=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : LOT 0017 0020 - CHARGES TRIMESTRIELLES JANV A MARS 2023 | C395=22 CHANCE MILLY | D395=-475.21 | J395=Charges copropriété
+R396: A396='08/01/2024 | B396=PRELEVEMENT BNP PARIBAS CARDIF DU 08/01/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660344395930501240T1 - REF : WY0202999660344395930501240T1126487 LIB | C396=22 CHANCE MILLY | D396=-9.5399999999999991 | J396=Assurance prêt
+R397: A397='01/02/2024 | B397=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH40314EQRKB7C01 | C397=22 CHANCE MILLY | D397=795 | J397=Loyers
+R398: A398='02/02/2024 | B398=FRAIS TENUE DE COMPTE | C398=22 CHANCE MILLY | D398=-2.6 | J398=Frais bancaires
+R399: A399='05/02/2024 | B399=ECHEANCE PRET 00891 60971384 (CAPITAL DU 18513,16 EUR) | C399=22 CHANCE MILLY | D399=-402.22 | J399=Mensualités
+R400: A400='05/02/2024 | B400=ECHEANCE PRET 00891 60971287 | C400=22 CHANCE MILLY | D400=-243.59 | J400=Mensualités
+R401: A401='05/02/2024 | B401=PRELEVEMENT BNP PARIBAS CARDIF DU 05/02/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660345784480502240T1 - REF : WY0202999660345784480502240T1135767 LIB | C401=22 CHANCE MILLY | D401=-9.5399999999999991 | J401=Assurance prêt
+R402: A402='04/03/2024 | B402=FRAIS TENUE DE COMPTE | C402=22 CHANCE MILLY | D402=-2.6 | J402=Frais bancaires
+R403: A403='05/03/2024 | B403=ECHEANCE PRET 00891 60971384 (CAPITAL DU 18127,14 EUR) | C403=22 CHANCE MILLY | D403=-402.22 | J403=Mensualités | L403=-402,22 | M403=-402,22 | N403=-402,22
+R404: A404='05/03/2024 | B404=ECHEANCE PRET 00891 60971287 | C404=22 CHANCE MILLY | D404=-243.59 | J404=Mensualités | L404=-243,59 | M404=-243,59 | N404=-243,59
+R405: A405='05/03/2024 | B405=PRELEVEMENT BNP PARIBAS CARDIF DU 05/03/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660346866400503240T1 - REF : WY0202999660346866400503240T1137180 LIB | C405=22 CHANCE MILLY | D405=-9.5399999999999991 | J405=Assurance prêt | L405=-9,54 | M405=-9,54 | N405=-9,54
+R406: A406='11/03/2024 | B406=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH40682CE7FW8G01 | C406=22 CHANCE MILLY | D406=795 | J406=Loyers | L406=795 | M406=795 | N406=795
+R407: A407=03/04/2024 | B407=FRAIS TENUE DE COMPTE | C407=22 CHANCE MILLY | D407=-2.6 | J407=Frais bancaires | L407=-2,6 | M407=-2,6 | N407=-2,6
+R408: A408=05/04/2024 | B408=ECHEANCE PRET 00891 60971384 (CAPITAL DU 17740,78 EUR) | C408=22 CHANCE MILLY | D408=-402.22 | J408=Mensualités | L408=-402,22 | M408=-402,22 | N408=-402,22
+R409: A409=05/04/2024 | B409=ECHEANCE PRET 00891 60971287 | C409=22 CHANCE MILLY | D409=-243.59 | J409=Mensualités | L409=-243,59 | M409=-243,59 | N409=-243,59
+R410: A410=05/04/2024 | B410=PRELEVEMENT BNP PARIBAS CARDIF DU 05/04/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660347998540504240T1 - REF : WY0202999660347998540504240T1124584 LIB | C410=22 CHANCE MILLY | D410=-9.5399999999999991 | J410=Assurance prêt | L410=-9,54 | M410=-9,54 | N410=-9,54
+R411: A411=10/04/2024 | B411=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : 000211 0017 02 - CHARGES TRIMESTRIELLES AVR A JUIN 2024 | C411=22 CHANCE MILLY | D411=-213.48 | J411=Charges copropriété | L411=-213,48 | M411=-213,48 | N411=-213,48
+R412: A412=03/05/2024 | B412=FRAIS TENUE DE COMPTE | C412=22 CHANCE MILLY | D412=-2.6 | J412=Frais bancaires | L412=-2,6 | M412=-2,6 | N412=-2,6
+R413: A413=06/05/2024 | B413=ECHEANCE PRET 00891 60971384 (CAPITAL DU 17354,08 EUR) | C413=22 CHANCE MILLY | D413=-402.22 | J413=Mensualités | L413=-402,22 | M413=-402,22 | N413=-402,22
+R414: A414=06/05/2024 | B414=ECHEANCE PRET 00891 60971287 | C414=22 CHANCE MILLY | D414=-243.59 | J414=Mensualités | L414=-243,59 | M414=-243,59 | N414=-243,59
+R415: A415=06/05/2024 | B415=PRELEVEMENT BNP PARIBAS CARDIF DU 06/05/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660349031830505240T1 - REF : WY0202999660349031830505240T1125936 LIB | C415=22 CHANCE MILLY | D415=-9.5399999999999991 | J415=Assurance prêt | L415=-9,54 | M415=-9,54 | N415=-9,54
+R416: A416=27/05/2024 | B416=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH41473GA753JV01 | C416=22 CHANCE MILLY | D416=795 | J416=Loyers | L416=795 | M416=795 | N416=795
+R417: A417=04/06/2024 | B417=FRAIS TENUE DE COMPTE | C417=22 CHANCE MILLY | D417=-2.6 | J417=Frais bancaires | L417=-2,6 | M417=-2,6 | N417=-2,6
+R418: A418=05/06/2024 | B418=ECHEANCE PRET 00891 60971384 (CAPITAL DU 16967,04 EUR) | C418=22 CHANCE MILLY | D418=-402.22 | J418=Mensualités | L418=-402,22 | M418=-402,22 | N418=-402,22
+R419: A419=05/06/2024 | B419=ECHEANCE PRET 00891 60971287 | C419=22 CHANCE MILLY | D419=-243.59 | J419=Mensualités | L419=-243,59 | M419=-243,59 | N419=-243,59
+R420: A420=05/06/2024 | B420=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660350103880506240T1 - REF : WY0202999660350103880506240T1128889 LIB | C420=22 CHANCE MILLY | D420=-9.5399999999999991 | J420=Assurance prêt | L420=-9,54 | M420=-9,54 | N420=-9,54
+R421: A421=27/06/2024 | B421=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH41473GA753JV01 | C421=22 CHANCE MILLY | D421=3180 | J421=Loyers
+R422: A422=27/06/2024 | B422=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH41473GA753JV01 | C422=22 CHANCE MILLY | D422=795 | J422=Loyers | L422=795 | M422=795 | N422=795
+R423: A423=02/07/2024 | B423=FRAIS TENUE DE COMPTE | C423=22 CHANCE MILLY | D423=-2.6 | J423=Frais bancaires
+R424: A424=03/07/2024 | B424=VIREMENT SEPA EMIS /MOTIF CFE ET IFER - SIREN 491811980 - DOSSIER 1-340950 /BEN TRESOR PUBLIC /REFDO /REFBEN | C424=22 CHANCE MILLY | D424=-602 | J424=Autres
+R425: A425=05/07/2024 | B425=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660350103880506240T1 - REF : WY0202999660350103880506240T1128889 LIB | C425=22 CHANCE MILLY | D425=-9.5399999999999991 | J425=Assurance prêt
+R426: A426=05/07/2024 | B426=ECHEANCE PRET 00891 60971384 (CAPITAL DU 16967,04 EUR) | C426=22 CHANCE MILLY | D426=-402.22 | J426=Mensualités
+R427: A427=05/07/2024 | B427=ECHEANCE PRET 00891 60971287 | C427=22 CHANCE MILLY | D427=-243.59 | J427=Mensualités
+R428: A428=05/07/2024 | B428=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH41473GA753JV01 | C428=22 CHANCE MILLY | D428=795 | J428=Loyers
+R429: A429=02/08/2024 | B429=FRAIS TENUE DE COMPTE | C429=22 CHANCE MILLY | D429=-2.6 | J429=Frais bancaires
+R430: A430=05/08/2024 | B430=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/24 - EMETTEUR : FR28ZZZ110086 MDT - MOTIF : WY0202999660350103880506240T1 - REF : WY0202999660350103880506240T1128889 LIB | C430=22 CHANCE MILLY | D430=-9.5399999999999991 | J430=Assurance prêt
+R431: A431=05/08/2024 | B431=ECHEANCE PRET 00891 60971384 (CAPITAL DU 16191,96 EUR) | C431=22 CHANCE MILLY | D431=-402.22 | J431=Mensualités
+R432: A432=05/08/2024 | B432=ECHEANCE PRET 00891 60971287 | C432=22 CHANCE MILLY | D432=-243.59 | J432=Mensualités
+R433: A433=02/08/2024 | B433=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH41473GA753JV01 | C433=22 CHANCE MILLY | D433=795 | J433=Loyers
+R434: A434='03/09/2024 | B434=FRAIS TENUE DE COMPTE | C434=22 CHANCE MILLY | D434=-2.6 | J434=Frais bancaires | L434=-2,6 | M434=-2,6 | N434=-2,6
+R435: A435='05/09/2024 | B435=ECHEANCE PRET 00891 60971384 (CAPITAL DU 15803,91 EUR) | C435=22 CHANCE MILLY | D435=-402.22 | J435=Mensualités | L435=-402,22 | M435=-402,22 | N435=-402,22
+R436: A436='05/09/2024 | B436=ECHEANCE PRET 00891 60971287 | C436=22 CHANCE MILLY | D436=-243.59 | J436=Mensualités | L436=-243,59 | M436=-243,59 | N436=-243,59
+R437: A437='06/09/2024 | B437=VIREMENT VERS SDC 22 RUE CHANCE MILLY - MOTIF : CHARGES TRIMESTRIELLES JUIL A SEPT 2024 | C437=22 CHANCE MILLY | D437=-420.58 | J437=Charges copropriété | L437=-420,58 | M437=-420,58 | N437=-420,58
+R438: A438='12/09/2024 | B438=VIREMENT DE MLE MELANIE HILAIRE MOTIF: VIR DE MLE MELANIE HILAIRE - REF : VH425540BPPXMS01 | C438=22 CHANCE MILLY | D438=795 | J438=Loyers | L438=795 | M438=795 | N438=795
+R439: A439='27/09/2024 | B439=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: VIR DE MLE CAMILLE GOSSELIN - REF : VK427029TWE45D01 | C439=22 CHANCE MILLY | D439=1520 | J439=Encaissement caution | L439=1520 | M439=1520 | N439=1520
+R440: A440='27/09/2024 | B440=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: VIR DE MLE CAMILLE GOSSELIN - REF : VK427029TWE45D01 | C440=22 CHANCE MILLY | D440=137 | J440=Loyers | L440=137 | M440=137 | N440=137
+R441: A441='30/09/2024 | B441=VIREMENT VERS THOMAS JAUBERT - MOTIF : TRAVAUX RENOVATION STUDIO | C441=22 CHANCE MILLY | D441=-1 200,00 | J441=Autres | L441=-1 200,00 | M441=-1 200,00 | N441=-1 200,00
+R442: A442='01/10/2024 | B442=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V24275L051645 | C442=22 CHANCE MILLY | D442=825 | J442=Loyers | L442=825 | M442=825 | N442=825
+R443: A443='02/10/2024 | B443=FRAIS TENUE DE COMPTE | C443=22 CHANCE MILLY | D443=-2.6 | J443=Frais bancaires | L443=-2,6 | M443=-2,6 | N443=-2,6
+R444: A444='07/10/2024 | B444=ECHEANCE PRET 00891 60971384 (CAPITAL DU 15415,52 EUR) | C444=22 CHANCE MILLY | D444=-402.22 | J444=Mensualités | L444=-402,22 | M444=-402,22 | N444=-402,22
+R445: A445='07/10/2024 | B445=ECHEANCE PRET 00891 60971287 | C445=22 CHANCE MILLY | D445=-243.59 | J445=Mensualités | L445=-243,59 | M445=-243,59 | N445=-243,59
+R446: A446='07/10/2024 | B446=PRELEVEMENT BNP PARIBAS CARDIF DU 07/10/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000153303454 LIB | C446=22 CHANCE MILLY | D446=-6.76 | J446=Assurance prêt | L446=-6,76 | M446=-6,76 | N446=-6,76
+R447: A447='07/10/2024 | B447=PRELEVEMENT BNP PARIBAS CARDIF DU 07/10/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000153303455 LIB | C447=22 CHANCE MILLY | D447=-2.48 | J447=Assurance prêt | L447=-2,48 | M447=-2,48 | N447=-2,48
+R448: A448='04/11/2024 | B448=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V24306L050361 | C448=22 CHANCE MILLY | D448=825 | J448=Loyers | L448=825 | M448=825 | N448=825
+R449: A449='05/11/2024 | B449=ECHEANCE PRET 00891 60971384 (CAPITAL DU 15026,79 EUR) | C449=22 CHANCE MILLY | D449=-402.22 | J449=Mensualités | L449=-402,22 | M449=-402,22 | N449=-402,22
+R450: A450='05/11/2024 | B450=ECHEANCE PRET 00891 60971287 | C450=22 CHANCE MILLY | D450=-243.59 | J450=Mensualités | L450=-243,59 | M450=-243,59 | N450=-243,59
+R451: A451='05/11/2024 | B451=PRELEVEMENT BNP PARIBAS CARDIF DU 05/11/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000154721898 LIB | C451=22 CHANCE MILLY | D451=-6.76 | J451=Assurance prêt | L451=-6,76 | M451=-6,76 | N451=-6,76
+R452: A452='05/11/2024 | B452=FRAIS TENUE DE COMPTE | C452=22 CHANCE MILLY | D452=-2.6 | J452=Frais bancaires | L452=-2,6 | M452=-2,6 | N452=-2,6
+R453: A453='05/11/2024 | B453=PRELEVEMENT BNP PARIBAS CARDIF DU 05/11/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000154721899 LIB | C453=22 CHANCE MILLY | D453=-2.48 | J453=Assurance prêt | L453=-2,48 | M453=-2,48 | N453=-2,48
+R454: A454='02/12/2024 | B454=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V24337L067063 | C454=22 CHANCE MILLY | D454=825 | J454=Loyers | L454=825 | M454=825 | N454=825
+R455: A455='03/12/2024 | B455=FRAIS TENUE DE COMPTE | C455=22 CHANCE MILLY | D455=-2.6 | J455=Frais bancaires | L455=-2,6 | M455=-2,6 | N455=-2,6
+R456: A456='05/12/2024 | B456=ECHEANCE PRET 00891 60971384 (CAPITAL DU 14637,72 EUR) | C456=22 CHANCE MILLY | D456=-402.22 | J456=Mensualités | L456=-402,22 | M456=-402,22 | N456=-402,22
+R457: A457='05/12/2024 | B457=ECHEANCE PRET 00891 60971287 | C457=22 CHANCE MILLY | D457=-243.59 | J457=Mensualités | L457=-243,59 | M457=-243,59 | N457=-243,59
+R458: A458='05/12/2024 | B458=PRELEVEMENT BNP PARIBAS CARDIF DU 05/12/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000157076846 LIB | C458=22 CHANCE MILLY | D458=-6.76 | J458=Assurance prêt | L458=-6,76 | M458=-6,76 | N458=-6,76
+R459: A459='05/12/2024 | B459=PRELEVEMENT BNP PARIBAS CARDIF DU 05/12/24 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000157076847 LIB | C459=22 CHANCE MILLY | D459=-2.48 | J459=Assurance prêt | L459=-2,48 | M459=-2,48 | N459=-2,48
+R460: A460='02/01/2025 | B460=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25002L065589 | C460=22 CHANCE MILLY | D460=825 | J460=Loyers | L460=825 | M460=825 | N460=825
+R461: A461='03/01/2025 | B461=FRAIS TENUE DE COMPTE | C461=22 CHANCE MILLY | D461=-2.6 | J461=Frais bancaires | L461=-2,6 | M461=-2,6 | N461=-2,6
+R462: A462='06/01/2025 | B462=ECHEANCE PRET 00891 60971384 (CAPITAL DU 14248,31 EUR) | C462=22 CHANCE MILLY | D462=-402.22 | J462=Mensualités | L462=-402,22 | M462=-402,22 | N462=-402,22
+R463: A463='06/01/2025 | B463=ECHEANCE PRET 00891 60971287 | C463=22 CHANCE MILLY | D463=-243.59 | J463=Mensualités | L463=-243,59 | M463=-243,59 | N463=-243,59
+R464: A464='06/01/2025 | B464=PRELEVEMENT AXA DU 06/01/25 - EMETTEUR : FR14ZZZ391832 MDT - MOTIF : I0000830530242-CONTRAT0000010157163304 - REF : I0000830530242 LIB | C464=22 CHANCE MILLY | D464=-144.34 | J464=Assurance logement | L464=-144,34 | M464=-144,34 | N464=-144,34
+R465: A465='06/01/2025 | B465=PRELEVEMENT BNP PARIBAS CARDIF DU 06/01/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000158130904 LIB | C465=22 CHANCE MILLY | D465=-6.76 | J465=Assurance prêt | L465=-6,76 | M465=-6,76 | N465=-6,76
+R466: A466='06/01/2025 | B466=PRELEVEMENT BNP PARIBAS CARDIF DU 06/01/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000158130905 LIB | C466=22 CHANCE MILLY | D466=-2.48 | J466=Assurance prêt | L466=-2,48 | M466=-2,48 | N466=-2,48
+R467: A467='30/01/2025 | B467=VIREMENT INSTANTANE RECU DE MME ANNE LAURE CHANTEAU - MOTIF : WERO D02B5076805B48D98AB275F41A6FF34C SCAPULAIRE SUITE | C467=22 CHANCE MILLY | D467=7
+R468: A468='30/01/2025 | B468=VIREMENT INSTANTANE RECU DE MME ANNE LAURE CHANTEAU - MOTIF : WERO 0CD5631D38A04516AE42EE9BA101BE30 SCAPULAIRE. MERCI | C468=22 CHANCE MILLY | D468=3.5
+R469: A469='03/02/2025 | B469=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25032L046626 | C469=22 CHANCE MILLY | D469=825 | J469=Loyers | L469=825 | M469=825 | N469=825
+R470: A470='04/02/2025 | B470=FRAIS TENUE DE COMPTE | C470=22 CHANCE MILLY | D470=-2.6 | J470=Frais bancaires | L470=-2,6 | M470=-2,6 | N470=-2,6
+R471: A471='05/02/2025 | B471=ECHEANCE PRET 00891 60971384 (CAPITAL DU 13858,56 EUR) | C471=22 CHANCE MILLY | D471=-402.22 | J471=Mensualités | L471=-402,22 | M471=-402,22 | N471=-402,22
+R472: A472='05/02/2025 | B472=ECHEANCE PRET 00891 60971287 | C472=22 CHANCE MILLY | D472=-243.59 | J472=Mensualités | L472=-243,59 | M472=-243,59 | N472=-243,59
+R473: A473='05/02/2025 | B473=PRELEVEMENT BNP PARIBAS CARDIF DU 05/02/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000159749583 LIB | C473=22 CHANCE MILLY | D473=-6.76 | J473=Assurance prêt | L473=-6,76 | M473=-6,76 | N473=-6,76
+R474: A474='05/02/2025 | B474=PRELEVEMENT BNP PARIBAS CARDIF DU 05/02/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000159749584 LIB | C474=22 CHANCE MILLY | D474=-2.48 | J474=Assurance prêt | L474=-2,48 | M474=-2,48 | N474=-2,48
+R475: A475='03/03/2025 | B475=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25060L045823 | C475=22 CHANCE MILLY | D475=825 | J475=Loyers | L475=825 | M475=825 | N475=825
+R476: A476='04/03/2025 | B476=FRAIS TENUE DE COMPTE | C476=22 CHANCE MILLY | D476=-2.6 | J476=Frais bancaires | L476=-2,6 | M476=-2,6 | N476=-2,6
+R477: A477='05/03/2025 | B477=ECHEANCE PRET 00891 60971384 (CAPITAL DU 13468,47 EUR) | C477=22 CHANCE MILLY | D477=-402.22 | J477=Mensualités | L477=-402,22 | M477=-402,22 | N477=-402,22
+R478: A478='05/03/2025 | B478=ECHEANCE PRET 00891 60971287 | C478=22 CHANCE MILLY | D478=-243.59 | J478=Mensualités | L478=-243,59 | M478=-243,59 | N478=-243,59
+R479: A479='05/03/2025 | B479=PRELEVEMENT BNP PARIBAS CARDIF DU 05/03/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000161363279 LIB | C479=22 CHANCE MILLY | D479=-6.76 | J479=Assurance prêt | L479=-6,76 | M479=-6,76 | N479=-6,76
+R480: A480='05/03/2025 | B480=PRELEVEMENT BNP PARIBAS CARDIF DU 05/03/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000161363280 LIB | C480=22 CHANCE MILLY | D480=-2.48 | J480=Assurance prêt | L480=-2,48 | M480=-2,48 | N480=-2,48
+R481: A481='01/04/2025 | B481=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25091L044890 | C481=22 CHANCE MILLY | D481=825 | J481=Loyers | L481=825 | M481=825 | N481=825
+R482: A482='02/04/2025 | B482=FRAIS TENUE DE COMPTE | C482=22 CHANCE MILLY | D482=-2.6 | J482=Frais bancaires | L482=-2,6 | M482=-2,6 | N482=-2,6
+R483: A483='03/04/2025 | B483=VIREMENT VERS CABINET FIKIZI - MOTIF : CABINET COMPTABLE 2024 - JAUBERT | C483=22 CHANCE MILLY | D483=-1 020,00 | J483=Autres | L483=-1 020,00 | M483=-1 020,00 | N483=-1 020,00
+R484: A484='07/04/2025 | B484=ECHEANCE PRET 00891 60971384 (CAPITAL DU 13078,03 EUR) | C484=22 CHANCE MILLY | D484=-402.22 | J484=Mensualités | L484=-402,22 | M484=-402,22 | N484=-402,22
+R485: A485='07/04/2025 | B485=ECHEANCE PRET 00891 60971287 | C485=22 CHANCE MILLY | D485=-243.59 | J485=Mensualités | L485=-243,59 | M485=-243,59 | N485=-243,59
+R486: A486='07/04/2025 | B486=PRELEVEMENT BNP PARIBAS CARDIF DU 07/04/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000162978779 LIB | C486=22 CHANCE MILLY | D486=-6.76 | J486=Assurance prêt | L486=-6,76 | M486=-6,76 | N486=-6,76
+R487: A487='07/04/2025 | B487=PRELEVEMENT BNP PARIBAS CARDIF DU 07/04/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000162978780 LIB | C487=22 CHANCE MILLY | D487=-2.48 | J487=Assurance prêt | L487=-2,48 | M487=-2,48 | N487=-2,48
+R488: A488='02/05/2025 | B488=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25122L070254 | C488=22 CHANCE MILLY | D488=825 | J488=Loyers | L488=825 | M488=825 | N488=825
+R489: A489='05/05/2025 | B489=ECHEANCE PRET 00891 60971384 (CAPITAL DU 12687,25 EUR) | C489=22 CHANCE MILLY | D489=-402.22 | J489=Mensualités | L489=-402,22 | M489=-402,22 | N489=-402,22
+R490: A490='05/05/2025 | B490=ECHEANCE PRET 00891 60971287 | C490=22 CHANCE MILLY | D490=-243.59 | J490=Mensualités | L490=-243,59 | M490=-243,59 | N490=-243,59
+R491: A491='05/05/2025 | B491=PRELEVEMENT BNP PARIBAS CARDIF DU 05/05/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000164405213 LIB | C491=22 CHANCE MILLY | D491=-6.76 | J491=Assurance prêt | L491=-6,76 | M491=-6,76 | N491=-6,76
+R492: A492='05/05/2025 | B492=FRAIS TENUE DE COMPTE | C492=22 CHANCE MILLY | D492=-2.6 | J492=Frais bancaires | L492=-2,6 | M492=-2,6 | N492=-2,6
+R493: A493='05/05/2025 | B493=PRELEVEMENT BNP PARIBAS CARDIF DU 05/05/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000164405214 LIB | C493=22 CHANCE MILLY | D493=-2.48 | J493=Assurance prêt | L493=-2,48 | M493=-2,48 | N493=-2,48
+R494: A494='16/05/2025 | B494=VIREMENT DE MME RATELADE CAMILLE - MOTIF : CAUTION RATELADE CAMILLE 160525 | C494=22 CHANCE MILLY | D494=1 830,00
+R495: A495='16/05/2025 | B495=VIREMENT DE MME RATELADE CAMILLE - MOTIF : LOYER MAI RATELADE | C495=22 CHANCE MILLY | D495=479 | J495=Loyers | L495=479 | M495=479 | N495=479
+R496: A496='02/06/2025 | B496=VIREMENT DE MME RATELADE CAMILLE - MOTIF : LOYER JUIN 2025 | C496=22 CHANCE MILLY | D496=990 | J496=Loyers | L496=990 | M496=990 | N496=990
+R497: A497='02/06/2025 | B497=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25153L070518 | C497=22 CHANCE MILLY | D497=825 | J497=Loyers | L497=825 | M497=825 | N497=825
+R498: A498='03/06/2025 | B498=FRAIS TENUE DE COMPTE | C498=22 CHANCE MILLY | D498=-2.6 | J498=Frais bancaires | L498=-2,6 | M498=-2,6 | N498=-2,6
+R499: A499='05/06/2025 | B499=ECHEANCE PRET 00891 60971384 (CAPITAL DU 12296,13 EUR) | C499=22 CHANCE MILLY | D499=-402.22 | J499=Mensualités | L499=-402,22 | M499=-402,22 | N499=-402,22
+R500: A500='05/06/2025 | B500=ECHEANCE PRET 00891 60971287 | C500=22 CHANCE MILLY | D500=-243.59 | J500=Mensualités | L500=-243,59 | M500=-243,59 | N500=-243,59
+R501: A501='05/06/2025 | B501=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000166219330 LIB | C501=22 CHANCE MILLY | D501=-6.76 | J501=Assurance prêt | L501=-6,76 | M501=-6,76 | N501=-6,76
+R502: A502='05/06/2025 | B502=PRELEVEMENT BNP PARIBAS CARDIF DU 05/06/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000166219331 LIB | C502=22 CHANCE MILLY | D502=-2.48 | J502=Assurance prêt | L502=-2,48 | M502=-2,48 | N502=-2,48
+R503: A503='11/06/2025 | B503=VIREMENT INTERNE VERS JAUBERT - MOTIF : VIREMENT DE MME RATELADE CAMILLE - MOTIF CAUTION RATELADE CAMILLE 160525 | C503=22 CHANCE MILLY | D503=-1 830,00
+R504: A504='11/06/2025 | B504=VIREMENT INTERNE VERS JAUBERT - MOTIF : VIREMENT DE MME RATELADE CAMILLE - MOTIF LOYER JUIN 2025 | C504=22 CHANCE MILLY | D504=-990 | J504=Loyers | L504=-990 | M504=-990 | N504=-990
+R505: A505='11/06/2025 | B505=VIREMENT INTERNE VERS JAUBERT - MOTIF : VIREMENT DE MME RATELADE CAMILLE - MOTIF LOYER MAI RATELADE | C505=22 CHANCE MILLY | D505=-479 | J505=Loyers | L505=-479 | M505=-479 | N505=-479
+R506: A506='01/07/2025 | B506=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25182L051495 | C506=22 CHANCE MILLY | D506=825 | J506=Loyers | L506=825 | M506=825 | N506=825
+R507: A507='02/07/2025 | B507=FRAIS TENUE DE COMPTE | C507=22 CHANCE MILLY | D507=-2.6 | J507=Frais bancaires | L507=-2,6 | M507=-2,6 | N507=-2,6
+R508: A508='07/07/2025 | B508=ECHEANCE PRET 00891 60971384 (CAPITAL DU 11904,67 EUR) | C508=22 CHANCE MILLY | D508=-402.22 | J508=Mensualités | L508=-402,22 | M508=-402,22 | N508=-402,22
+R509: A509='07/07/2025 | B509=ECHEANCE PRET 00891 60971287 | C509=22 CHANCE MILLY | D509=-243.59 | J509=Mensualités | L509=-243,59 | M509=-243,59 | N509=-243,59
+R510: A510='07/07/2025 | B510=PRELEVEMENT BNP PARIBAS CARDIF DU 07/07/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000167841388 LIB | C510=22 CHANCE MILLY | D510=-6.76 | J510=Assurance prêt | L510=-6,76 | M510=-6,76 | N510=-6,76
+R511: A511='07/07/2025 | B511=PRELEVEMENT BNP PARIBAS CARDIF DU 07/07/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000167841389 LIB | C511=22 CHANCE MILLY | D511=-2.48 | J511=Assurance prêt | L511=-2,48 | M511=-2,48 | N511=-2,48
+R512: A512='01/08/2025 | B512=VIREMENT DE MLE CAMILLE GOSSELIN MOTIF: LOYER APPARTEMENT CLICHY - REF : C18V25213L049999 | C512=22 CHANCE MILLY | D512=825 | J512=Loyers | L512=825 | M512=825 | N512=825
+R513: A513='04/08/2025 | B513=FRAIS TENUE DE COMPTE | C513=22 CHANCE MILLY | D513=-2.6 | J513=Frais bancaires | L513=-2,6 | M513=-2,6 | N513=-2,6
+R514: A514='05/08/2025 | B514=ECHEANCE PRET 00891 60971384 (CAPITAL DU 11512,87 EUR) | C514=22 CHANCE MILLY | D514=-402.22 | J514=Mensualités | L514=-402,22 | M514=-402,22 | N514=-402,22
+R515: A515='05/08/2025 | B515=ECHEANCE PRET 00891 60971287 | C515=22 CHANCE MILLY | D515=-243.59 | J515=Mensualités | L515=-243,59 | M515=-243,59 | N515=-243,59
+R516: A516='05/08/2025 | B516=PRELEVEMENT BNP PARIBAS CARDIF DU 05/08/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434692 - REF : 000284346920XX2444V000169471425 LIB | C516=22 CHANCE MILLY | D516=-6.76 | J516=Assurance prêt | L516=-6,76 | M516=-6,76 | N516=-6,76
+R517: A517='05/08/2025 | B517=PRELEVEMENT BNP PARIBAS CARDIF DU 05/08/25 - EMETTEUR : FR57ZZZ850159 MDT - MOTIF : 00028434695 - REF : 000284346950XX2444V000169471426 LIB | C517=22 CHANCE MILLY | D517=-2.48 | J517=Assurance prêt | L517=-2,48 | M517=-2,48 | N517=-2,48
+R518: A518='29/08/2025 | B518=VIREMENT INSTANTANE RECU DE MLE CAMILLE GOSSELIN MOTIF: VIR DE MLE CAMILLE GOSSELIN - REF : VK52434F9WXCU001 | C518=22 CHANCE MILLY | D518=110 | J518=Loyers | L518=110 | M518=110 | N518=110
+R519: A519='02/09/2025 | B519=FRAIS TENUE DE COMPTE | C519=22 CHANCE MILLY | D519=-2.6 | J519=Frais bancaires | L519=-2,6 | M519=-2,6 | N519=-2,6

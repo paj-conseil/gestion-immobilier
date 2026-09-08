@@ -1,0 +1,22 @@
+﻿R1: B1=GESTION LOCATIVE | M1=46271
+R6: C6=Logement concerné | F6=11 RUE DES CAILLOUX - 4EME
+R8: C8=Adresse de location
+R9: C9=Nom | D9=11 RUE DES CAILLOUX - 4EME
+R10: C10=Adresse | D10=11 RUE DES CAILLOUX | H10=Surface (m²) | J10=32
+R11: C11=CP, Ville | D11=92110 CLICHY | H11=Type logement | J11=F2
+R13: C13=Acquisition
+R14: C14=Prix achat | D14=139000 | H14=Montant travaux | J14=31000
+R15: C15=Prix notaire | D15=7691 | F15=5.5330935251798559E-2 | H15=Total acquisition | J15=177691
+R16: H16=Rendement brut | J16=6.2805657011328661E-2
+R17: C17=Financement
+R18: C18=Apport | D18=0 | H18=Durée (mois) | J18=240 | L18=20 ans
+R19: C19=Emprunt | D19=171502 | H19=Taux (%) | J19=1.5100000000000001E-2
+R20: C20=Date 1ère échéance | D20=42648 | H20=Date dernière échéance | J20=49923 | L20=Reste 10 ans
+R23: C23=Composition du bien
+R24: C24=- Une entrée desservant à droite une salle de bain, à gauche une cuisine et en face un salon/salle à manger - Une salle de douche avec un WC - Une cuisine avec une fenêtre donnant sur la cour intérieure de l'immeuble - Un salon/salle à manger avec une fenêtre équipée d'un rideau  - Une chambre avec une fenêtre équipée d'un rideau 
+R30: C30=Contenu du bien
+R31: C31=ENTREE  - un porte-manteau SALLE DE BAIN - un WC suspendu,  un lavabo, un miroir, une douche, un chauffe serviette, un chauffe-eau, CUISINE - un frigo/congélateur, four, micro-onde, plaques électriques, lave-linge, vaisselles, couverts, ustensiles de cuisine, nombreux meubles de rangements… SALON/ SALLE A MANGER  - un canapé et une table basse - un radiateur CHAMBRE - un lit double avec matelas, couette et oreiller, un sommier avec coffre de rangement intégré et un dressing avec cintres  - un radiateur
+R46: C46=Informations complémentaires
+R47: C47=Numéro compteur eau
+R48: C48=Numéro compteur électricité | F48=21552677190619
+R49: C49=Numéro téléphone | F49=01.47.37.58.28

@@ -1,0 +1,343 @@
+// Schéma Prisma — Pilotage locatif
+// Datasource SQLite en dev. Pour la mise en production cloud, remplacer
+// `provider = "sqlite"` par `provider = "postgresql"` et `DATABASE_URL` par
+// l'URL de la base managée (Neon/Supabase).
+//
+// Note : SQLite ne supporte pas le type `enum` de Prisma. Les champs qui
+// seraient naturellement des enums (rôle, statut, type de document...) sont
+// donc des `String`, validés côté application via les unions TypeScript
+// définies dans `src/lib/enums.ts`. Ce choix reste compatible avec un passage
+// ultérieur à PostgreSQL (les enums pourraient alors être réintroduits, mais
+// ce n'est pas nécessaire).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Comptes & périmètres (droits & accès)
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  passwordHash  String
+  nom           String
+  createdAt     DateTime     @default(now())
+  scopesOwned   Scope[]      @relation("ScopeOwner")
+  memberships   Membership[]
+}
+
+model Scope {
+  id          String       @id @default(cuid())
+  nom         String
+  ownerId     String
+  owner       User         @relation("ScopeOwner", fields: [ownerId], references: [id])
+  createdAt   DateTime     @default(now())
+  memberships Membership[]
+
+  biens             Bien[]
+  locataires        Locataire[]
+  documentsGeneres  DocumentGenere[]
+  comptesBancaires  CompteBancaire[]
+  postes            Poste[]
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String
+  scopeId   String
+  /// Role : ADMIN | EDITEUR | LECTEUR
+  role      String   @default("EDITEUR")
+  /// Statut : ACTIF | INVITE
+  statut    String   @default("ACTIF")
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  scope Scope @relation(fields: [scopeId], references: [id])
+
+  @@unique([userId, scopeId])
+}
+
+// ---------------------------------------------------------------------------
+// Biens
+// ---------------------------------------------------------------------------
+
+model Bien {
+  id             String @id @default(cuid())
+  scopeId        String
+  scope          Scope  @relation(fields: [scopeId], references: [id])
+
+  adresse        String
+  codePostal     String?
+  ville          String?
+  complement     String?
+  /// Type : APPARTEMENT | STUDIO | MAISON | FOYER | AUTRE
+  type           String @default("APPARTEMENT")
+  /// Statut : LOUE | VACANT | PERSO
+  statut         String @default("VACANT")
+  surface        Float?
+  description    String?
+  telephone      String?
+  numeroCompteur String?
+  couleur        String? @default("#1E5631")
+
+  // Financement — éléments liés à l'achat (indépendants du nombre de prêts)
+  prixAchat        Float?
+  fraisNotaire     Float?
+  montantTravaux   Float?
+  apportPersonnel  Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  photos             BienPhoto[]
+  locations          Location[]
+  documentsGeneres   DocumentGenere[]
+  etatsDesLieux      EtatDesLieux[]
+  transactions       Transaction[]
+  prets              Pret[]
+}
+
+/// Un bien peut être financé par plusieurs prêts bancaires distincts.
+model Pret {
+  id            String    @id @default(cuid())
+  bienId        String
+  bien          Bien      @relation(fields: [bienId], references: [id])
+  banque        String?
+  montant       Float?
+  tauxInteret   Float?
+  mensualite    Float?
+  dureeMois     Int?
+  dateDebut     DateTime?
+  dateFin       DateTime?
+  ordre         Int       @default(0)
+  createdAt     DateTime  @default(now())
+}
+
+model BienPhoto {
+  id     String @id @default(cuid())
+  bienId String
+  bien   Bien   @relation(fields: [bienId], references: [id], onDelete: Cascade)
+  url    String
+  ordre  Int    @default(0)
+}
+
+// ---------------------------------------------------------------------------
+// Locataires & baux
+// ---------------------------------------------------------------------------
+
+model Locataire {
+  id        String   @id @default(cuid())
+  scopeId   String
+  scope     Scope    @relation(fields: [scopeId], references: [id])
+  nom            String
+  prenom         String
+  email          String?
+  telephone      String?
+  dateNaissance  DateTime?
+  lieuNaissance  String?
+  /// Statut : ACTIF | INACTIF — traçabilité des locataires passés sur un bien
+  statut         String    @default("ACTIF")
+  createdAt DateTime @default(now())
+
+  documents         DocumentLocataire[]
+  locations         LocationLocataire[]
+  etatsDesLieux     EtatDesLieux[]
+  documentsGeneres  DocumentGenere[]
+}
+
+model DocumentLocataire {
+  id          String    @id @default(cuid())
+  locataireId String
+  locataire   Locataire @relation(fields: [locataireId], references: [id], onDelete: Cascade)
+  /// Type : CNI | AVIS_IMPOSITION | CONTRAT_TRAVAIL | RIB | AUTRE
+  type        String
+  /// Statut : RECU | MANQUANT
+  statut      String    @default("MANQUANT")
+  fileUrl     String?
+  uploadedAt  DateTime?
+}
+
+model Location {
+  id                    String    @id @default(cuid())
+  bienId                String
+  bien                  Bien      @relation(fields: [bienId], references: [id])
+  dateDebut             DateTime
+  dateFin               DateTime?
+  loyerHC               Float
+  charges               Float     @default(0)
+  depotGarantie             Float?
+  depotGarantieDateReglement    DateTime?
+  depotGarantieRembourse        Float?
+  depotGarantieDateRemboursement DateTime?
+  /// Statut : ACTIF | INACTIF
+  statut                String    @default("ACTIF")
+  dateProchaineRevision DateTime?
+  indiceIRLReference    String?
+  createdAt             DateTime  @default(now())
+
+  locataires        LocationLocataire[]
+  documentsGeneres  DocumentGenere[]
+  etatsDesLieux     EtatDesLieux[]
+}
+
+model LocationLocataire {
+  id          String    @id @default(cuid())
+  locationId  String
+  location    Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  locataireId String
+  locataire   Locataire @relation(fields: [locataireId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, locataireId])
+}
+
+// ---------------------------------------------------------------------------
+// Documents générés & emails
+// ---------------------------------------------------------------------------
+
+model DocumentGenere {
+  id          String     @id @default(cuid())
+  scopeId     String
+  scope       Scope      @relation(fields: [scopeId], references: [id])
+  /// Type : CONTRAT | CAUTIONNEMENT | DEPOT_GARANTIE | ETAT_LIEUX | QUITTANCE | REVISION_LOYER
+  type        String
+  bienId      String?
+  bien        Bien?      @relation(fields: [bienId], references: [id])
+  locationId  String?
+  location    Location?  @relation(fields: [locationId], references: [id])
+  locataireId String?
+  locataire   Locataire? @relation(fields: [locataireId], references: [id])
+  periode     String?
+  fileUrl     String
+  genereLe    DateTime   @default(now())
+
+  emails EmailLog[]
+}
+
+model EmailLog {
+  id               String         @id @default(cuid())
+  documentGenereId String
+  documentGenere   DocumentGenere @relation(fields: [documentGenereId], references: [id], onDelete: Cascade)
+  destinataire     String
+  sujet            String
+  /// Statut : ENVOYE | OUVERT | ECHEC
+  statut           String         @default("ENVOYE")
+  envoyeLe         DateTime       @default(now())
+  openedAt         DateTime?
+}
+
+// ---------------------------------------------------------------------------
+// États des lieux
+// ---------------------------------------------------------------------------
+
+model EtatDesLieux {
+  id          String     @id @default(cuid())
+  bienId      String
+  bien        Bien       @relation(fields: [bienId], references: [id])
+  locationId  String?
+  location    Location?  @relation(fields: [locationId], references: [id])
+  locataireId String?
+  locataire   Locataire? @relation(fields: [locataireId], references: [id])
+  /// Type : ENTREE | SORTIE
+  type        String
+  date        DateTime   @default(now())
+
+  pieces EDLPiece[]
+  photos EDLPhoto[]
+}
+
+model EDLPhoto {
+  id    String       @id @default(cuid())
+  edlId String
+  edl   EtatDesLieux @relation(fields: [edlId], references: [id], onDelete: Cascade)
+  url   String
+  ordre Int          @default(0)
+}
+
+model EDLPiece {
+  id    String       @id @default(cuid())
+  edlId String
+  edl   EtatDesLieux @relation(fields: [edlId], references: [id], onDelete: Cascade)
+  nom   String
+  ordre Int          @default(0)
+
+  items EDLItem[]
+}
+
+model EDLItem {
+  id          String   @id @default(cuid())
+  pieceId     String
+  piece       EDLPiece @relation(fields: [pieceId], references: [id], onDelete: Cascade)
+  label       String
+  /// Etat : BON | USURE | MAUVAIS
+  etat        String   @default("BON")
+  commentaire String?
+  photoUrl    String?
+  ordre       Int      @default(0)
+}
+
+// ---------------------------------------------------------------------------
+// Comptabilité
+// ---------------------------------------------------------------------------
+
+model CompteBancaire {
+  id      String @id @default(cuid())
+  scopeId String
+  scope   Scope  @relation(fields: [scopeId], references: [id])
+  banque  String
+  libelle String
+
+  transactions Transaction[]
+  imports      RelevBancaireImport[]
+}
+
+model RelevBancaireImport {
+  id         String         @id @default(cuid())
+  compteId   String
+  compte     CompteBancaire @relation(fields: [compteId], references: [id])
+  fileName   String
+  importedAt DateTime       @default(now())
+  nbLignes   Int            @default(0)
+
+  transactions Transaction[]
+}
+
+model Poste {
+  id       String  @id @default(cuid())
+  scopeId  String
+  scope    Scope   @relation(fields: [scopeId], references: [id])
+  nom      String
+  /// Type : REVENU | CHARGE
+  type     String
+  motsCles String? // mots-clés séparés par des virgules pour la catégorisation auto
+
+  transactions Transaction[]
+
+  @@unique([scopeId, nom])
+}
+
+model Transaction {
+  id       String                @id @default(cuid())
+  compteId String
+  compte   CompteBancaire        @relation(fields: [compteId], references: [id])
+  bienId   String?
+  bien     Bien?                 @relation(fields: [bienId], references: [id])
+  posteId  String?
+  poste    Poste?                @relation(fields: [posteId], references: [id])
+  importId String?
+  import   RelevBancaireImport?  @relation(fields: [importId], references: [id])
+
+  date    DateTime
+  libelle String
+  montant Float
+  /// Source : IMPORT | MANUEL
+  source  String @default("MANUEL")
+
+  createdAt DateTime @default(now())
+}
