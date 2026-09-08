@@ -538,8 +538,11 @@ tr:last-child td {
 }
 .table-compact th,
 .table-compact td {
-  padding: 5px 10px;
+  padding: 3px 8px;
   font-size: 12.3px;
+}
+.table-zebra-dark tbody tr:nth-child(even) {
+  background: var(--stone-100);
 }
 .col-doc {
   width: 82px;
@@ -655,6 +658,13 @@ th.col-doc {
 .toggle-pair button.active {
   background: var(--green-700);
   color: #fff;
+}
+.toggle-pair.compact {
+  margin-bottom: 0;
+}
+.toggle-pair.compact button {
+  padding: 5px 12px;
+  font-size: 12px;
 }
 .room {
   border: 1px solid var(--line);

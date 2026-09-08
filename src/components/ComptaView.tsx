@@ -223,7 +223,7 @@ export function ComptaView({
           />
         )}
         <div className="table-wrap">
-          <table className="table-compact">
+          <table className="table-compact table-zebra-dark">
             <thead>
               <tr>
                 <th>Date</th>
@@ -482,11 +482,11 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
 
   return (
     <div className="panel">
-      <div className="panel-head">
+      <div className="panel-head" style={{ padding: '10px 20px' }}>
         <h2>État consolidé</h2>
       </div>
-      <div className="panel-body pad" style={{ paddingBottom: 0 }}>
-        <div className="toggle-pair" style={{ flexWrap: 'wrap', margin: 0 }}>
+      <div style={{ padding: '6px 20px 10px' }}>
+        <div className="toggle-pair compact" style={{ flexWrap: 'wrap', margin: 0 }}>
           <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => { setBienId('ALL'); setPosteOuvert(null); }}>
             Tous les biens
           </button>
@@ -507,7 +507,7 @@ function ComptaPivot({ transactions, biens }: { transactions: PivotTransactionVM
         ) : (
           <>
             <div className="table-wrap">
-              <table className="table-compact">
+              <table className="table-compact table-zebra-dark">
                 <thead>
                   <tr>
                     <th style={{ whiteSpace: 'nowrap' }}>Poste</th>
@@ -666,7 +666,7 @@ function PosteDetail({
         </button>
       </div>
       <div className="table-wrap" style={{ maxHeight: 320, overflowY: 'auto' }}>
-        <table className="table-compact">
+        <table className="table-compact table-zebra-dark">
           <thead>
             <tr>
               <th style={{ whiteSpace: 'nowrap' }}>Date</th>
