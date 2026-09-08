@@ -43,7 +43,7 @@ function LoginForm() {
         <div className="brand" style={{ borderBottom: 'none', marginBottom: 20, padding: 0 }}>
           <div className="brand-mark">PL</div>
           <div className="brand-text" style={{ color: 'var(--ink)' }}>
-            <strong>Pilotage locatif</strong>
+            <strong>Gestion immo</strong>
             <span style={{ color: 'var(--ink-soft)' }}>Connexion</span>
           </div>
         </div>

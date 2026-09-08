@@ -332,7 +332,7 @@ export function ContratDoc({ data }: { data: ContratData }) {
           </View>
         </View>
 
-        <DocFooter text="Pilotage locatif — document généré automatiquement, à faire relire avant signature" />
+        <DocFooter text="Gestion immo — document généré automatiquement, à faire relire avant signature" />
       </Page>
     </Document>
   );

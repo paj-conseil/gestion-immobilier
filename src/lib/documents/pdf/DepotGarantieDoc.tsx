@@ -64,7 +64,7 @@ export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
           </View>
         </View>
 
-        <DocFooter text="Pilotage locatif — document généré automatiquement" />
+        <DocFooter text="Gestion immo — document généré automatiquement" />
       </Page>
     </Document>
   );

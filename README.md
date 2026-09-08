@@ -1,4 +1,4 @@
-# Pilotage locatif
+# Gestion immo
 
 Application de gestion locative (biens, locataires, documents, états des lieux,
 échéances, comptabilité, droits & accès par périmètre) — remplace les fichiers

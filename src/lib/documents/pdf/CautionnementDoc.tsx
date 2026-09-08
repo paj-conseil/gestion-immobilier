@@ -69,7 +69,7 @@ export function CautionnementDoc({ data }: { data: CautionnementData }) {
         <Text style={[styles.p, { marginTop: 20 }]}>Fait à Tours, le {formatDate(data.dateEmission)}</Text>
         <Text style={[styles.small, { marginTop: 30 }]}>Signature</Text>
 
-        <DocFooter text="Pilotage locatif — document généré automatiquement, à faire relire avant signature" />
+        <DocFooter text="Gestion immo — document généré automatiquement, à faire relire avant signature" />
       </Page>
     </Document>
   );

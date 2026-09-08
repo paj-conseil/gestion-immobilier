@@ -67,7 +67,7 @@ export function QuittanceDoc({ data }: { data: QuittanceData }) {
           7-1 de la loi n° 89-462 du 6 juillet 1989).
         </Text>
 
-        <DocFooter text="Pilotage locatif — document généré automatiquement" />
+        <DocFooter text="Gestion immo — document généré automatiquement" />
       </Page>
     </Document>
   );

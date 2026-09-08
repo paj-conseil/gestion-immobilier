@@ -69,7 +69,7 @@ export function RevisionLoyerDoc({ data }: { data: RevisionLoyerData }) {
         <Text style={[styles.p, { marginTop: 20 }]}>Fait à Tours, le {formatDate(data.dateEmission)}</Text>
         <Text style={styles.signatureLine}>{PROPRIETAIRE.nom}</Text>
 
-        <DocFooter text="Pilotage locatif — document généré automatiquement" />
+        <DocFooter text="Gestion immo — document généré automatiquement" />
       </Page>
     </Document>
   );

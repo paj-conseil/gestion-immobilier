@@ -75,7 +75,7 @@ export function Sidebar({
       <div className="brand">
         <div className="brand-mark">PL</div>
         <div className="brand-text">
-          <strong>Pilotage locatif</strong>
+          <strong>Gestion immo</strong>
           <span>{scopeNom}</span>
         </div>
       </div>

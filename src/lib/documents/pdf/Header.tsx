@@ -5,7 +5,7 @@ export function DocHeader({ title, sub }: { title: string; sub?: string }) {
   return (
     <View style={styles.header} fixed>
       <View>
-        <Text style={styles.brand}>Pilotage locatif</Text>
+        <Text style={styles.brand}>Gestion immo</Text>
         <Text style={styles.brandSub}>{PROPRIETAIRE.nom} · {PROPRIETAIRE.emailContact}</Text>
       </View>
       <View style={styles.docTitleBox}>

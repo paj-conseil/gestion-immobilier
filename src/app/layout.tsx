@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Pilotage locatif',
+  title: 'Gestion immo',
   description: 'Gestion locative — biens, locataires, documents, comptabilité',
 };
 
