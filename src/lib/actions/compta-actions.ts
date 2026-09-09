@@ -20,7 +20,7 @@ export async function createCompteBancaire(formData: FormData): Promise<{ ok: tr
 export async function importReleve(
   compteId: string,
   formData: FormData,
-): Promise<{ ok: true; imported: number; ignored: number } | { error: string }> {
+): Promise<{ ok: true; imported: number; ignored: number; doublons: number } | { error: string }> {
   const ctx = await getCurrentContext();
   const compte = await prisma.compteBancaire.findFirst({ where: { id: compteId, scopeId: ctx.scopeId } });
   if (!compte) return { error: 'Compte introuvable' };
@@ -49,16 +49,33 @@ export async function importReleve(
     return { error: "Aucune transaction reconnue dans ce fichier. Vérifiez le format ou saisissez-les manuellement." };
   }
 
-  const [postes, biens] = await Promise.all([
+  const [postes, biens, existantes] = await Promise.all([
     prisma.poste.findMany({ where: { scopeId: ctx.scopeId } }),
     prisma.bien.findMany({ where: { scopeId: ctx.scopeId } }),
+    // Empreinte des transactions déjà en base sur ce compte, pour ignorer les
+    // lignes déjà importées (ex. relevé re-téléversé, ou plages qui se
+    // chevauchent entre deux exports successifs).
+    prisma.transaction.findMany({ where: { compteId }, select: { date: true, libelle: true, montant: true } }),
   ]);
+
+  const empreinte = (date: Date, libelle: string, montant: number) =>
+    `${date.toISOString().slice(0, 10)}|${libelle.trim().toLowerCase()}|${montant.toFixed(2)}`;
+
+  const vues = new Set(existantes.map((t) => empreinte(t.date, t.libelle, t.montant)));
 
   const importRecord = await prisma.relevBancaireImport.create({
     data: { compteId, fileName: file.name, nbLignes: lignes.length },
   });
 
+  let doublons = 0;
   for (const ligne of lignes) {
+    const clef = empreinte(ligne.date, ligne.libelle, ligne.montant);
+    if (vues.has(clef)) {
+      doublons++;
+      continue;
+    }
+    vues.add(clef);
+
     const posteId = deviner(ligne.libelle, postes);
     const bien = biens.find((b) => ligne.libelle.toLowerCase().includes(b.adresse.toLowerCase().split(' ').slice(0, 3).join(' ')));
     await prisma.transaction.create({
@@ -76,7 +93,7 @@ export async function importReleve(
   }
 
   revalidatePath('/compta');
-  return { ok: true, imported: lignes.length, ignored: ignorees };
+  return { ok: true, imported: lignes.length - doublons, ignored: ignorees, doublons };
 }
 
 export async function createTransactionManuelle(formData: FormData): Promise<{ ok: true } | { error: string }> {

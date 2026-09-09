@@ -7,14 +7,8 @@ import { ComptaView } from '@/components/ComptaView';
 export default async function ComptaPage() {
   const ctx = await getCurrentContext();
 
-  const [comptes, transactions, toutesTransactions, postes, biens, locationsActives] = await Promise.all([
+  const [comptes, operations, postes, biens, locationsActives] = await Promise.all([
     prisma.compteBancaire.findMany({ where: { scopeId: ctx.scopeId }, orderBy: { banque: 'asc' } }),
-    prisma.transaction.findMany({
-      where: { compte: { scopeId: ctx.scopeId } },
-      include: { poste: true, bien: true },
-      orderBy: { date: 'desc' },
-      take: 100,
-    }),
     prisma.transaction.findMany({
       where: { compte: { scopeId: ctx.scopeId } },
       select: {
@@ -24,9 +18,10 @@ export default async function ComptaPage() {
         montant: true,
         bienId: true,
         bien: { select: { adresse: true, complement: true } },
-        poste: { select: { nom: true, type: true } },
+        posteId: true,
+        poste: { select: { id: true, nom: true, type: true } },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: 'desc' },
     }),
     prisma.poste.findMany({ where: { scopeId: ctx.scopeId }, orderBy: { nom: 'asc' } }),
     prisma.bien.findMany({ where: { scopeId: ctx.scopeId }, orderBy: { adresse: 'asc' } }),
@@ -36,7 +31,7 @@ export default async function ComptaPage() {
   // Recommandations simples basées sur des règles
   const recommandations: { titre: string; detail: string }[] = [];
 
-  const nonCategorisees = transactions.filter((t) => !t.posteId).length;
+  const nonCategorisees = operations.filter((t) => !t.posteId).length;
   if (nonCategorisees > 0) {
     recommandations.push({
       titre: `${nonCategorisees} transaction${nonCategorisees > 1 ? 's' : ''} non catégorisée${nonCategorisees > 1 ? 's' : ''}`,
@@ -46,7 +41,7 @@ export default async function ComptaPage() {
 
   const seuilRetard = subDays(new Date(), 45);
   for (const loc of locationsActives) {
-    const dernierLoyer = transactions.find(
+    const dernierLoyer = operations.find(
       (t) => t.bienId === loc.bienId && t.montant > 0 && t.poste?.nom.toLowerCase().includes('loyer'),
     );
     if (!dernierLoyer || dernierLoyer.date < seuilRetard) {
@@ -68,8 +63,7 @@ export default async function ComptaPage() {
 
       <ComptaView
         comptes={JSON.parse(JSON.stringify(comptes))}
-        transactions={JSON.parse(JSON.stringify(transactions))}
-        toutesTransactions={JSON.parse(JSON.stringify(toutesTransactions))}
+        operations={JSON.parse(JSON.stringify(operations))}
         postes={JSON.parse(JSON.stringify(postes))}
         biens={JSON.parse(JSON.stringify(biens))}
         recommandations={recommandations}
