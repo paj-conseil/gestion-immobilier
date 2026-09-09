@@ -7,6 +7,7 @@ import { IconBiens } from '@/components/icons';
 import { fileUrl } from '@/lib/file-url';
 import { formatDate, formatMontant } from '@/lib/format';
 import { BienFormModal } from '@/components/BienFormModal';
+import { deleteBienPhoto } from '@/lib/actions/bien-actions';
 import { LocataireEditModal, type LocataireVM, type BienOption } from '@/components/LocataireEditModal';
 import { PretFormModal, type PretDefaults } from '@/components/PretFormModal';
 import { IconEdit, IconPlus } from '@/components/icons';
@@ -150,7 +151,18 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
   const [editingLocataire, setEditingLocataire] = useState<LocataireVM | null>(null);
   const [editingPret, setEditingPret] = useState<{ bienId: string; defaults?: PretDefaults } | null>(null);
   const [editBienOpen, setEditBienOpen] = useState(false);
+  const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
   const router = useRouter();
+
+  async function onDeletePhoto(photoId: string) {
+    setDeletingPhotoId(photoId);
+    try {
+      await deleteBienPhoto(photoId);
+      router.refresh();
+    } finally {
+      setDeletingPhotoId(null);
+    }
+  }
 
   const locations = selected?.locations ?? [];
   const locationsActives = locations.filter((l) => l.statut === 'ACTIF');
@@ -254,6 +266,43 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
                   Modifier ce logement
                 </button>
               </div>
+
+              {selected.photos.length > 0 && (
+                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 16 }}>
+                  {selected.photos.map((p) => (
+                    <div key={p.id} style={{ position: 'relative', flex: '0 0 auto' }}>
+                      <img
+                        src={fileUrl(p.url)}
+                        alt=""
+                        style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line)' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => onDeletePhoto(p.id)}
+                        disabled={deletingPhotoId === p.id}
+                        title="Supprimer cette photo"
+                        style={{
+                          position: 'absolute',
+                          top: -6,
+                          right: -6,
+                          width: 20,
+                          height: 20,
+                          borderRadius: '50%',
+                          background: 'var(--brick, #b3452f)',
+                          color: '#fff',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: 12,
+                          lineHeight: '20px',
+                          padding: 0,
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="tab-row">
                 <button className={tab === 'carac' ? 'active' : ''} onClick={() => setTab('carac')}>
