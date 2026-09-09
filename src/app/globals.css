@@ -775,6 +775,26 @@ th.col-doc {
 .toggle-pair.compact {
   margin-bottom: 0;
 }
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip-row button {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.chip-row button.active {
+  background: var(--green-700);
+  border-color: var(--green-700);
+  color: #fff;
+}
 .toggle-pair.compact button {
   padding: 5px 12px;
   font-size: 12px;

@@ -175,15 +175,22 @@ export function ComptaView({
             </span>
           )}
         </button>
+        {tab === 'operations' && (
+          <button
+            className="link-row"
+            style={{ marginLeft: 'auto', alignSelf: 'center', flexShrink: 0 }}
+            onClick={onCategoriserAuto}
+            disabled={categorisation}
+          >
+            {categorisation ? 'Catégorisation…' : 'Catégoriser automatiquement'}
+          </button>
+        )}
       </div>
 
       {tab === 'consolide' && <ComptaPivot operations={operations} biens={biens} onPosteClick={jumpToPoste} />}
 
       {tab === 'donnees' && (
       <div className="panel">
-        <div className="panel-head">
-          <h2>Ajouter des données</h2>
-        </div>
         <div className="panel-body pad">
           <div className="accounts-row" style={{ marginBottom: comptes.length ? 16 : 0 }}>
             {comptes.map((c) => (
@@ -269,17 +276,12 @@ export function ComptaView({
           posteJump={posteJump}
           onChangeBien={onChangeBien}
           onChangePoste={onChangePoste}
-          onCategoriserAuto={onCategoriserAuto}
-          categorisation={categorisation}
           categorisationMsg={categorisationMsg}
         />
       )}
 
       {tab === 'recommandations' && (
       <div className="panel">
-        <div className="panel-head">
-          <h2>Recommandations</h2>
-        </div>
         <div className="panel-body">
           {recommandations.map((r, i) => (
             <div className="reco" key={i}>
@@ -475,21 +477,13 @@ function ComptaPivot({
 
   return (
     <div className="panel">
-      <div className="panel-head" style={{ padding: '8px 16px' }}>
-        <h2>État consolidé</h2>
-      </div>
-      <div style={{ padding: '4px 16px 8px', overflowX: 'auto' }}>
-        <div className="toggle-pair compact" style={{ flexWrap: 'nowrap', margin: 0 }}>
-          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => setBienId('ALL')} style={{ whiteSpace: 'nowrap' }}>
+      <div style={{ padding: '10px 16px 8px' }}>
+        <div className="chip-row">
+          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => setBienId('ALL')}>
             Tous les biens
           </button>
           {biens.map((b) => (
-            <button
-              key={b.id}
-              className={bienId === b.id ? 'active' : ''}
-              onClick={() => setBienId(b.id)}
-              style={{ whiteSpace: 'nowrap' }}
-            >
+            <button key={b.id} className={bienId === b.id ? 'active' : ''} onClick={() => setBienId(b.id)}>
               {bienLabel(b)}
             </button>
           ))}
@@ -622,8 +616,6 @@ function OperationsSection({
   posteJump,
   onChangeBien,
   onChangePoste,
-  onCategoriserAuto,
-  categorisation,
   categorisationMsg,
 }: {
   operations: OperationVM[];
@@ -632,8 +624,6 @@ function OperationsSection({
   posteJump: { poste: string; ts: number } | null;
   onChangeBien: (txId: string, bienId: string) => void;
   onChangePoste: (txId: string, posteId: string) => void;
-  onCategoriserAuto: () => void;
-  categorisation: boolean;
   categorisationMsg: string | null;
 }) {
   const [annee, setAnnee] = useState<string>('ALL');
@@ -659,12 +649,6 @@ function OperationsSection({
 
   return (
     <div className="panel">
-      <div className="panel-head">
-        <h2>Opérations</h2>
-        <button className="link-row" onClick={onCategoriserAuto} disabled={categorisation}>
-          {categorisation ? 'Catégorisation…' : 'Catégoriser automatiquement'}
-        </button>
-      </div>
       {categorisationMsg && (
         <div style={{ padding: '10px 20px', fontSize: 12.8, color: 'var(--green-700)', background: 'var(--green-100)' }}>
           {categorisationMsg}
