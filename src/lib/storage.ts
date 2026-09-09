@@ -22,6 +22,17 @@ const STORAGE_DIR = path.resolve(/*turbopackIgnore: true*/ process.env.STORAGE_D
  */
 const useBlob = !!process.env.VERCEL;
 
+/**
+ * `put()` passe par l'API centrale Vercel (qui accepte un token OIDC), mais
+ * `get()` récupère le blob directement sur l'hôte du store
+ * (`<storeId>.private.blob.vercel-storage.com`) — cet hôte n'authentifie
+ * correctement qu'avec le token `BLOB_READ_WRITE_TOKEN` classique, pas un
+ * JWT OIDC. Sans ce token explicite, l'écriture réussissait mais la lecture
+ * échouait silencieusement (photo jamais affichée). On force donc ce token
+ * pour les deux opérations afin d'utiliser le même mode d'authentification.
+ */
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
 export type StorageCategory = 'photos' | 'locataires' | 'generated' | 'edl' | 'compta';
 
 function sanitize(filename: string): string {
@@ -35,7 +46,7 @@ export async function saveFile(
   const key = `${opts.category}/${opts.scopeId}/${randomUUID()}-${sanitize(opts.filename)}`;
 
   if (useBlob) {
-    await put(key, buffer, { access: 'private', addRandomSuffix: false });
+    await put(key, buffer, { access: 'private', addRandomSuffix: false, token: blobToken });
     return key;
   }
 
@@ -47,7 +58,7 @@ export async function saveFile(
 
 export async function readStoredFile(key: string): Promise<Buffer> {
   if (useBlob) {
-    const result = await blobGet(key, { access: 'private' });
+    const result = await blobGet(key, { access: 'private', token: blobToken });
     if (!result || result.statusCode !== 200) throw new Error('Fichier introuvable');
     return Buffer.from(await new Response(result.stream).arrayBuffer());
   }
@@ -58,7 +69,7 @@ export async function readStoredFile(key: string): Promise<Buffer> {
 
 export async function deleteStoredFile(key: string): Promise<void> {
   if (useBlob) {
-    await blobDel(key).catch(() => undefined);
+    await blobDel(key, { token: blobToken }).catch(() => undefined);
     return;
   }
 

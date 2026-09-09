@@ -43,7 +43,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ key
         'Cache-Control': 'private, max-age=3600',
       },
     });
-  } catch {
+  } catch (e) {
+    console.error('readStoredFile a échoué pour', key, e);
     return new NextResponse('Fichier introuvable', { status: 404 });
   }
 }
