@@ -478,13 +478,18 @@ function ComptaPivot({
       <div className="panel-head" style={{ padding: '8px 16px' }}>
         <h2>État consolidé</h2>
       </div>
-      <div style={{ padding: '4px 16px 8px' }}>
-        <div className="toggle-pair compact" style={{ flexWrap: 'wrap', margin: 0 }}>
-          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => setBienId('ALL')}>
+      <div style={{ padding: '4px 16px 8px', overflowX: 'auto' }}>
+        <div className="toggle-pair compact" style={{ flexWrap: 'nowrap', margin: 0 }}>
+          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => setBienId('ALL')} style={{ whiteSpace: 'nowrap' }}>
             Tous les biens
           </button>
           {biens.map((b) => (
-            <button key={b.id} className={bienId === b.id ? 'active' : ''} onClick={() => setBienId(b.id)}>
+            <button
+              key={b.id}
+              className={bienId === b.id ? 'active' : ''}
+              onClick={() => setBienId(b.id)}
+              style={{ whiteSpace: 'nowrap' }}
+            >
               {bienLabel(b)}
             </button>
           ))}
@@ -665,8 +670,8 @@ function OperationsSection({
           {categorisationMsg}
         </div>
       )}
-      <div style={{ padding: '10px 16px 6px', display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-        <select value={annee} onChange={(e) => setAnnee(e.target.value)} style={{ width: 'auto' }}>
+      <div style={{ padding: '10px 16px 6px', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <select className="filter-select" value={annee} onChange={(e) => setAnnee(e.target.value)}>
           <option value="ALL">Toutes les années</option>
           {annees.map((a) => (
             <option key={a} value={a}>
@@ -674,7 +679,7 @@ function OperationsSection({
             </option>
           ))}
         </select>
-        <select value={bienId} onChange={(e) => setBienId(e.target.value)} style={{ width: 'auto' }}>
+        <select className="filter-select" value={bienId} onChange={(e) => setBienId(e.target.value)}>
           <option value="ALL">Tous les biens</option>
           {biens.map((b) => (
             <option key={b.id} value={b.id}>
@@ -682,7 +687,7 @@ function OperationsSection({
             </option>
           ))}
         </select>
-        <select value={posteNom} onChange={(e) => setPosteNom(e.target.value)} style={{ width: 'auto' }}>
+        <select className="filter-select" value={posteNom} onChange={(e) => setPosteNom(e.target.value)}>
           <option value="ALL">Tous les postes</option>
           <option value={NON_CATEGORISE}>{NON_CATEGORISE}</option>
           {postes.map((p) => (
@@ -708,11 +713,11 @@ function OperationsSection({
         {filtrees.length} opération{filtrees.length > 1 ? 's' : ''} · {formatMontant(total)}
       </div>
       <div className="table-wrap">
-        <table className="table-compact table-zebra-dark">
+        <table className="table-compact table-tight table-zebra-dark">
           <thead>
             <tr>
               <th>Date</th>
-              <th>Libellé</th>
+              <th className="col-libelle">Libellé</th>
               <th>Bien</th>
               <th>Poste</th>
               <th style={{ textAlign: 'right' }}>Montant</th>
@@ -722,7 +727,7 @@ function OperationsSection({
             {filtrees.map((t) => (
               <tr key={t.id}>
                 <td className="mono" style={{ whiteSpace: 'nowrap' }}>{formatDate(t.date)}</td>
-                <td>{t.libelle}</td>
+                <td className="col-libelle" title={t.libelle}>{t.libelle}</td>
                 <td>
                   <select
                     value={t.bienId ?? ''}
