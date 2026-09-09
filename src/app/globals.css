@@ -957,7 +957,10 @@ th.col-doc {
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  /* Au-dessus du drawer (z-index 51) : une modale ouverte depuis un tiroir de
+     détail (ex. "Modifier ce logement" depuis la fiche bien) doit toujours
+     passer au premier plan, pas rester cachée derrière lui. */
+  z-index: 60;
   padding: 20px;
 }
 .overlay.show {
