@@ -67,7 +67,6 @@ export function ComptaView({
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-  const operationsRef = useRef<HTMLDivElement>(null);
   const [compteImportId, setCompteImportId] = useState(comptes[0]?.id ?? '');
   const [importing, setImporting] = useState(false);
   const [importMsg, setImportMsg] = useState<string | null>(null);
@@ -76,10 +75,11 @@ export function ComptaView({
   const [categorisation, setCategorisation] = useState(false);
   const [categorisationMsg, setCategorisationMsg] = useState<string | null>(null);
   const [posteJump, setPosteJump] = useState<{ poste: string; ts: number } | null>(null);
+  const [tab, setTab] = useState<'consolide' | 'donnees' | 'operations' | 'recommandations'>('consolide');
 
   function jumpToPoste(poste: string) {
     setPosteJump({ poste, ts: Date.now() });
-    operationsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTab('operations');
   }
 
   async function onCategoriserAuto() {
@@ -147,18 +147,40 @@ export function ComptaView({
 
   return (
     <>
-      <ComptaPivot operations={operations} biens={biens} onPosteClick={jumpToPoste} />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 18, margin: '-8px 0 16px', fontSize: 12.8 }}>
-        <a href="#donnees" className="link-row">
-          + Ajouter des données ↓
-        </a>
-        <a href="#operations" className="link-row">
-          Voir toutes les opérations ↓
-        </a>
+      <div className="tab-row" style={{ marginBottom: 18 }}>
+        <button className={tab === 'consolide' ? 'active' : ''} onClick={() => setTab('consolide')}>
+          État consolidé
+        </button>
+        <button className={tab === 'donnees' ? 'active' : ''} onClick={() => setTab('donnees')}>
+          Ajouter des données
+        </button>
+        <button className={tab === 'operations' ? 'active' : ''} onClick={() => setTab('operations')}>
+          Opérations
+        </button>
+        <button className={tab === 'recommandations' ? 'active' : ''} onClick={() => setTab('recommandations')}>
+          Recommandations
+          {recommandations.length > 0 && (
+            <span
+              style={{
+                marginLeft: 6,
+                background: 'var(--brick)',
+                color: '#fff',
+                fontSize: 10.5,
+                fontWeight: 700,
+                padding: '1px 6px',
+                borderRadius: 20,
+              }}
+            >
+              {recommandations.length}
+            </span>
+          )}
+        </button>
       </div>
 
-      <div id="donnees" className="panel" style={{ marginBottom: 20 }}>
+      {tab === 'consolide' && <ComptaPivot operations={operations} biens={biens} onPosteClick={jumpToPoste} />}
+
+      {tab === 'donnees' && (
+      <div className="panel">
         <div className="panel-head">
           <h2>Ajouter des données</h2>
         </div>
@@ -237,8 +259,9 @@ export function ComptaView({
           </div>
         </div>
       </div>
+      )}
 
-      <div id="operations" ref={operationsRef}>
+      {tab === 'operations' && (
         <OperationsSection
           operations={operations}
           postes={postes}
@@ -250,9 +273,10 @@ export function ComptaView({
           categorisation={categorisation}
           categorisationMsg={categorisationMsg}
         />
-      </div>
+      )}
 
-      <div className="panel" style={{ marginTop: 20 }}>
+      {tab === 'recommandations' && (
+      <div className="panel">
         <div className="panel-head">
           <h2>Recommandations</h2>
         </div>
@@ -273,6 +297,7 @@ export function ComptaView({
           )}
         </div>
       </div>
+      )}
     </>
   );
 }
