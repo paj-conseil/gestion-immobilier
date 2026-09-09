@@ -693,12 +693,18 @@ th.col-doc {
   font-size: 12px;
 }
 .doc-dot {
-  width: 7px;
-  height: 7px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
 }
 .doc-dot.ok {
   background: var(--green-600);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.doc-dot.ok:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px var(--green-100);
 }
 .doc-dot.miss {
   background: var(--brick);

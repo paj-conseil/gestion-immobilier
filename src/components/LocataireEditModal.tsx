@@ -44,10 +44,22 @@ export const DOC_TYPES: { type: string; label: string }[] = [
 
 export function DocStatus({ doc, label }: { doc?: DocVM; label: string }) {
   const ok = doc?.statut === 'RECU';
+  if (ok && doc?.fileUrl) {
+    return (
+      <a
+        href={fileUrl(doc.fileUrl)}
+        target="_blank"
+        rel="noreferrer"
+        className="doc-dot ok"
+        title={`${label} : reçue — cliquer pour ouvrir le document`}
+        style={{ display: 'inline-block' }}
+      />
+    );
+  }
   return (
     <span
-      className={`doc-dot ${ok ? 'ok' : 'miss'}`}
-      title={`${label} : ${ok ? 'reçue' : 'manquante'}`}
+      className="doc-dot miss"
+      title={`${label} : manquante`}
       style={{ display: 'inline-block' }}
     />
   );
