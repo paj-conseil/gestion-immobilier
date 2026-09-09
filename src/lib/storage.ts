@@ -8,15 +8,19 @@ const STORAGE_DIR = path.resolve(/*turbopackIgnore: true*/ process.env.STORAGE_D
 
 /**
  * Deux backends selon l'environnement :
- * - Vercel Blob si `BLOB_READ_WRITE_TOKEN` est présent (production — Vercel
- *   n'a pas de disque persistant pour les fonctions serverless).
+ * - Vercel Blob quand le code tourne sur Vercel (`process.env.VERCEL`,
+ *   toujours défini par la plateforme) — Vercel n'a pas de disque persistant
+ *   pour les fonctions serverless, donc le disque local n'y fonctionne
+ *   jamais. On ne teste pas la présence de BLOB_READ_WRITE_TOKEN car les
+ *   projets connectés en OIDC (le mode par défaut désormais) peuvent
+ *   authentifier le SDK sans cette variable précise.
  * - Disque local sinon (dev, plus simple, aucun compte à configurer).
  * Dans les deux cas la "clé" retournée/stockée en base a le même format
  * `<category>/<scopeId>/<uuid>-<nom>` — l'accès passe toujours par
  * /api/files/[...key] qui vérifie le périmètre de l'utilisateur avant de
  * streamer le contenu (les blobs sont en accès `private`, jamais publics).
  */
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+const useBlob = !!process.env.VERCEL;
 
 export type StorageCategory = 'photos' | 'locataires' | 'generated' | 'edl' | 'compta';
 
