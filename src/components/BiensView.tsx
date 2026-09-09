@@ -210,8 +210,8 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
             >
               <div className="bien-photo" style={{ background: b.photos[0] ? undefined : b.couleur ?? 'var(--green-700)' }}>
                 {b.photos[0] ? <img src={fileUrl(b.photos[0].url)} alt={b.adresse} /> : <IconBiens />}
+                <span className={`status-pill ${STATUT_CLASS[b.statut]}`}>{STATUT_LABEL[b.statut]}</span>
               </div>
-              <span className={`status-pill ${STATUT_CLASS[b.statut]}`}>{STATUT_LABEL[b.statut]}</span>
               <div className="bien-body">
                 <div className="addr">{b.adresse}</div>
                 <div className="type">{sousTitre(b)}</div>
