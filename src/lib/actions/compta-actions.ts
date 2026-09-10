@@ -211,3 +211,38 @@ export async function deleteTransaction(transactionId: string): Promise<void> {
   await prisma.transaction.delete({ where: { id: transactionId } });
   revalidatePath('/compta');
 }
+
+/**
+ * Supprime les doublons déjà présents en base (même empreinte que celle
+ * utilisée à l'import : compte + date + libellé + montant), par exemple issus
+ * d'un import répété avant la mise en place de la détection automatique. Ne
+ * conserve que la transaction la plus ancienne (createdAt) de chaque groupe.
+ */
+export async function supprimerDoublons(): Promise<{ ok: true; nbSupprimees: number } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const transactions = await prisma.transaction.findMany({
+    where: { compte: { scopeId: ctx.scopeId } },
+    select: { id: true, compteId: true, date: true, libelle: true, montant: true },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  const empreinte = (t: { compteId: string; date: Date; libelle: string; montant: number }) =>
+    `${t.compteId}|${t.date.toISOString().slice(0, 10)}|${t.libelle.trim().toLowerCase()}|${t.montant.toFixed(2)}`;
+
+  const vues = new Set<string>();
+  const aSupprimer: string[] = [];
+  for (const t of transactions) {
+    const clef = empreinte(t);
+    if (vues.has(clef)) {
+      aSupprimer.push(t.id);
+    } else {
+      vues.add(clef);
+    }
+  }
+
+  if (aSupprimer.length > 0) {
+    await prisma.transaction.deleteMany({ where: { id: { in: aSupprimer } } });
+    revalidatePath('/compta');
+  }
+  return { ok: true, nbSupprimees: aSupprimer.length };
+}

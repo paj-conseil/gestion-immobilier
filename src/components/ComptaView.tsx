@@ -9,8 +9,10 @@ import {
   importReleve,
   updateTransaction,
   categoriserAutomatiquement,
+  deleteTransaction,
+  supprimerDoublons,
 } from '@/lib/actions/compta-actions';
-import { IconPlus, IconUpload, IconWarning } from '@/components/icons';
+import { IconPlus, IconUpload, IconWarning, IconClose } from '@/components/icons';
 
 type CompteVM = { id: string; banque: string; libelle: string };
 type PosteVM = { id: string; nom: string; type: string };
@@ -67,6 +69,7 @@ export function ComptaView({
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
+  const actionsMenuRef = useRef<HTMLDivElement>(null);
   const [compteImportId, setCompteImportId] = useState(comptes[0]?.id ?? '');
   const [importing, setImporting] = useState(false);
   const [importMsg, setImportMsg] = useState<string | null>(null);
@@ -74,6 +77,8 @@ export function ComptaView({
   const [showManuel, setShowManuel] = useState(false);
   const [categorisation, setCategorisation] = useState(false);
   const [categorisationMsg, setCategorisationMsg] = useState<string | null>(null);
+  const [dedupLoading, setDedupLoading] = useState(false);
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [posteJump, setPosteJump] = useState<{ poste: string; ts: number } | null>(null);
   const [tab, setTab] = useState<'consolide' | 'donnees' | 'operations' | 'recommandations'>('consolide');
 
@@ -81,6 +86,17 @@ export function ComptaView({
     setPosteJump({ poste, ts: Date.now() });
     setTab('operations');
   }
+
+  useEffect(() => {
+    if (!showActionsMenu) return;
+    function onClickOutside(e: MouseEvent) {
+      if (actionsMenuRef.current && !actionsMenuRef.current.contains(e.target as Node)) {
+        setShowActionsMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [showActionsMenu]);
 
   async function onCategoriserAuto() {
     setCategorisation(true);
@@ -101,6 +117,37 @@ export function ComptaView({
       setCategorisationMsg(e instanceof Error ? e.message : 'Une erreur est survenue');
     } finally {
       setCategorisation(false);
+    }
+  }
+
+  async function onSupprimerDoublons() {
+    if (!confirm('Supprimer les opérations en doublon (même compte, date, libellé et montant) ? Seule la plus ancienne de chaque groupe est conservée.')) return;
+    setDedupLoading(true);
+    setCategorisationMsg(null);
+    try {
+      const res = await supprimerDoublons();
+      if ('error' in res) {
+        setCategorisationMsg(res.error);
+        return;
+      }
+      setCategorisationMsg(
+        res.nbSupprimees > 0 ? `${res.nbSupprimees} doublon(s) supprimé(s).` : 'Aucun doublon trouvé.',
+      );
+      router.refresh();
+    } catch (e) {
+      setCategorisationMsg(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setDedupLoading(false);
+    }
+  }
+
+  async function onDeleteTransaction(txId: string) {
+    if (!confirm('Supprimer cette opération ?')) return;
+    try {
+      await deleteTransaction(txId);
+      router.refresh();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Une erreur est survenue');
     }
   }
 
@@ -176,14 +223,34 @@ export function ComptaView({
           )}
         </button>
         {tab === 'operations' && (
-          <button
-            className="link-row"
-            style={{ marginLeft: 'auto', alignSelf: 'center', flexShrink: 0 }}
-            onClick={onCategoriserAuto}
-            disabled={categorisation}
-          >
-            {categorisation ? 'Catégorisation…' : 'Catégoriser automatiquement'}
-          </button>
+          <div className="actions-menu" style={{ marginLeft: 'auto', alignSelf: 'center', flexShrink: 0 }} ref={actionsMenuRef}>
+            <button className="link-row" onClick={() => setShowActionsMenu((v) => !v)}>
+              Actions ▾
+            </button>
+            {showActionsMenu && (
+              <div className="actions-menu-list">
+                <button
+                  onClick={() => {
+                    setShowActionsMenu(false);
+                    onCategoriserAuto();
+                  }}
+                  disabled={categorisation}
+                >
+                  {categorisation ? 'Catégorisation…' : 'Catégoriser automatiquement'}
+                </button>
+                <button
+                  className="danger"
+                  onClick={() => {
+                    setShowActionsMenu(false);
+                    onSupprimerDoublons();
+                  }}
+                  disabled={dedupLoading}
+                >
+                  {dedupLoading ? 'Suppression…' : 'Supprimer les doublons'}
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -276,6 +343,7 @@ export function ComptaView({
           posteJump={posteJump}
           onChangeBien={onChangeBien}
           onChangePoste={onChangePoste}
+          onDelete={onDeleteTransaction}
           categorisationMsg={categorisationMsg}
         />
       )}
@@ -609,6 +677,8 @@ function ComptaPivot({
   );
 }
 
+type SortCol = 'date' | 'libelle' | 'bien' | 'poste' | 'montant';
+
 function OperationsSection({
   operations,
   postes,
@@ -616,6 +686,7 @@ function OperationsSection({
   posteJump,
   onChangeBien,
   onChangePoste,
+  onDelete,
   categorisationMsg,
 }: {
   operations: OperationVM[];
@@ -624,11 +695,13 @@ function OperationsSection({
   posteJump: { poste: string; ts: number } | null;
   onChangeBien: (txId: string, bienId: string) => void;
   onChangePoste: (txId: string, posteId: string) => void;
+  onDelete: (txId: string) => void;
   categorisationMsg: string | null;
 }) {
   const [annee, setAnnee] = useState<string>('ALL');
   const [bienId, setBienId] = useState<string>('ALL');
   const [posteNom, setPosteNom] = useState<string>('ALL');
+  const [sort, setSort] = useState<{ col: SortCol; dir: 'asc' | 'desc' }>({ col: 'date', dir: 'desc' });
 
   useEffect(() => {
     if (!posteJump) return;
@@ -636,6 +709,10 @@ function OperationsSection({
     setAnnee('ALL');
     setBienId('ALL');
   }, [posteJump]);
+
+  function toggleSort(col: SortCol) {
+    setSort((s) => (s.col === col ? { col, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { col, dir: 'asc' }));
+  }
 
   const annees = [...new Set(operations.map((t) => new Date(t.date).getFullYear()))].sort((a, b) => b - a);
 
@@ -646,6 +723,32 @@ function OperationsSection({
     return true;
   });
   const total = filtrees.reduce((s, t) => s + t.montant, 0);
+
+  const valeurTri = (t: OperationVM): string | number => {
+    switch (sort.col) {
+      case 'date':
+        return new Date(t.date).getTime();
+      case 'libelle':
+        return t.libelle.trim().toLowerCase();
+      case 'bien':
+        return t.bien ? bienLabel(t.bien).toLowerCase() : '';
+      case 'poste':
+        return (t.poste?.nom ?? NON_CATEGORISE).toLowerCase();
+      case 'montant':
+        return t.montant;
+    }
+  };
+  const triees = [...filtrees].sort((a, b) => {
+    const va = valeurTri(a);
+    const vb = valeurTri(b);
+    const cmp = typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb));
+    return sort.dir === 'asc' ? cmp : -cmp;
+  });
+
+  function sortArrow(col: SortCol) {
+    if (sort.col !== col) return null;
+    return <span className="sort-arrow">{sort.dir === 'asc' ? '▲' : '▼'}</span>;
+  }
 
   return (
     <div className="panel">
@@ -700,15 +803,26 @@ function OperationsSection({
         <table className="table-compact table-tight table-zebra-dark">
           <thead>
             <tr>
-              <th>Date</th>
-              <th className="col-libelle">Libellé</th>
-              <th>Bien</th>
-              <th>Poste</th>
-              <th style={{ textAlign: 'right' }}>Montant</th>
+              <th className="sortable-th" onClick={() => toggleSort('date')}>
+                Date{sortArrow('date')}
+              </th>
+              <th className="col-libelle sortable-th" onClick={() => toggleSort('libelle')}>
+                Libellé{sortArrow('libelle')}
+              </th>
+              <th className="sortable-th" onClick={() => toggleSort('bien')}>
+                Bien{sortArrow('bien')}
+              </th>
+              <th className="sortable-th" onClick={() => toggleSort('poste')}>
+                Poste{sortArrow('poste')}
+              </th>
+              <th className="sortable-th" style={{ textAlign: 'right' }} onClick={() => toggleSort('montant')}>
+                Montant{sortArrow('montant')}
+              </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {filtrees.map((t) => (
+            {triees.map((t) => (
               <tr key={t.id}>
                 <td className="mono" style={{ whiteSpace: 'nowrap' }}>{formatDate(t.date)}</td>
                 <td className="col-libelle" title={t.libelle}>{t.libelle}</td>
@@ -744,11 +858,20 @@ function OperationsSection({
                   {t.montant >= 0 ? '+' : ''}
                   {formatMontant(t.montant, { decimals: true })}
                 </td>
+                <td style={{ textAlign: 'center', padding: '2px 4px' }}>
+                  <button
+                    className="icon-btn small danger"
+                    title="Supprimer cette opération"
+                    onClick={() => onDelete(t.id)}
+                  >
+                    <IconClose />
+                  </button>
+                </td>
               </tr>
             ))}
-            {filtrees.length === 0 && (
+            {triees.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ color: 'var(--ink-soft)' }}>
+                <td colSpan={6} style={{ color: 'var(--ink-soft)' }}>
                   Aucune opération pour ces filtres.
                 </td>
               </tr>
