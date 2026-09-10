@@ -496,6 +496,13 @@ function ManuelForm({
   );
 }
 
+const CAUTION_NOM = 'Caution (encaissement / remboursement)';
+const VIREMENT_NOM = 'Virement interne';
+// Postes affichés à part sous le Total, exclus de son calcul : les virements
+// internes (entre comptes du même périmètre) et les cautions (dépôt de
+// garantie) ne sont ni des revenus ni des charges réels.
+const HORS_TOTAL = [VIREMENT_NOM, CAUTION_NOM];
+
 function ComptaPivot({
   operations,
   biens,
@@ -519,23 +526,21 @@ function ComptaPivot({
     const m = parPoste.get(nom)!;
     m.set(annee, (m.get(annee) ?? 0) + t.montant);
   }
-  // Les virements internes (entre comptes du même périmètre) s'affichent à
-  // part, sous le Total — ce ne sont ni des revenus ni des charges réels, ils
-  // ne doivent donc pas entrer dans son calcul.
   const postesTries = [...parPoste.keys()]
-    .filter((nom) => nom !== 'Virement interne')
+    .filter((nom) => !HORS_TOTAL.includes(nom))
     .sort((a, b) => ordrePoste(a) - ordrePoste(b) || a.localeCompare(b));
-  const virementsInternes = parPoste.get('Virement interne');
+  const virementsInternes = parPoste.get(VIREMENT_NOM);
+  const cautions = parPoste.get(CAUTION_NOM);
 
   // Le graphique Revenus/Charges ne retient que les postes de loyers/charges
-  // réels (type REVENU ou CHARGE) — il exclut les virements internes et les
+  // réels (type REVENU ou CHARGE) — il exclut les postes hors total et les
   // transactions non catégorisées, qui fausseraient la lecture (ex. déblocage
   // de prêt à l'achat, compté comme une grosse entrée ponctuelle).
   const totalParAnnee = new Map<number, number>();
   const revenusParAnnee = new Map<number, number>();
   const chargesParAnnee = new Map<number, number>();
   for (const t of filtrees) {
-    if (t.poste?.nom === 'Virement interne') continue;
+    if (HORS_TOTAL.includes(t.poste?.nom ?? '')) continue;
     const annee = new Date(t.date).getFullYear();
     totalParAnnee.set(annee, (totalParAnnee.get(annee) ?? 0) + t.montant);
     if (t.poste?.type === 'REVENU') revenusParAnnee.set(annee, (revenusParAnnee.get(annee) ?? 0) + t.montant);
@@ -548,16 +553,14 @@ function ComptaPivot({
   return (
     <div className="panel">
       <div style={{ padding: '10px 16px 8px' }}>
-        <div className="chip-row">
-          <button className={bienId === 'ALL' ? 'active' : ''} onClick={() => setBienId('ALL')}>
-            Tous les biens
-          </button>
+        <select className="filter-select" value={bienId} onChange={(e) => setBienId(e.target.value)}>
+          <option value="ALL">Tous les biens</option>
           {biens.map((b) => (
-            <button key={b.id} className={bienId === b.id ? 'active' : ''} onClick={() => setBienId(b.id)}>
+            <option key={b.id} value={b.id}>
               {bienLabel(b)}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
       <div className="panel-body">
         {annees.length === 0 ? (
@@ -568,7 +571,7 @@ function ComptaPivot({
               <table className="table-compact table-zebra-dark">
                 <thead>
                   <tr>
-                    <th style={{ whiteSpace: 'nowrap' }}>Poste</th>
+                    <th className="sticky-col" style={{ whiteSpace: 'nowrap' }}>Poste</th>
                     {annees.map((a) => (
                       <th key={a} style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                         {a}
@@ -585,7 +588,7 @@ function ComptaPivot({
                       style={{ cursor: 'pointer' }}
                       title="Cliquer pour voir le détail des opérations de ce poste"
                     >
-                      <td style={{ whiteSpace: 'nowrap' }}>
+                      <td className="sticky-col" style={{ whiteSpace: 'nowrap' }}>
                         <span className="link-row">{nom}</span>
                       </td>
                       {annees.map((a) => {
@@ -602,7 +605,7 @@ function ComptaPivot({
                     </tr>
                   ))}
                   <tr style={{ borderTop: '2px solid var(--line)' }}>
-                    <td style={{ fontWeight: 700 }}>Total</td>
+                    <td className="sticky-col" style={{ fontWeight: 700 }}>Total</td>
                     {annees.map((a) => {
                       const v = totalParAnnee.get(a) ?? 0;
                       return (
@@ -615,9 +618,27 @@ function ComptaPivot({
                       {formatMontant([...totalParAnnee.values()].reduce((s, v) => s + v, 0))}
                     </td>
                   </tr>
+                  {cautions && (
+                    <tr>
+                      <td className="sticky-col" style={{ whiteSpace: 'nowrap', fontStyle: 'italic', color: 'var(--ink-soft)' }}>
+                        Caution (hors total)
+                      </td>
+                      {annees.map((a) => {
+                        const v = cautions.get(a) ?? 0;
+                        return (
+                          <td key={a} className="mono" style={{ textAlign: 'right', fontStyle: 'italic', color: 'var(--ink-soft)' }}>
+                            {v !== 0 ? formatMontant(v, { decimals: false }) : '—'}
+                          </td>
+                        );
+                      })}
+                      <td className="mono" style={{ textAlign: 'right', fontStyle: 'italic', color: 'var(--ink-soft)' }}>
+                        {formatMontant([...cautions.values()].reduce((s, v) => s + v, 0))}
+                      </td>
+                    </tr>
+                  )}
                   {virementsInternes && (
                     <tr>
-                      <td style={{ whiteSpace: 'nowrap', fontStyle: 'italic', color: 'var(--ink-soft)' }}>
+                      <td className="sticky-col" style={{ whiteSpace: 'nowrap', fontStyle: 'italic', color: 'var(--ink-soft)' }}>
                         Virement interne (hors total)
                       </td>
                       {annees.map((a) => {
