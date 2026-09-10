@@ -194,36 +194,38 @@ export function ComptaView({
 
   return (
     <>
-      <div className="tab-row" style={{ marginBottom: 18 }}>
-        <button className={tab === 'consolide' ? 'active' : ''} onClick={() => setTab('consolide')}>
-          État consolidé
-        </button>
-        <button className={tab === 'donnees' ? 'active' : ''} onClick={() => setTab('donnees')}>
-          Ajouter des données
-        </button>
-        <button className={tab === 'operations' ? 'active' : ''} onClick={() => setTab('operations')}>
-          Opérations
-        </button>
-        <button className={tab === 'recommandations' ? 'active' : ''} onClick={() => setTab('recommandations')}>
-          Recommandations
-          {recommandations.length > 0 && (
-            <span
-              style={{
-                marginLeft: 6,
-                background: 'var(--brick)',
-                color: '#fff',
-                fontSize: 10.5,
-                fontWeight: 700,
-                padding: '1px 6px',
-                borderRadius: 20,
-              }}
-            >
-              {recommandations.length}
-            </span>
-          )}
-        </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
+        <div className="tab-row" style={{ marginBottom: 0, flex: 1, minWidth: 0 }}>
+          <button className={tab === 'consolide' ? 'active' : ''} onClick={() => setTab('consolide')}>
+            État consolidé
+          </button>
+          <button className={tab === 'donnees' ? 'active' : ''} onClick={() => setTab('donnees')}>
+            Ajouter des données
+          </button>
+          <button className={tab === 'operations' ? 'active' : ''} onClick={() => setTab('operations')}>
+            Opérations
+          </button>
+          <button className={tab === 'recommandations' ? 'active' : ''} onClick={() => setTab('recommandations')}>
+            Recommandations
+            {recommandations.length > 0 && (
+              <span
+                style={{
+                  marginLeft: 6,
+                  background: 'var(--brick)',
+                  color: '#fff',
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  padding: '1px 6px',
+                  borderRadius: 20,
+                }}
+              >
+                {recommandations.length}
+              </span>
+            )}
+          </button>
+        </div>
         {tab === 'operations' && (
-          <div className="actions-menu" style={{ marginLeft: 'auto', alignSelf: 'center', flexShrink: 0 }} ref={actionsMenuRef}>
+          <div className="actions-menu" style={{ flexShrink: 0 }} ref={actionsMenuRef}>
             <button className="link-row" onClick={() => setShowActionsMenu((v) => !v)}>
               Actions ▾
             </button>
