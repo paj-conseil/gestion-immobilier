@@ -1,4 +1,4 @@
-import { Document, Page, Text, View } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
 import { formatDate } from '@/lib/format';
@@ -21,6 +21,8 @@ export type ContratData = {
   indiceIRLReference?: string | null;
   dateEmission: Date;
   garant?: { nom: string; adresse: string; nationalite?: string } | null;
+  /** Signature manuscrite du/des locataire(s), capturée à l'écran (data URI PNG). */
+  signatureLocataire?: string | null;
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -323,7 +325,10 @@ export function ContratDoc({ data }: { data: ContratData }) {
           <View style={styles.signatureBlock}>
             <Text style={styles.small}>Le(s) locataire(s)</Text>
             <Text style={styles.small}>« Bon pour accord, lu et approuvé »</Text>
-            <Text style={styles.signatureLine}>{data.locatairesNoms}</Text>
+            {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
+            <Text style={[styles.signatureLine, data.signatureLocataire ? { marginTop: 4 } : {}]}>
+              {data.locatairesNoms}
+            </Text>
           </View>
           <View style={styles.signatureBlock}>
             <Text style={styles.small}>Le bailleur</Text>

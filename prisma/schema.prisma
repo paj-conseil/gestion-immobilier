@@ -212,6 +212,13 @@ model DocumentGenere {
   periode     String?
   fileUrl     String
   genereLe    DateTime   @default(now())
+  /// Données ayant servi à générer le PDF (CONTRAT / CAUTIONNEMENT uniquement)
+  /// — permet de régénérer le document avec la signature incrustée sans
+  /// dépendre des données live (bien/bail), qui peuvent avoir changé depuis.
+  dataJson     Json?
+  signeLe      DateTime?
+  signePar     String?
+  signatureUrl String?
 
   emails EmailLog[]
 }

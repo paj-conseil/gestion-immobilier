@@ -2,10 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { generateDocument, sendGeneratedDocument } from '@/lib/actions/document-actions';
+import { generateDocument, sendGeneratedDocument, signerDocument } from '@/lib/actions/document-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { fileUrl } from '@/lib/file-url';
 import { IconCheck, IconDocuments, IconEdl, IconReceipt, IconSend, IconShield, IconTrend } from '@/components/icons';
+import { SignaturePad } from '@/components/SignaturePad';
+
+const TYPES_SIGNABLES = ['CONTRAT', 'CAUTIONNEMENT'];
 
 type LocataireVM = { id: string; nom: string; prenom: string; email?: string | null };
 type BienVM = {
@@ -48,12 +51,20 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
   const [type, setType] = useState('CONTRAT');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [generated, setGenerated] = useState<{ documentGenereId: string; fileUrl: string } | null>(null);
+  const [generated, setGenerated] = useState<{
+    documentGenereId: string;
+    fileUrl: string;
+    type: string;
+    signeLe: string | null;
+  } | null>(null);
 
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<string | null>(null);
   const [destinataire, setDestinataire] = useState('');
   const [corps, setCorps] = useState('');
+
+  const [signing, setSigning] = useState(false);
+  const [signError, setSignError] = useState<string | null>(null);
 
   const bien = biens.find((b) => b.id === bienId);
   const locataires = useMemo(
@@ -69,6 +80,7 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
     setSendResult(null);
     setDestinataire('');
     setCorps('');
+    setSignError(null);
   }
 
   async function onGenerate(e: React.FormEvent<HTMLFormElement>) {
@@ -84,7 +96,7 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
         setError(res.error);
         return;
       }
-      setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl });
+      setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl, type, signeLe: null });
       const nomDest = currentLocataire ? `${currentLocataire.prenom} ${currentLocataire.nom}` : 'Madame, Monsieur';
       setDestinataire(res.destinataireEmail ?? '');
       setCorps(
@@ -115,6 +127,27 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
       setSendResult(`Erreur : ${e instanceof Error ? e.message : 'Une erreur est survenue'}`);
     } finally {
       setSending(false);
+    }
+  }
+
+  async function onSign(signatureDataUrl: string, nom: string) {
+    if (!generated) return;
+    setSigning(true);
+    setSignError(null);
+    const fd = new FormData();
+    fd.set('signature', signatureDataUrl);
+    fd.set('signePar', nom);
+    try {
+      const res = await signerDocument(generated.documentGenereId, fd);
+      if ('error' in res) {
+        setSignError(res.error);
+        return;
+      }
+      setGenerated((g) => (g ? { ...g, fileUrl: res.fileUrl, signeLe: new Date().toISOString() } : g));
+    } catch (e) {
+      setSignError(e instanceof Error ? e.message : 'Une erreur est survenue');
+    } finally {
+      setSigning(false);
     }
   }
 
@@ -300,6 +333,34 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
             <a className="btn" href={fileUrl(generated.fileUrl)} target="_blank" rel="noreferrer" style={{ marginBottom: 20, display: 'inline-flex' }}>
               Ouvrir dans un nouvel onglet
             </a>
+
+            {TYPES_SIGNABLES.includes(generated.type) && (
+              <div style={{ borderTop: '1px solid var(--line)', margin: '4px 0 20px', paddingTop: 16 }}>
+                <h3 style={{ fontSize: 14, margin: '0 0 10px' }}>Signature électronique</h3>
+                {generated.signeLe ? (
+                  <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
+                    <span className="txt">Document signé le {formatDate(generated.signeLe)}.</span>
+                  </div>
+                ) : (
+                  <>
+                    <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
+                      Faites signer {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} directement sur cet
+                      écran, puis le document ci-dessus sera automatiquement mis à jour avec la signature incrustée.
+                    </p>
+                    {signError && <div className="auth-error">{signError}</div>}
+                    <SignaturePad
+                      defaultName={
+                        type === 'CONTRAT' && currentLocataire
+                          ? `${currentLocataire.prenom} ${currentLocataire.nom}`
+                          : ''
+                      }
+                      onSubmit={onSign}
+                      submitting={signing}
+                    />
+                  </>
+                )}
+              </div>
+            )}
 
             <h3 style={{ fontSize: 14, margin: '4px 0 12px' }}>4. Envoyer par email</h3>
             {sendResult && (

@@ -114,6 +114,12 @@ export const styles = StyleSheet.create({
     fontSize: 8.5,
     color: '#5B665C',
   },
+  signatureImg: {
+    height: 46,
+    maxWidth: '100%',
+    marginTop: 8,
+    objectFit: 'contain',
+  },
   footer: {
     position: 'absolute',
     bottom: 24,

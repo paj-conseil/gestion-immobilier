@@ -8,8 +8,8 @@ import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { sendMail } from '@/lib/email';
 import { QuittanceDoc } from '@/lib/documents/pdf/QuittanceDoc';
-import { ContratDoc } from '@/lib/documents/pdf/ContratDoc';
-import { CautionnementDoc } from '@/lib/documents/pdf/CautionnementDoc';
+import { ContratDoc, type ContratData } from '@/lib/documents/pdf/ContratDoc';
+import { CautionnementDoc, type CautionnementData } from '@/lib/documents/pdf/CautionnementDoc';
 import { DepotGarantieDoc } from '@/lib/documents/pdf/DepotGarantieDoc';
 import { RevisionLoyerDoc } from '@/lib/documents/pdf/RevisionLoyerDoc';
 import type { TypeDocumentGenere } from '@/lib/enums';
@@ -54,6 +54,9 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
 
   let pdfBuffer: Buffer;
   let periode: string | undefined;
+  // Conservé pour CONTRAT/CAUTIONNEMENT afin de pouvoir régénérer le PDF avec
+  // la signature incrustée plus tard, sans dépendre des données live.
+  let dataJson: ContratData | CautionnementData | undefined;
 
   try {
     switch (type) {
@@ -86,29 +89,27 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
         const garantNom = String(formData.get('garantNom') ?? '');
         const garantAdresse = String(formData.get('garantAdresse') ?? '');
         const garantNationalite = String(formData.get('garantNationalite') ?? '') || undefined;
-        pdfBuffer = await renderPdf(
-          ContratDoc({
-            data: {
-              bienAdresse: bienLabel(bien),
-              bienCodePostal: bien.codePostal,
-              bienVille: bien.ville,
-              bienSurface: bien.surface,
-              bienType: bien.type,
-              bienDescription: bien.description,
-              bienNumeroCompteur: bien.numeroCompteur,
-              bienTelephone: bien.telephone,
-              locatairesNoms,
-              loyerHC: location.loyerHC,
-              charges: location.charges,
-              depotGarantie: location.depotGarantie,
-              dateDebut: location.dateDebut,
-              dateFin: location.dateFin,
-              indiceIRLReference: location.indiceIRLReference,
-              dateEmission: new Date(),
-              garant: garantNom && garantAdresse ? { nom: garantNom, adresse: garantAdresse, nationalite: garantNationalite } : null,
-            },
-          }),
-        );
+        const contratData: ContratData = {
+          bienAdresse: bienLabel(bien),
+          bienCodePostal: bien.codePostal,
+          bienVille: bien.ville,
+          bienSurface: bien.surface,
+          bienType: bien.type,
+          bienDescription: bien.description,
+          bienNumeroCompteur: bien.numeroCompteur,
+          bienTelephone: bien.telephone,
+          locatairesNoms,
+          loyerHC: location.loyerHC,
+          charges: location.charges,
+          depotGarantie: location.depotGarantie,
+          dateDebut: location.dateDebut,
+          dateFin: location.dateFin,
+          indiceIRLReference: location.indiceIRLReference,
+          dateEmission: new Date(),
+          garant: garantNom && garantAdresse ? { nom: garantNom, adresse: garantAdresse, nationalite: garantNationalite } : null,
+        };
+        dataJson = contratData;
+        pdfBuffer = await renderPdf(ContratDoc({ data: contratData }));
         break;
       }
       case 'CAUTIONNEMENT': {
@@ -118,24 +119,22 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
         const garantDateNaissance = String(formData.get('garantDateNaissance') ?? '') || undefined;
         const garantLieuNaissance = String(formData.get('garantLieuNaissance') ?? '') || undefined;
         if (!garantNom || !garantAdresse) return { error: 'Nom et adresse du garant requis' };
-        pdfBuffer = await renderPdf(
-          CautionnementDoc({
-            data: {
-              garantNom,
-              garantAdresse,
-              garantDateNaissance,
-              garantLieuNaissance,
-              locatairesNoms,
-              bienAdresse: bienLabel(bien),
-              bienCodePostal: bien.codePostal,
-              bienVille: bien.ville,
-              loyerHC: location.loyerHC,
-              charges: location.charges,
-              dateDebut: location.dateDebut,
-              dateEmission: new Date(),
-            },
-          }),
-        );
+        const cautionnementData: CautionnementData = {
+          garantNom,
+          garantAdresse,
+          garantDateNaissance,
+          garantLieuNaissance,
+          locatairesNoms,
+          bienAdresse: bienLabel(bien),
+          bienCodePostal: bien.codePostal,
+          bienVille: bien.ville,
+          loyerHC: location.loyerHC,
+          charges: location.charges,
+          dateDebut: location.dateDebut,
+          dateEmission: new Date(),
+        };
+        dataJson = cautionnementData;
+        pdfBuffer = await renderPdf(CautionnementDoc({ data: cautionnementData }));
         break;
       }
       case 'DEPOT_GARANTIE': {
@@ -202,6 +201,9 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
       locataireId: locataire?.id,
       periode,
       fileUrl: key,
+      // JSON.stringify/parse convertit les Date en chaînes ISO, seul format
+      // accepté par le champ Json — reconverties en Date dans signerDocument.
+      dataJson: dataJson ? JSON.parse(JSON.stringify(dataJson)) : undefined,
     },
   });
 
@@ -246,4 +248,66 @@ export async function sendGeneratedDocument(documentGenereId: string, formData: 
   revalidatePath('/documents');
   if (!result.ok) return { ok: true, emailStatus: 'ECHEC', emailError: result.error };
   return { ok: true, emailStatus: 'ENVOYE' };
+}
+
+export type SignResult = { ok: true; fileUrl: string } | { error: string };
+
+/**
+ * Régénère le PDF d'un document CONTRAT/CAUTIONNEMENT en y incrustant une
+ * signature manuscrite capturée à l'écran, à partir des données exactes
+ * ayant servi à la génération initiale (dataJson) plutôt que des données
+ * live (bien/bail), qui ont pu changer depuis (loyer révisé, etc.).
+ */
+export async function signerDocument(documentGenereId: string, formData: FormData): Promise<SignResult> {
+  const ctx = await getCurrentContext();
+  const doc = await prisma.documentGenere.findFirst({ where: { id: documentGenereId, scopeId: ctx.scopeId } });
+  if (!doc) return { error: 'Document introuvable' };
+  if (!doc.dataJson) return { error: 'Ce document ne peut pas être signé électroniquement.' };
+
+  const signature = String(formData.get('signature') ?? '');
+  const signePar = String(formData.get('signePar') ?? '').trim();
+  if (!signature.startsWith('data:image/')) return { error: 'Signature invalide' };
+  if (!signePar) return { error: 'Le nom du signataire est requis' };
+
+  const raw = doc.dataJson as Record<string, unknown>;
+
+  let pdfBuffer: Buffer;
+  try {
+    if (doc.type === 'CONTRAT') {
+      const data: ContratData = {
+        ...(raw as unknown as ContratData),
+        dateDebut: new Date(raw.dateDebut as string),
+        dateFin: raw.dateFin ? new Date(raw.dateFin as string) : null,
+        dateEmission: new Date(raw.dateEmission as string),
+        signatureLocataire: signature,
+      };
+      pdfBuffer = await renderPdf(ContratDoc({ data }));
+    } else if (doc.type === 'CAUTIONNEMENT') {
+      const data: CautionnementData = {
+        ...(raw as unknown as CautionnementData),
+        dateDebut: new Date(raw.dateDebut as string),
+        dateEmission: new Date(raw.dateEmission as string),
+        signatureGarant: signature,
+      };
+      pdfBuffer = await renderPdf(CautionnementDoc({ data }));
+    } else {
+      return { error: 'Ce type de document ne prend pas en charge la signature électronique.' };
+    }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Échec de la génération du document signé' };
+  }
+
+  const sigBuffer = Buffer.from(signature.split(',')[1] ?? '', 'base64');
+  const [sigKey, pdfKey] = await Promise.all([
+    saveFile(sigBuffer, { scopeId: ctx.scopeId, category: 'signatures', filename: `${doc.id}.png` }),
+    saveFile(pdfBuffer, { scopeId: ctx.scopeId, category: 'generated', filename: `${doc.type.toLowerCase()}-signe.pdf` }),
+  ]);
+
+  await prisma.documentGenere.update({
+    where: { id: doc.id },
+    data: { fileUrl: pdfKey, signeLe: new Date(), signePar, signatureUrl: sigKey },
+  });
+
+  revalidatePath('/documents');
+  return { ok: true, fileUrl: pdfKey };
 }

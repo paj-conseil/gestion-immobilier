@@ -1,4 +1,4 @@
-import { Document, Page, Text } from '@react-pdf/renderer';
+import { Document, Page, Text, Image } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
 import { formatDate, montantEnLettres } from '@/lib/format';
@@ -16,6 +16,8 @@ export type CautionnementData = {
   charges: number;
   dateDebut: Date;
   dateEmission: Date;
+  /** Signature manuscrite du garant, capturée à l'écran (data URI PNG). */
+  signatureGarant?: string | null;
 };
 
 export function CautionnementDoc({ data }: { data: CautionnementData }) {
@@ -67,7 +69,8 @@ export function CautionnementDoc({ data }: { data: CautionnementData }) {
         </Text>
 
         <Text style={[styles.p, { marginTop: 20 }]}>Fait à Tours, le {formatDate(data.dateEmission)}</Text>
-        <Text style={[styles.small, { marginTop: 30 }]}>Signature</Text>
+        <Text style={[styles.small, { marginTop: data.signatureGarant ? 10 : 30 }]}>Signature</Text>
+        {data.signatureGarant && <Image src={data.signatureGarant} style={styles.signatureImg} />}
 
         <DocFooter text="Gestion immo — document généré automatiquement, à faire relire avant signature" />
       </Page>
