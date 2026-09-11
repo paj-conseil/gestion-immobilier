@@ -94,12 +94,22 @@ export function SignaturePad({
           ref={canvasRef}
           width={600}
           height={180}
-          style={{ width: '100%', height: 180, display: 'block', cursor: 'crosshair' }}
+          style={{
+            width: '100%',
+            height: 180,
+            display: 'block',
+            cursor: 'crosshair',
+            touchAction: 'none',
+            WebkitUserSelect: 'none',
+            userSelect: 'none',
+            WebkitTouchCallout: 'none',
+          }}
           onPointerDown={start}
           onPointerMove={move}
           onPointerUp={end}
           onPointerLeave={end}
           onPointerCancel={end}
+          onContextMenu={(e) => e.preventDefault()}
         />
       </div>
       <div style={{ fontSize: 11, color: 'var(--ink-soft)', margin: '6px 0 0' }}>

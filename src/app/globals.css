@@ -830,6 +830,29 @@ th.col-doc {
   border-color: var(--green-600);
   background: var(--green-100);
 }
+.pdf-preview-fallback {
+  display: none;
+}
+/* Beaucoup de navigateurs mobiles (Chrome/Safari Android et iOS) n'ont pas
+   de lecteur PDF intégré pour les <iframe> et affichent un rectangle noir
+   vide — on masque donc l'aperçu intégré sur petit écran et on affiche à
+   la place un simple message + lien d'ouverture externe. */
+@media (max-width: 640px) {
+  .pdf-preview-frame {
+    display: none;
+  }
+  .pdf-preview-fallback {
+    display: block;
+    padding: 22px 16px;
+    text-align: center;
+    background: var(--stone-50);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    margin-bottom: 16px;
+  }
+}
 
 /* ---------- ETAT DES LIEUX ---------- */
 .toggle-pair {

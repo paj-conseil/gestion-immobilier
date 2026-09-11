@@ -327,9 +327,15 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
           <div className="panel-body pad">
             <iframe
               src={fileUrl(generated.fileUrl)}
+              className="pdf-preview-frame"
               style={{ width: '100%', height: 520, border: '1px solid var(--line)', borderRadius: 8, marginBottom: 16 }}
               title="Aperçu du document"
             />
+            <div className="pdf-preview-fallback">
+              L&apos;aperçu intégré n&apos;est pas disponible sur ce téléphone — utilisez le lien ci-dessous pour
+              consulter le document. La signature électronique, elle, se fait directement sur cette page, sans avoir
+              besoin de l&apos;ouvrir.
+            </div>
             <a className="btn" href={fileUrl(generated.fileUrl)} target="_blank" rel="noreferrer" style={{ marginBottom: 20, display: 'inline-flex' }}>
               Ouvrir dans un nouvel onglet
             </a>
@@ -344,8 +350,9 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
                 ) : (
                   <>
                     <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
-                      Faites signer {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} directement sur cet
-                      écran, puis le document ci-dessus sera automatiquement mis à jour avec la signature incrustée.
+                      Faites signer {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} directement
+                      ci-dessous (pas besoin d&apos;ouvrir le PDF) : le document sera automatiquement mis à jour avec
+                      la signature incrustée.
                     </p>
                     {signError && <div className="auth-error">{signError}</div>}
                     <SignaturePad
