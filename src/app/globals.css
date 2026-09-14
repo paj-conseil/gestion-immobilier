@@ -1103,6 +1103,14 @@ th.col-doc {
   align-items: center;
   padding: 18px 22px;
   border-bottom: 1px solid var(--line);
+  /* Reste visible/atteignable même dans une fenêtre longue (ex. fiche
+     locataire avec bail + dépôt de garantie + documents) qui nécessite de
+     faire défiler le contenu de la modale. */
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
 }
 .modal-head h3 {
   margin: 0;
@@ -1114,6 +1122,19 @@ th.col-doc {
   color: var(--ink-soft);
   font-size: 18px;
   line-height: 1;
+  padding: 4px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: var(--stone-100);
+  color: var(--ink);
+}
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+  display: block;
 }
 .modal-body {
   padding: 20px 22px;
