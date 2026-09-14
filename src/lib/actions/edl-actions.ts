@@ -3,17 +3,25 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getCurrentContext } from '@/lib/scope';
-import { saveFile, readStoredFile } from '@/lib/storage';
+import { saveFile, readStoredFile, deleteStoredFile } from '@/lib/storage';
 import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { EtatLieuxDoc } from '@/lib/documents/pdf/EtatLieuxDoc';
 import { EDL_TEMPLATE } from '@/lib/edl-templates';
 import type { EtatItem, TypeEDL, TypeItemEDL } from '@/lib/enums';
 
+function readEdlDate(formData: FormData): Date {
+  const raw = String(formData.get('date') ?? '');
+  if (!raw) return new Date();
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? new Date() : d;
+}
+
 export async function createEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
   const ctx = await getCurrentContext();
   const bienId = String(formData.get('bienId') ?? '');
   const type = String(formData.get('type') ?? 'ENTREE') as 'ENTREE' | 'SORTIE';
+  const date = readEdlDate(formData);
 
   const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
   if (!bien) return { error: 'Bien introuvable' };
@@ -25,6 +33,7 @@ export async function createEtatDesLieux(formData: FormData): Promise<{ id: stri
       bienId,
       locationId: location?.id,
       type,
+      date,
       pieces: {
         create: EDL_TEMPLATE.map((piece, pi) => ({
           nom: piece.nom,
@@ -54,6 +63,7 @@ export async function importEtatDesLieux(formData: FormData): Promise<{ id: stri
   const ctx = await getCurrentContext();
   const bienId = String(formData.get('bienId') ?? '');
   const type = String(formData.get('type') ?? 'ENTREE') as 'ENTREE' | 'SORTIE';
+  const date = readEdlDate(formData);
   const file = formData.get('fichier');
   if (!(file instanceof File) || file.size === 0) return { error: 'Aucun fichier sélectionné' };
 
@@ -66,7 +76,7 @@ export async function importEtatDesLieux(formData: FormData): Promise<{ id: stri
   const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
 
   const edl = await prisma.etatDesLieux.create({
-    data: { bienId, locationId: location?.id, type, fileUrl: key },
+    data: { bienId, locationId: location?.id, type, date, fileUrl: key },
   });
 
   revalidatePath('/edl');
@@ -264,4 +274,35 @@ export async function signerEtatDesLieux(
   });
 
   return generateEtatDesLieuxPdf(edlId);
+}
+
+export async function deleteEtatDesLieux(edlId: string): Promise<{ ok: true } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const edl = await prisma.etatDesLieux.findFirst({
+    where: { id: edlId, bien: { scopeId: ctx.scopeId } },
+    include: { photos: true },
+  });
+  if (!edl) return { error: 'État des lieux introuvable' };
+
+  const documentGenere = await prisma.documentGenere.findFirst({ where: { edlId } });
+
+  // Les lignes en base (pièces/éléments/photos) sont supprimées en cascade
+  // par Prisma, mais pas les fichiers correspondants dans le stockage.
+  const filesToDelete = [
+    edl.fileUrl,
+    edl.signatureBailleurUrl,
+    edl.signatureLocataireUrl,
+    ...edl.photos.map((p) => p.url),
+    documentGenere?.fileUrl,
+  ].filter((key): key is string => !!key);
+  await Promise.all(filesToDelete.map((key) => deleteStoredFile(key).catch(() => undefined)));
+
+  if (documentGenere) {
+    await prisma.documentGenere.delete({ where: { id: documentGenere.id } });
+  }
+  await prisma.etatDesLieux.delete({ where: { id: edlId } });
+
+  revalidatePath('/edl');
+  revalidatePath('/documents');
+  return { ok: true };
 }

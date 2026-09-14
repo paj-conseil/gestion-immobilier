@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { createEtatDesLieux, importEtatDesLieux } from '@/lib/actions/edl-actions';
+import { createEtatDesLieux, importEtatDesLieux, deleteEtatDesLieux } from '@/lib/actions/edl-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { IconClose, IconPlus } from '@/components/icons';
 
@@ -42,6 +42,17 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
     }
   }
 
+  async function onDelete(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    if (!confirm("Supprimer cet état des lieux ? Cette action est irréversible (document, pièces et photos associés).")) return;
+    const res = await deleteEtatDesLieux(id);
+    if ('error' in res) {
+      alert(res.error);
+      return;
+    }
+    router.refresh();
+  }
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
@@ -60,6 +71,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                 <th>Type</th>
                 <th>Locataire</th>
                 <th>Date</th>
+                <th></th>
                 <th></th>
                 <th></th>
               </tr>
@@ -81,11 +93,21 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                       Ouvrir →
                     </a>
                   </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="icon-btn small danger"
+                      title="Supprimer cet état des lieux"
+                      onClick={(e2) => onDelete(e2, e.id)}
+                    >
+                      <IconClose />
+                    </button>
+                  </td>
                 </tr>
               ))}
               {edls.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ color: 'var(--ink-soft)' }}>
+                  <td colSpan={7} style={{ color: 'var(--ink-soft)' }}>
                     Aucun état des lieux pour le moment.
                   </td>
                 </tr>
@@ -131,12 +153,18 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                   ))}
                 </select>
               </div>
-              <div className="field">
-                <label>Type</label>
-                <select name="type" defaultValue="ENTREE">
-                  <option value="ENTREE">Entrée</option>
-                  <option value="SORTIE">Sortie</option>
-                </select>
+              <div className="field-row">
+                <div className="field">
+                  <label>Type</label>
+                  <select name="type" defaultValue="ENTREE">
+                    <option value="ENTREE">Entrée</option>
+                    <option value="SORTIE">Sortie</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label>Date</label>
+                  <input name="date" type="date" defaultValue={new Date().toISOString().slice(0, 10)} required />
+                </div>
               </div>
               {mode === 'import' && (
                 <div className="field">
