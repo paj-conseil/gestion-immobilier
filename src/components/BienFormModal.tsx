@@ -16,6 +16,7 @@ type BienDefaults = {
   statut?: string | null;
   surface?: number | null;
   description?: string | null;
+  codesAcces?: string | null;
   telephone?: string | null;
   numeroCompteur?: string | null;
   prixAchat?: number | null;
@@ -158,6 +159,14 @@ export function BienFormModal({
               <div className="field">
                 <label>Description</label>
                 <textarea name="description" placeholder="Description du logement, pièces..." defaultValue={defaults?.description ?? ''} />
+              </div>
+              <div className="field">
+                <label>Codes d&apos;accès</label>
+                <textarea
+                  name="codesAcces"
+                  placeholder={'Digicode entrée : 1234B\nInterphone : Appt 4\nCode parking : 5678'}
+                  defaultValue={defaults?.codesAcces ?? ''}
+                />
               </div>
 
               <div className="field">

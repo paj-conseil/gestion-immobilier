@@ -19,5 +19,15 @@ export default async function EdlDetailPage({ params }: { params: Promise<{ id: 
 
   if (!edl) notFound();
 
-  return <EdlEditor edl={JSON.parse(JSON.stringify(edl))} />;
+  const documentGenere = await prisma.documentGenere.findFirst({ where: { edlId: id } });
+  const locataireEmail = edl.location?.locataires[0]?.locataire.email ?? null;
+
+  return (
+    <EdlEditor
+      edl={JSON.parse(JSON.stringify(edl))}
+      documentGenereId={documentGenere?.id ?? null}
+      pdfUrlInitial={documentGenere?.fileUrl ?? null}
+      locataireEmail={locataireEmail}
+    />
+  );
 }

@@ -25,6 +25,7 @@ export type StatutEmail = 'ENVOYE' | 'OUVERT' | 'ECHEC';
 
 export type TypeEDL = 'ENTREE' | 'SORTIE';
 export type EtatItem = 'BON' | 'USURE' | 'MAUVAIS';
+export type TypeItemEDL = 'ETAT' | 'QUANTITE';
 
 export type TypePoste = 'REVENU' | 'CHARGE';
 export type SourceTransaction = 'IMPORT' | 'MANUEL';

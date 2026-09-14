@@ -3,12 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getCurrentContext } from '@/lib/scope';
-import { saveFile } from '@/lib/storage';
+import { saveFile, readStoredFile } from '@/lib/storage';
 import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { EtatLieuxDoc } from '@/lib/documents/pdf/EtatLieuxDoc';
 import { EDL_TEMPLATE } from '@/lib/edl-templates';
-import type { EtatItem, TypeEDL } from '@/lib/enums';
+import type { EtatItem, TypeEDL, TypeItemEDL } from '@/lib/enums';
 
 export async function createEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
   const ctx = await getCurrentContext();
@@ -29,7 +29,13 @@ export async function createEtatDesLieux(formData: FormData): Promise<{ id: stri
         create: EDL_TEMPLATE.map((piece, pi) => ({
           nom: piece.nom,
           ordre: pi,
-          items: { create: piece.items.map((label, ii) => ({ label, ordre: ii, etat: 'BON' as const })) },
+          items: {
+            create: piece.items.map((it, ii) => ({
+              label: it.label,
+              type: it.type ?? 'ETAT',
+              ordre: ii,
+            })),
+          },
         })),
       },
     },
@@ -39,9 +45,37 @@ export async function createEtatDesLieux(formData: FormData): Promise<{ id: stri
   return { id: edl.id };
 }
 
+/**
+ * Attache directement un document d'état des lieux déjà existant (scan/PDF),
+ * sans passer par la saisie structurée — pour un dossier déjà en cours dont
+ * l'état des lieux n'a pas été fait via l'application.
+ */
+export async function importEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const bienId = String(formData.get('bienId') ?? '');
+  const type = String(formData.get('type') ?? 'ENTREE') as 'ENTREE' | 'SORTIE';
+  const file = formData.get('fichier');
+  if (!(file instanceof File) || file.size === 0) return { error: 'Aucun fichier sélectionné' };
+
+  const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
+  if (!bien) return { error: 'Bien introuvable' };
+
+  const location = await prisma.location.findFirst({ where: { bienId, statut: 'ACTIF' } });
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
+
+  const edl = await prisma.etatDesLieux.create({
+    data: { bienId, locationId: location?.id, type, fileUrl: key },
+  });
+
+  revalidatePath('/edl');
+  return { id: edl.id };
+}
+
 export async function updateEDLItem(
   itemId: string,
-  data: { etat?: EtatItem; commentaire?: string },
+  data: { etat?: EtatItem | null; commentaire?: string | null; quantite?: number | null },
 ): Promise<void> {
   const ctx = await getCurrentContext();
   const item = await prisma.eDLItem.findFirst({
@@ -62,29 +96,54 @@ export async function addEDLPiece(edlId: string, nom: string): Promise<void> {
   revalidatePath(`/edl/${edlId}`);
 }
 
-export async function addEDLItem(pieceId: string, label: string): Promise<void> {
+export async function addEDLItem(pieceId: string, label: string, type: TypeItemEDL = 'ETAT'): Promise<void> {
   const ctx = await getCurrentContext();
   const piece = await prisma.eDLPiece.findFirst({ where: { id: pieceId, edl: { bien: { scopeId: ctx.scopeId } } } });
   if (!piece || !label.trim()) return;
   const count = await prisma.eDLItem.count({ where: { pieceId } });
-  await prisma.eDLItem.create({ data: { pieceId, label: label.trim(), ordre: count, etat: 'BON' } });
+  await prisma.eDLItem.create({ data: { pieceId, label: label.trim(), type, ordre: count } });
   revalidatePath(`/edl/${piece.edlId}`);
 }
 
-export async function addEDLPhoto(edlId: string, formData: FormData): Promise<void> {
+/**
+ * Une photo est toujours rattachée à l'état des lieux dans son ensemble, et
+ * optionnellement aussi à une pièce précise et/ou un élément précis — sinon
+ * elle compte comme photo générale du rapport.
+ */
+export async function addEDLPhoto(
+  edlId: string,
+  formData: FormData,
+  scope?: { pieceId?: string; itemId?: string },
+): Promise<void> {
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({ where: { id: edlId, bien: { scopeId: ctx.scopeId } } });
   if (!edl) return;
   const file = formData.get('photo');
   if (!(file instanceof File) || file.size === 0) return;
+
+  let pieceId: string | undefined;
+  let itemId: string | undefined;
+  if (scope?.itemId) {
+    const item = await prisma.eDLItem.findFirst({ where: { id: scope.itemId, piece: { edlId } }, include: { piece: true } });
+    if (item) {
+      itemId = item.id;
+      pieceId = item.pieceId;
+    }
+  } else if (scope?.pieceId) {
+    const piece = await prisma.eDLPiece.findFirst({ where: { id: scope.pieceId, edlId } });
+    if (piece) pieceId = piece.id;
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
   const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
   const count = await prisma.eDLPhoto.count({ where: { edlId } });
-  await prisma.eDLPhoto.create({ data: { edlId, url: key, ordre: count } });
+  await prisma.eDLPhoto.create({ data: { edlId, pieceId, itemId, url: key, ordre: count } });
   revalidatePath(`/edl/${edlId}`);
 }
 
-export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl: string } | { error: string }> {
+export async function generateEtatDesLieuxPdf(
+  edlId: string,
+): Promise<{ fileUrl: string; documentGenereId: string } | { error: string }> {
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({
     where: { id: edlId, bien: { scopeId: ctx.scopeId } },
@@ -95,9 +154,21 @@ export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl:
     },
   });
   if (!edl) return { error: 'État des lieux introuvable' };
+  if (edl.fileUrl) return { error: 'Ce document a été importé directement, il n\'y a rien à générer.' };
 
   const locatairesNoms =
     edl.location?.locataires.map((x) => `${x.locataire.prenom} ${x.locataire.nom}`).join(' et ') || '—';
+
+  // Les signatures (bailleur/locataire), si déjà capturées, sont lues depuis
+  // le stockage et incrustées dans le PDF à chaque (re)génération.
+  const [signatureBailleur, signatureLocataire] = await Promise.all([
+    edl.signatureBailleurUrl
+      ? readStoredFile(edl.signatureBailleurUrl).then((b) => `data:image/png;base64,${b.toString('base64')}`)
+      : Promise.resolve(null),
+    edl.signatureLocataireUrl
+      ? readStoredFile(edl.signatureLocataireUrl).then((b) => `data:image/png;base64,${b.toString('base64')}`)
+      : Promise.resolve(null),
+  ]);
 
   const pdfBuffer = await renderPdf(
     EtatLieuxDoc({
@@ -111,8 +182,16 @@ export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl:
         numeroCompteur: edl.bien.numeroCompteur,
         pieces: edl.pieces.map((p) => ({
           nom: p.nom,
-          items: p.items.map((i) => ({ label: i.label, etat: i.etat as EtatItem, commentaire: i.commentaire })),
+          items: p.items.map((i) => ({
+            label: i.label,
+            type: i.type as TypeItemEDL,
+            etat: i.etat as EtatItem | null,
+            quantite: i.quantite,
+            commentaire: i.commentaire,
+          })),
         })),
+        signatureBailleur,
+        signatureLocataire,
       },
     }),
   );
@@ -123,18 +202,66 @@ export async function generateEtatDesLieuxPdf(edlId: string): Promise<{ fileUrl:
     filename: `edl-${edl.type.toLowerCase()}-${edl.bien.adresse}.pdf`,
   });
 
-  await prisma.documentGenere.create({
-    data: {
-      scopeId: ctx.scopeId,
-      type: 'ETAT_LIEUX',
-      bienId: edl.bienId,
-      locationId: edl.locationId,
-      locataireId: edl.location?.locataires[0]?.locataireId,
-      fileUrl: key,
-    },
-  });
+  // Un même état des lieux ne doit produire qu'un seul DocumentGenere : on
+  // met à jour celui déjà lié plutôt que d'en recréer un à chaque
+  // régénération (ex. après chaque signature).
+  const existant = await prisma.documentGenere.findFirst({ where: { edlId: edl.id } });
+  const documentGenere = existant
+    ? await prisma.documentGenere.update({ where: { id: existant.id }, data: { fileUrl: key, genereLe: new Date() } })
+    : await prisma.documentGenere.create({
+        data: {
+          scopeId: ctx.scopeId,
+          type: 'ETAT_LIEUX',
+          bienId: edl.bienId,
+          locationId: edl.locationId,
+          locataireId: edl.location?.locataires[0]?.locataireId,
+          edlId: edl.id,
+          fileUrl: key,
+        },
+      });
 
   revalidatePath('/edl');
+  revalidatePath(`/edl/${edl.id}`);
   revalidatePath('/documents');
-  return { fileUrl: key };
+  return { fileUrl: key, documentGenereId: documentGenere.id };
+}
+
+/**
+ * Capture la signature (bailleur ou locataire) d'un état des lieux et
+ * régénère aussitôt le PDF pour l'incruster — pas de snapshot de données à
+ * gérer ici (contrairement à Contrat/Cautionnement) puisque les
+ * pièces/éléments de l'EDL ne changent pas après coup.
+ */
+export async function signerEtatDesLieux(
+  edlId: string,
+  formData: FormData,
+): Promise<{ fileUrl: string; documentGenereId: string } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const edl = await prisma.etatDesLieux.findFirst({ where: { id: edlId, bien: { scopeId: ctx.scopeId } } });
+  if (!edl) return { error: 'État des lieux introuvable' };
+  if (edl.fileUrl) return { error: "Ce document a été importé directement, la signature électronique ne s'applique pas." };
+
+  const role = String(formData.get('role') ?? '');
+  const signature = String(formData.get('signature') ?? '');
+  const signePar = String(formData.get('signePar') ?? '').trim();
+  if (role !== 'BAILLEUR' && role !== 'LOCATAIRE') return { error: 'Rôle invalide' };
+  if (!signature.startsWith('data:image/')) return { error: 'Signature invalide' };
+  if (!signePar) return { error: 'Le nom du signataire est requis' };
+
+  const sigBuffer = Buffer.from(signature.split(',')[1] ?? '', 'base64');
+  const sigKey = await saveFile(sigBuffer, {
+    scopeId: ctx.scopeId,
+    category: 'signatures',
+    filename: `edl-${edlId}-${role.toLowerCase()}.png`,
+  });
+
+  await prisma.etatDesLieux.update({
+    where: { id: edlId },
+    data:
+      role === 'BAILLEUR'
+        ? { signatureBailleurUrl: sigKey, signatureBailleurLe: new Date(), signatureBailleurPar: signePar }
+        : { signatureLocataireUrl: sigKey, signatureLocataireLe: new Date(), signatureLocatairePar: signePar },
+  });
+
+  return generateEtatDesLieuxPdf(edlId);
 }

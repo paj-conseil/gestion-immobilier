@@ -5,9 +5,10 @@ import { formatDate } from '@/lib/format';
 
 export type EDLItemData = {
   label: string;
-  etat: 'BON' | 'USURE' | 'MAUVAIS';
+  type: 'ETAT' | 'QUANTITE';
+  etat: 'BON' | 'USURE' | 'MAUVAIS' | null;
+  quantite?: number | null;
   commentaire?: string | null;
-  photoDataUri?: string | null;
 };
 export type EDLPieceData = { nom: string; items: EDLItemData[] };
 export type EtatLieuxData = {
@@ -19,6 +20,8 @@ export type EtatLieuxData = {
   locatairesNoms: string;
   numeroCompteur?: string | null;
   pieces: EDLPieceData[];
+  signatureBailleur?: string | null;
+  signatureLocataire?: string | null;
 };
 
 const ETAT_LABEL: Record<string, string> = { BON: 'Bon état', USURE: 'Usure normale', MAUVAIS: 'Mauvais état' };
@@ -49,9 +52,14 @@ export function EtatLieuxDoc({ data }: { data: EtatLieuxData }) {
             {piece.items.map((item, i) => (
               <View key={i} style={styles.tr}>
                 <Text style={styles.td}>{item.label}</Text>
-                <Text style={[styles.td, { flex: 0.6 }]}>{ETAT_LABEL[item.etat]}</Text>
+                <Text style={[styles.td, { flex: 0.6 }]}>
+                  {item.type === 'QUANTITE'
+                    ? `Quantité : ${item.quantite ?? 0}`
+                    : item.etat
+                      ? ETAT_LABEL[item.etat]
+                      : 'Non évalué'}
+                </Text>
                 {item.commentaire ? <Text style={[styles.small, { flex: 1 }]}>{item.commentaire}</Text> : <View style={{ flex: 1 }} />}
-                {item.photoDataUri && <Image src={item.photoDataUri} style={{ width: 50, height: 50, borderRadius: 3 }} />}
               </View>
             ))}
           </View>
@@ -66,11 +74,17 @@ export function EtatLieuxDoc({ data }: { data: EtatLieuxData }) {
         <View style={styles.signatures}>
           <View style={styles.signatureBlock}>
             <Text style={styles.small}>Le bailleur</Text>
-            <Text style={styles.signatureLine}>{PROPRIETAIRE.nom}</Text>
+            {data.signatureBailleur && <Image src={data.signatureBailleur} style={styles.signatureImg} />}
+            <Text style={[styles.signatureLine, data.signatureBailleur ? { marginTop: 4 } : {}]}>
+              {PROPRIETAIRE.nom}
+            </Text>
           </View>
           <View style={styles.signatureBlock}>
             <Text style={styles.small}>Le(s) locataire(s)</Text>
-            <Text style={styles.signatureLine}>{data.locatairesNoms}</Text>
+            {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
+            <Text style={[styles.signatureLine, data.signatureLocataire ? { marginTop: 4 } : {}]}>
+              {data.locatairesNoms}
+            </Text>
           </View>
         </View>
 

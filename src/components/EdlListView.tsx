@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { createEtatDesLieux } from '@/lib/actions/edl-actions';
+import { createEtatDesLieux, importEtatDesLieux } from '@/lib/actions/edl-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { IconClose, IconPlus } from '@/components/icons';
 
@@ -11,12 +11,14 @@ type EdlVM = {
   id: string;
   type: 'ENTREE' | 'SORTIE';
   date: string;
+  fileUrl: string | null;
   bien: { adresse: string; complement?: string | null };
   location: { locataires: { locataire: { nom: string; prenom: string } }[] } | null;
 };
 
 export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[] }) {
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<'structure' | 'import'>('structure');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -27,7 +29,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
     setError(null);
     const fd = new FormData(e.currentTarget as HTMLFormElement);
     try {
-      const res = await createEtatDesLieux(fd);
+      const res = mode === 'import' ? await importEtatDesLieux(fd) : await createEtatDesLieux(fd);
       if ('error' in res) {
         setError(res.error);
         return;
@@ -59,6 +61,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                 <th>Locataire</th>
                 <th>Date</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +75,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                   </td>
                   <td>{e.location?.locataires.map((x) => `${x.locataire.prenom} ${x.locataire.nom}`).join(', ') || '—'}</td>
                   <td className="mono">{formatDate(e.date)}</td>
+                  <td>{e.fileUrl && <span className="chip neutral">Document importé</span>}</td>
                   <td>
                     <a className="link-row" href={`/edl/${e.id}`}>
                       Ouvrir →
@@ -81,7 +85,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
               ))}
               {edls.length === 0 && (
                 <tr>
-                  <td colSpan={5} style={{ color: 'var(--ink-soft)' }}>
+                  <td colSpan={6} style={{ color: 'var(--ink-soft)' }}>
                     Aucun état des lieux pour le moment.
                   </td>
                 </tr>
@@ -102,6 +106,21 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
           <form onSubmit={onSubmit}>
             <div className="modal-body">
               {error && <div className="auth-error">{error}</div>}
+              <div className="toggle-pair compact" style={{ marginBottom: 16 }}>
+                <button type="button" className={mode === 'structure' ? 'active' : ''} onClick={() => setMode('structure')}>
+                  Saisie structurée
+                </button>
+                <button type="button" className={mode === 'import' ? 'active' : ''} onClick={() => setMode('import')}>
+                  Importer un document
+                </button>
+              </div>
+              {mode === 'import' && (
+                <p style={{ fontSize: 11.5, color: 'var(--ink-soft)', margin: '0 0 14px' }}>
+                  Pour un dossier déjà en cours dont l&apos;état des lieux n&apos;a pas été fait via
+                  l&apos;application : joignez directement le document existant (scan, PDF) au lieu de le
+                  remplir pièce par pièce.
+                </p>
+              )}
               <div className="field">
                 <label>Bien</label>
                 <select name="bienId" required>
@@ -119,13 +138,19 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                   <option value="SORTIE">Sortie</option>
                 </select>
               </div>
+              {mode === 'import' && (
+                <div className="field">
+                  <label>Document (PDF, photo du document...)</label>
+                  <input name="fichier" type="file" accept=".pdf,image/*" required />
+                </div>
+              )}
             </div>
             <div className="modal-foot">
               <button type="button" className="btn btn-ghost" onClick={() => setOpen(false)}>
                 Annuler
               </button>
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Création…' : 'Créer et ouvrir'}
+                {loading ? 'Création…' : mode === 'import' ? 'Importer et ouvrir' : 'Créer et ouvrir'}
               </button>
             </div>
           </form>

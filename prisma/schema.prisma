@@ -82,6 +82,9 @@ model Bien {
   telephone      String?
   numeroCompteur String?
   couleur        String? @default("#1E5631")
+  /// Codes d'accès au logement (digicode, interphone, boîte aux lettres...),
+  /// texte libre affiché dans l'onglet Accès de la fiche bien.
+  codesAcces     String?
 
   // Financement — éléments liés à l'achat (indépendants du nombre de prêts)
   prixAchat        Float?
@@ -219,6 +222,11 @@ model DocumentGenere {
   signeLe      DateTime?
   signePar     String?
   signatureUrl String?
+  /// Pour type ETAT_LIEUX : relie ce document généré à son état des lieux
+  /// source, pour régénérer/mettre à jour le même PDF (signatures incluses)
+  /// au lieu d'en recréer un nouveau à chaque régénération.
+  edlId        String?
+  etatDesLieux EtatDesLieux? @relation(fields: [edlId], references: [id])
 
   emails EmailLog[]
 }
@@ -250,17 +258,38 @@ model EtatDesLieux {
   /// Type : ENTREE | SORTIE
   type        String
   date        DateTime   @default(now())
+  /// Document existant importé (scan/PDF) pour un dossier déjà en cours dont
+  /// l'état des lieux n'a pas été fait via l'application — remplace alors la
+  /// saisie structurée (pieces/items restent vides).
+  fileUrl     String?
 
-  pieces EDLPiece[]
-  photos EDLPhoto[]
+  /// Signature électronique du bailleur et du locataire, capturées à l'écran
+  /// et incrustées dans le PDF généré (voir signerEtatDesLieux).
+  signatureBailleurUrl  String?
+  signatureBailleurLe   DateTime?
+  signatureBailleurPar  String?
+  signatureLocataireUrl String?
+  signatureLocataireLe  DateTime?
+  signatureLocatairePar String?
+
+  pieces           EDLPiece[]
+  photos           EDLPhoto[]
+  documentsGeneres DocumentGenere[]
 }
 
+/// Une photo est toujours rattachée à un état des lieux, et optionnellement
+/// aussi à une pièce précise et/ou un élément précis (sinon elle compte comme
+/// "photo générale" du rapport).
 model EDLPhoto {
-  id    String       @id @default(cuid())
-  edlId String
-  edl   EtatDesLieux @relation(fields: [edlId], references: [id], onDelete: Cascade)
-  url   String
-  ordre Int          @default(0)
+  id      String       @id @default(cuid())
+  edlId   String
+  edl     EtatDesLieux @relation(fields: [edlId], references: [id], onDelete: Cascade)
+  pieceId String?
+  piece   EDLPiece?    @relation(fields: [pieceId], references: [id], onDelete: Cascade)
+  itemId  String?
+  item    EDLItem?     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  url     String
+  ordre   Int          @default(0)
 }
 
 model EDLPiece {
@@ -270,19 +299,24 @@ model EDLPiece {
   nom   String
   ordre Int          @default(0)
 
-  items EDLItem[]
+  items  EDLItem[]
+  photos EDLPhoto[]
 }
 
 model EDLItem {
-  id          String   @id @default(cuid())
-  pieceId     String
-  piece       EDLPiece @relation(fields: [pieceId], references: [id], onDelete: Cascade)
-  label       String
-  /// Etat : BON | USURE | MAUVAIS
-  etat        String   @default("BON")
+  id      String   @id @default(cuid())
+  pieceId String
+  piece   EDLPiece @relation(fields: [pieceId], references: [id], onDelete: Cascade)
+  label   String
+  /// Type : ETAT (évaluation Bon/Usure/Mauvais) | QUANTITE (nombre, ex. clés remises)
+  type    String   @default("ETAT")
+  /// Etat : BON | USURE | MAUVAIS | absent = non évalué
+  etat        String?
+  quantite    Int?
   commentaire String?
-  photoUrl    String?
   ordre       Int      @default(0)
+
+  photos EDLPhoto[]
 }
 
 // ---------------------------------------------------------------------------

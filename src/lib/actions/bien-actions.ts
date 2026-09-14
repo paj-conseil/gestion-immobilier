@@ -56,6 +56,7 @@ const bienSchema = z.object({
   statut: z.enum(['LOUE', 'VACANT', 'PERSO']).default('VACANT'),
   surface: numOrUndef,
   description: z.string().optional(),
+  codesAcces: z.string().optional(),
   telephone: z.string().optional(),
   numeroCompteur: z.string().optional(),
   couleur: z.string().optional(),

@@ -62,6 +62,7 @@ export type BienVM = {
   statut: string;
   surface?: number | null;
   description?: string | null;
+  codesAcces?: string | null;
   telephone?: string | null;
   numeroCompteur?: string | null;
   couleur?: string | null;
@@ -130,8 +131,20 @@ function coutAcquisition(b: BienVM): number {
   return (b.prixAchat ?? 0) + (b.fraisNotaire ?? 0) + (b.montantTravaux ?? 0);
 }
 
+/**
+ * Un bail ne compte dans les loyers/revenus que s'il est actif ET déjà
+ * démarré à la date du jour — un bail signé à l'avance (date d'entrée
+ * future) ne doit pas gonfler les revenus tant que le locataire n'est pas
+ * encore entré dans les lieux.
+ */
+function bailDemarre(l: { statut: string; dateDebut: string }): boolean {
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0, 0, 0, 0);
+  return l.statut === 'ACTIF' && new Date(l.dateDebut) <= aujourdhui;
+}
+
 function loyerAnnuelActif(b: BienVM): number {
-  return b.locations.filter((l) => l.statut === 'ACTIF').reduce((s, l) => s + l.loyerHC, 0) * 12;
+  return b.locations.filter(bailDemarre).reduce((s, l) => s + l.loyerHC, 0) * 12;
 }
 
 function rendementBrut(b: BienVM): number | null {
@@ -147,7 +160,7 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
   // prêt), le tiroir continuerait d'afficher l'ancien objet figé en state.
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = biens.find((b) => b.id === selectedId) ?? null;
-  const [tab, setTab] = useState<'carac' | 'fin' | 'loc' | 'edl'>('carac');
+  const [tab, setTab] = useState<'carac' | 'fin' | 'loc' | 'edl' | 'acces'>('carac');
   const [editingLocataire, setEditingLocataire] = useState<LocataireVM | null>(null);
   const [editingPret, setEditingPret] = useState<{ bienId: string; defaults?: PretDefaults } | null>(null);
   const [editBienOpen, setEditBienOpen] = useState(false);
@@ -165,7 +178,7 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
   }
 
   const locations = selected?.locations ?? [];
-  const locationsActives = locations.filter((l) => l.statut === 'ACTIF');
+  const locationsActives = locations.filter(bailDemarre);
   const totalLoyer = locationsActives.reduce((s, l) => s + l.loyerHC, 0);
   const totalCharges = locationsActives.reduce((s, l) => s + l.charges, 0);
 
@@ -198,7 +211,7 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
 
       <div className="bien-grid">
         {biens.map((b) => {
-          const actives = b.locations.filter((l) => l.statut === 'ACTIF');
+          const actives = b.locations.filter(bailDemarre);
           return (
             <button
               key={b.id}
@@ -316,6 +329,9 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
                 </button>
                 <button className={tab === 'edl' ? 'active' : ''} onClick={() => setTab('edl')}>
                   États des lieux
+                </button>
+                <button className={tab === 'acces' ? 'active' : ''} onClick={() => setTab('acces')}>
+                  Accès
                 </button>
               </div>
 
@@ -528,6 +544,29 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
                       ))
                   ) : (
                     <div style={{ color: 'var(--ink-soft)' }}>Aucun état des lieux enregistré pour ce bien.</div>
+                  )}
+                </div>
+              )}
+
+              {tab === 'acces' && (
+                <div>
+                  {selected.codesAcces ? (
+                    <div
+                      style={{
+                        whiteSpace: 'pre-line',
+                        fontSize: 13,
+                        border: '1px solid var(--line)',
+                        borderRadius: 'var(--radius-s)',
+                        padding: 12,
+                        background: 'var(--stone-50)',
+                      }}
+                    >
+                      {selected.codesAcces}
+                    </div>
+                  ) : (
+                    <div style={{ color: 'var(--ink-soft)' }}>
+                      Aucun code d&apos;accès renseigné — ajoutez-en via &quot;Modifier ce logement&quot;.
+                    </div>
                   )}
                 </div>
               )}
