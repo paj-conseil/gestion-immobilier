@@ -1,8 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { createScope, inviteToScope, changeMembershipRole, removeMembership } from '@/lib/actions/droits-actions';
+import {
+  createScope,
+  inviteToScope,
+  changeMembershipRole,
+  removeMembership,
+  changerMotDePasse,
+} from '@/lib/actions/droits-actions';
 import { initiales } from '@/lib/format';
 import { IconPlus } from '@/components/icons';
 
@@ -25,6 +31,15 @@ export function DroitsView({
 
   return (
     <>
+      <div className="panel" style={{ marginBottom: 22 }}>
+        <div className="panel-head">
+          <h2>Mon compte</h2>
+        </div>
+        <div className="panel-body pad">
+          <ChangePasswordForm />
+        </div>
+      </div>
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
         <button className="btn btn-primary" onClick={() => setShowCreate((v) => !v)}>
           <IconPlus />
@@ -230,6 +245,60 @@ function CreateScopeForm({ onDone }: { onDone: () => void }) {
         {loading ? 'Création…' : 'Créer'}
       </button>
       {error && <div className="auth-error">{error}</div>}
+    </form>
+  );
+}
+
+function ChangePasswordForm() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
+    try {
+      const res = await changerMotDePasse(fd);
+      if ('error' in res) {
+        setError(res.error);
+        return;
+      }
+      setSuccess(true);
+      form.reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} style={{ maxWidth: 360 }}>
+      {error && <div className="auth-error">{error}</div>}
+      {success && (
+        <div className="auth-error" style={{ background: 'var(--green-100)', color: 'var(--green-700)' }}>
+          Mot de passe modifié avec succès.
+        </div>
+      )}
+      <div className="field">
+        <label>Mot de passe actuel</label>
+        <input name="motDePasseActuel" type="password" required autoComplete="current-password" />
+      </div>
+      <div className="field">
+        <label>Nouveau mot de passe</label>
+        <input name="nouveauMotDePasse" type="password" required minLength={8} autoComplete="new-password" />
+      </div>
+      <div className="field">
+        <label>Confirmer le nouveau mot de passe</label>
+        <input name="confirmation" type="password" required minLength={8} autoComplete="new-password" />
+      </div>
+      <button className="btn btn-primary" type="submit" disabled={loading}>
+        {loading ? 'Modification…' : 'Modifier le mot de passe'}
+      </button>
     </form>
   );
 }

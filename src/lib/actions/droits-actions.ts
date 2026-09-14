@@ -78,3 +78,25 @@ export async function removeMembership(membershipId: string): Promise<void> {
   await prisma.membership.delete({ where: { id: membershipId } });
   revalidatePath('/droits');
 }
+
+export async function changerMotDePasse(formData: FormData): Promise<{ ok: true } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const actuel = String(formData.get('motDePasseActuel') ?? '');
+  const nouveau = String(formData.get('nouveauMotDePasse') ?? '');
+  const confirmation = String(formData.get('confirmation') ?? '');
+
+  if (!actuel || !nouveau || !confirmation) return { error: 'Tous les champs sont requis' };
+  if (nouveau.length < 8) return { error: 'Le nouveau mot de passe doit contenir au moins 8 caractères' };
+  if (nouveau !== confirmation) return { error: 'La confirmation ne correspond pas au nouveau mot de passe' };
+
+  const user = await prisma.user.findUnique({ where: { id: ctx.userId } });
+  if (!user) return { error: 'Utilisateur introuvable' };
+
+  const valid = await bcrypt.compare(actuel, user.passwordHash);
+  if (!valid) return { error: 'Mot de passe actuel incorrect' };
+
+  const passwordHash = await bcrypt.hash(nouveau, 10);
+  await prisma.user.update({ where: { id: ctx.userId }, data: { passwordHash } });
+
+  return { ok: true };
+}
