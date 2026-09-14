@@ -253,9 +253,12 @@ export async function updateBail(
     return { error: 'Formulaire invalide' };
   }
 
-  // La date de sortie fait automatiquement passer le bail et le(s) locataire(s) en inactif
-  // (et inversement si la date de sortie est retirée).
-  const nouveauStatut = data.dateFin ? 'INACTIF' : 'ACTIF';
+  // Le bail (et le(s) locataire(s)) ne passe en inactif que lorsque la date de
+  // sortie est atteinte — une date de sortie future ne suffit pas, le
+  // locataire reste actif jusqu'à son départ effectif.
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0, 0, 0, 0);
+  const nouveauStatut = data.dateFin && data.dateFin < aujourdhui ? 'INACTIF' : 'ACTIF';
 
   await prisma.location.update({
     where: { id: locationId },

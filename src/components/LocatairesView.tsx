@@ -13,24 +13,59 @@ import {
 } from '@/components/LocataireEditModal';
 import { IconEdit } from '@/components/icons';
 
+/**
+ * Un bail reste "en cours" tant que sa date de sortie n'est pas atteinte
+ * (pas de sortie prévue = en cours) — une date de sortie future ne suffit
+ * pas à rendre le locataire inactif dès aujourd'hui.
+ */
+function bailEnCours(bail: { dateFin: string | null }): boolean {
+  if (!bail.dateFin) return true;
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0, 0, 0, 0);
+  return new Date(bail.dateFin) >= aujourdhui;
+}
+
+function estActif(l: LocataireVM): boolean {
+  const bail = bailDe(l);
+  return bail ? bailEnCours(bail) : l.statut !== 'INACTIF';
+}
+
 export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[]; biens: BienOption[] }) {
   const [editing, setEditing] = useState<LocataireVM | null>(null);
   const [filtre, setFiltre] = useState<'actifs' | 'tous'>('actifs');
   const router = useRouter();
 
-  const nbInactifs = locataires.filter((l) => l.statut === 'INACTIF').length;
-  const visibles = filtre === 'actifs' ? locataires.filter((l) => l.statut !== 'INACTIF') : locataires;
+  const nbInactifs = locataires.filter((l) => !estActif(l)).length;
+  const visibles = filtre === 'actifs' ? locataires.filter(estActif) : locataires;
+
+  // Cautions des baux en cours — dédupliquées par bail (et non par locataire)
+  // pour ne pas compter deux fois le dépôt d'une colocation partagée par
+  // plusieurs locataires.
+  const bauxEnCours = new Map<string, number>();
+  for (const l of locataires) {
+    const bail = bailDe(l);
+    if (bail && bailEnCours(bail)) bauxEnCours.set(bail.id, bail.depotGarantie ?? 0);
+  }
+  const totalCautions = [...bauxEnCours.values()].reduce((s, v) => s + v, 0);
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <div className="toggle-pair" style={{ margin: 0 }}>
-          <button className={filtre === 'actifs' ? 'active' : ''} onClick={() => setFiltre('actifs')}>
-            Actifs
-          </button>
-          <button className={filtre === 'tous' ? 'active' : ''} onClick={() => setFiltre('tous')}>
-            Tous {nbInactifs > 0 ? `(+${nbInactifs} inactif${nbInactifs > 1 ? 's' : ''})` : ''}
-          </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div className="toggle-pair" style={{ margin: 0 }}>
+            <button className={filtre === 'actifs' ? 'active' : ''} onClick={() => setFiltre('actifs')}>
+              Actifs
+            </button>
+            <button className={filtre === 'tous' ? 'active' : ''} onClick={() => setFiltre('tous')}>
+              Tous {nbInactifs > 0 ? `(+${nbInactifs} inactif${nbInactifs > 1 ? 's' : ''})` : ''}
+            </button>
+          </div>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-soft)' }}>
+            Cautions en cours :{' '}
+            <b className="mono" style={{ color: 'var(--ink)' }}>
+              {formatMontant(totalCautions)}
+            </b>
+          </div>
         </div>
         <LocataireFormModal biens={biens} />
       </div>
@@ -65,7 +100,7 @@ export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[
               {visibles.map((l) => {
                 const bail = bailDe(l);
                 const docByType = (t: string) => l.documents.find((d) => d.type === t);
-                const actif = l.statut !== 'INACTIF';
+                const actif = estActif(l);
                 return (
                   <tr key={l.id}>
                     <td style={{ whiteSpace: 'nowrap' }}>{l.prenom} {l.nom}</td>
