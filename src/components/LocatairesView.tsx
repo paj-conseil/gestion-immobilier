@@ -31,7 +31,12 @@ function estActif(l: LocataireVM): boolean {
 }
 
 export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[]; biens: BienOption[] }) {
-  const [editing, setEditing] = useState<LocataireVM | null>(null);
+  // On garde uniquement l'id en édition, et on relit l'objet à jour depuis
+  // `locataires` à chaque rendu — sinon après un router.refresh() (ex. ajout
+  // d'un document), la fenêtre continuerait d'afficher l'ancien objet figé
+  // en state (le point de statut de document ne passerait jamais au vert).
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const editing = locataires.find((l) => l.id === editingId) ?? null;
   const [filtre, setFiltre] = useState<'actifs' | 'tous'>('actifs');
   const router = useRouter();
 
@@ -126,7 +131,7 @@ export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[
                       <DocStatus doc={docByType('ATTESTATION_ASSURANCE')} label="Attestation assurance" />
                     </td>
                     <td>
-                      <button className="icon-btn" title="Modifier" onClick={() => setEditing(l)}>
+                      <button className="icon-btn" title="Modifier" onClick={() => setEditingId(l.id)}>
                         <IconEdit />
                       </button>
                     </td>
@@ -149,9 +154,9 @@ export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[
         <LocataireEditModal
           locataire={editing}
           biens={biens}
-          onClose={() => setEditing(null)}
+          onClose={() => setEditingId(null)}
           onSaved={() => {
-            setEditing(null);
+            setEditingId(null);
             router.refresh();
           }}
         />
