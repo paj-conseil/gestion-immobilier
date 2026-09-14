@@ -178,7 +178,7 @@ function rendementBrut(b: BienVM): number | null {
   return (loyerAnnuel / cout) * 100;
 }
 
-export function BiensView({ biens }: { biens: BienVM[] }) {
+export function BiensView({ biens, scopeId }: { biens: BienVM[]; scopeId: string }) {
   // On garde uniquement l'id sélectionné, et on relit l'objet à jour depuis
   // `biens` à chaque rendu — sinon après un router.refresh() (ex. ajout d'un
   // prêt), le tiroir continuerait d'afficher l'ancien objet figé en state.
@@ -630,6 +630,7 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
         <PretFormModal
           bienId={editingPret.bienId}
           defaults={editingPret.defaults}
+          scopeId={scopeId}
           onClose={() => setEditingPret(null)}
         />
       )}

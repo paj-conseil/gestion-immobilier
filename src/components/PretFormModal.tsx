@@ -2,11 +2,16 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { upload } from '@vercel/blob/client';
 import { createPret, updatePret, deletePret } from '@/lib/actions/bien-actions';
 import { IconClose } from '@/components/icons';
 import { MontantField } from '@/components/MontantField';
 import { fileUrl } from '@/lib/file-url';
 import { toDateInputValue } from '@/lib/format';
+
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+}
 
 export type PretDefaults = {
   id?: string;
@@ -32,14 +37,17 @@ export type PretDefaults = {
 export function PretFormModal({
   bienId,
   defaults,
+  scopeId,
   onClose,
 }: {
   bienId: string;
   defaults?: PretDefaults;
+  scopeId: string;
   onClose: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
   const router = useRouter();
   const isEdit = !!defaults?.id;
 
@@ -63,8 +71,28 @@ export function PretFormModal({
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const fd = new FormData(e.currentTarget as HTMLFormElement);
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
     try {
+      // Le PDF (souvent plusieurs Mo pour un tableau scanné par la banque)
+      // part directement du navigateur vers Vercel Blob — le corps d'une
+      // Server Action est plafonné bien plus bas par la plateforme, quelle
+      // que soit la valeur de bodySizeLimit dans next.config.mjs.
+      const fileInput = form.elements.namedItem('tableauAmortissement') as HTMLInputElement | null;
+      const file = fileInput?.files?.[0];
+      fd.delete('tableauAmortissement');
+      if (file && file.size > 0) {
+        setUploadPct(0);
+        const key = `prets/${scopeId}/${crypto.randomUUID()}-${sanitizeFilename(file.name)}`;
+        const blob = await upload(key, file, {
+          access: 'private',
+          handleUploadUrl: '/api/upload/pret-tableau',
+          onUploadProgress: ({ percentage }) => setUploadPct(percentage),
+        });
+        fd.set('tableauAmortissementUrl', blob.pathname);
+        setUploadPct(null);
+      }
+
       const result = isEdit ? await updatePret(defaults!.id!, fd) : await createPret(bienId, fd);
       if ('error' in result) {
         setError(result.error);
@@ -75,6 +103,7 @@ export function PretFormModal({
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Une erreur est survenue');
     } finally {
+      setUploadPct(null);
       setLoading(false);
     }
   }
@@ -223,7 +252,7 @@ export function PretFormModal({
                 Annuler
               </button>
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Enregistrement…' : 'Enregistrer'}
+                {uploadPct !== null ? `Envoi du PDF… ${uploadPct}%` : loading ? 'Enregistrement…' : 'Enregistrer'}
               </button>
             </div>
           </div>

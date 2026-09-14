@@ -46,7 +46,7 @@ export default async function BiensPage() {
         <BienFormModal />
       </div>
 
-      <BiensView biens={JSON.parse(JSON.stringify(biens))} />
+      <BiensView biens={JSON.parse(JSON.stringify(biens))} scopeId={ctx.scopeId} />
     </>
   );
 }

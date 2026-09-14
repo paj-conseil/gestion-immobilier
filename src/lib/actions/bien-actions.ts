@@ -145,7 +145,7 @@ export async function createPret(bienId: string, formData: FormData): Promise<{ 
     return { error: 'Formulaire invalide' };
   }
 
-  const tableauUrl = await saveTableauAmortissement(formData, ctx.scopeId);
+  const tableauUrl = readUploadedTableauKey(formData);
 
   const ordre = await prisma.pret.count({ where: { bienId } });
   await prisma.pret.create({
@@ -170,7 +170,7 @@ export async function updatePret(pretId: string, formData: FormData): Promise<{ 
     return { error: 'Formulaire invalide' };
   }
 
-  const tableauUrl = await saveTableauAmortissement(formData, ctx.scopeId);
+  const tableauUrl = readUploadedTableauKey(formData);
   if (tableauUrl && pret.tableauAmortissementUrl) {
     await deleteStoredFile(pret.tableauAmortissementUrl);
   }
@@ -184,11 +184,17 @@ export async function updatePret(pretId: string, formData: FormData): Promise<{ 
   return { ok: true };
 }
 
-async function saveTableauAmortissement(formData: FormData, scopeId: string): Promise<string | null> {
-  const file = formData.get('tableauAmortissement');
-  if (!(file instanceof File) || file.size === 0) return null;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  return saveFile(buffer, { scopeId, category: 'prets', filename: file.name });
+/**
+ * Le PDF du tableau d'amortissement est envoyé directement du navigateur vers
+ * Vercel Blob (voir PretFormModal + /api/upload/pret-tableau) plutôt que par
+ * cette Server Action, dont le corps de requête est plafonné bien plus bas
+ * par la plateforme que par `bodySizeLimit` — ces PDF scannés dépassent
+ * souvent cette limite. Cette fonction ne fait donc que lire la clé de
+ * stockage déjà obtenue côté client.
+ */
+function readUploadedTableauKey(formData: FormData): string | null {
+  const key = formData.get('tableauAmortissementUrl');
+  return typeof key === 'string' && key.trim() ? key.trim() : null;
 }
 
 export async function deletePret(pretId: string): Promise<{ ok: true } | { error: string }> {
