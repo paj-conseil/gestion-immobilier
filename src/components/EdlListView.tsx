@@ -21,6 +21,11 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
   const [mode, setMode] = useState<'structure' | 'import'>('structure');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Retiré de l'affichage dès la confirmation, sans attendre le
+  // rafraîchissement serveur (router.refresh() suit derrière pour la
+  // cohérence, mais la ligne disparaît immédiatement à l'écran).
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const visibleEdls = edls.filter((e) => !deletedIds.has(e.id));
   const router = useRouter();
 
   async function onSubmit(e: FormEvent) {
@@ -45,12 +50,27 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
   async function onDelete(e: React.MouseEvent, id: string) {
     e.preventDefault();
     if (!confirm("Supprimer cet état des lieux ? Cette action est irréversible (document, pièces et photos associés).")) return;
-    const res = await deleteEtatDesLieux(id);
-    if ('error' in res) {
-      alert(res.error);
-      return;
+    setDeletedIds((prev) => new Set(prev).add(id));
+    try {
+      const res = await deleteEtatDesLieux(id);
+      if ('error' in res) {
+        alert(res.error);
+        setDeletedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+        return;
+      }
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setDeletedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
-    router.refresh();
   }
 
   return (
@@ -77,7 +97,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
               </tr>
             </thead>
             <tbody>
-              {edls.map((e) => (
+              {visibleEdls.map((e) => (
                 <tr key={e.id}>
                   <td>{bienLabel(e.bien)}</td>
                   <td>
@@ -105,7 +125,7 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                   </td>
                 </tr>
               ))}
-              {edls.length === 0 && (
+              {visibleEdls.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ color: 'var(--ink-soft)' }}>
                     Aucun état des lieux pour le moment.
