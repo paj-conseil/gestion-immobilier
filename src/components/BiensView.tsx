@@ -589,6 +589,16 @@ export function BiensView({ biens, scopeId }: { biens: BienVM[]; scopeId: string
 
               {tab === 'acces' && (
                 <div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => setEditBienOpen(true)}
+                    >
+                      <IconEdit />
+                      Modifier les codes d&apos;accès
+                    </button>
+                  </div>
                   {selected.codesAcces ? (
                     <div
                       style={{
@@ -603,9 +613,7 @@ export function BiensView({ biens, scopeId }: { biens: BienVM[]; scopeId: string
                       {selected.codesAcces}
                     </div>
                   ) : (
-                    <div style={{ color: 'var(--ink-soft)' }}>
-                      Aucun code d&apos;accès renseigné — ajoutez-en via &quot;Modifier ce logement&quot;.
-                    </div>
+                    <div style={{ color: 'var(--ink-soft)' }}>Aucun code d&apos;accès renseigné.</div>
                   )}
                 </div>
               )}
