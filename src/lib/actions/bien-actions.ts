@@ -45,6 +45,8 @@ const pretSchema = z.object({
   dureeMois: intOrNull,
   dateDebut: dateOrNull,
   dateFin: dateOrNull,
+  capitalRestantDu: numOrNull,
+  capitalRestantDuDate: dateOrNull,
 });
 
 const bienSchema = z.object({
@@ -143,8 +145,12 @@ export async function createPret(bienId: string, formData: FormData): Promise<{ 
     return { error: 'Formulaire invalide' };
   }
 
+  const tableauUrl = await saveTableauAmortissement(formData, ctx.scopeId);
+
   const ordre = await prisma.pret.count({ where: { bienId } });
-  await prisma.pret.create({ data: { ...data, banque: data.banque || null, bienId, ordre } });
+  await prisma.pret.create({
+    data: { ...data, banque: data.banque || null, bienId, ordre, tableauAmortissementUrl: tableauUrl ?? undefined },
+  });
 
   revalidatePath('/biens');
   return { ok: true };
@@ -164,10 +170,25 @@ export async function updatePret(pretId: string, formData: FormData): Promise<{ 
     return { error: 'Formulaire invalide' };
   }
 
-  await prisma.pret.update({ where: { id: pretId }, data: { ...data, banque: data.banque || null } });
+  const tableauUrl = await saveTableauAmortissement(formData, ctx.scopeId);
+  if (tableauUrl && pret.tableauAmortissementUrl) {
+    await deleteStoredFile(pret.tableauAmortissementUrl);
+  }
+
+  await prisma.pret.update({
+    where: { id: pretId },
+    data: { ...data, banque: data.banque || null, tableauAmortissementUrl: tableauUrl ?? undefined },
+  });
 
   revalidatePath('/biens');
   return { ok: true };
+}
+
+async function saveTableauAmortissement(formData: FormData, scopeId: string): Promise<string | null> {
+  const file = formData.get('tableauAmortissement');
+  if (!(file instanceof File) || file.size === 0) return null;
+  const buffer = Buffer.from(await file.arrayBuffer());
+  return saveFile(buffer, { scopeId, category: 'prets', filename: file.name });
 }
 
 export async function deletePret(pretId: string): Promise<{ ok: true } | { error: string }> {

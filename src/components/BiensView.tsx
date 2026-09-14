@@ -51,6 +51,9 @@ export type PretVM = {
   dureeMois?: number | null;
   dateDebut?: string | null;
   dateFin?: string | null;
+  tableauAmortissementUrl?: string | null;
+  capitalRestantDu?: number | null;
+  capitalRestantDuDate?: string | null;
 };
 export type BienVM = {
   id: string;
@@ -96,7 +99,28 @@ function moisRestantsPret(p: PretVM): number | null {
   return null;
 }
 
+/**
+ * Si un capital restant dû réel (lu sur un tableau d'amortissement bancaire)
+ * est disponible, on part de ce point d'ancrage — plus fiable qu'une formule
+ * théorique depuis la date de début — et on le projette jusqu'à aujourd'hui
+ * via la mensualité/le taux (récurrence d'amortissement standard : solde_n+1
+ * = solde_n * (1+r) - mensualité). Sinon, on retombe sur l'estimation
+ * théorique à partir de montant/dureeMois/tauxInteret/dateDebut.
+ */
 function empruntRestantPret(p: PretVM): number | null {
+  if (p.capitalRestantDu != null && p.capitalRestantDuDate) {
+    const moisEcoules = Math.max(0, moisEntre(new Date(p.capitalRestantDuDate), new Date()));
+    if (moisEcoules === 0) return p.capitalRestantDu;
+    const r = (p.tauxInteret ?? 0) / 100 / 12;
+    const M = p.mensualite ?? 0;
+    if (r > 0 && M > 0) {
+      const facteur = Math.pow(1 + r, moisEcoules);
+      return Math.max(0, p.capitalRestantDu * facteur - (M * (facteur - 1)) / r);
+    }
+    if (M > 0) return Math.max(0, p.capitalRestantDu - M * moisEcoules);
+    return p.capitalRestantDu;
+  }
+
   if (!p.montant || !p.dureeMois) return null;
   const n = p.dureeMois;
   const done = Math.min(n, moisEcoulesPret(p));
@@ -456,6 +480,21 @@ export function BiensView({ biens }: { biens: BienVM[] }) {
                             <span>Durée : {p.dureeMois ? `${p.dureeMois} mois` : '—'}</span>
                             <span>Fin : {p.dateFin ? formatDate(p.dateFin) : '—'}</span>
                             <span>Restant : {moisRestantsPret(p) !== null ? `${moisRestantsPret(p)} mois` : '—'}</span>
+                            {p.capitalRestantDu != null && p.capitalRestantDuDate && (
+                              <span>
+                                CRD connu : {formatMontant(p.capitalRestantDu)} au {formatDate(p.capitalRestantDuDate)}
+                              </span>
+                            )}
+                            {p.tableauAmortissementUrl && (
+                              <a
+                                className="link-row"
+                                href={fileUrl(p.tableauAmortissementUrl)}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Voir le tableau d&apos;amortissement
+                              </a>
+                            )}
                           </div>
                         </div>
                       ))

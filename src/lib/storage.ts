@@ -33,7 +33,7 @@ const useBlob = !!process.env.VERCEL;
  */
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-export type StorageCategory = 'photos' | 'locataires' | 'generated' | 'edl' | 'compta' | 'signatures';
+export type StorageCategory = 'photos' | 'locataires' | 'generated' | 'edl' | 'compta' | 'signatures' | 'prets';
 
 function sanitize(filename: string): string {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);

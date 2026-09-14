@@ -117,6 +117,17 @@ model Pret {
   dateFin       DateTime?
   ordre         Int       @default(0)
   createdAt     DateTime  @default(now())
+
+  /// Tableau d'amortissement joint par la banque (PDF), pour référence et
+  /// pour ancrer le calcul de l'emprunt restant sur une donnée bancaire
+  /// réelle plutôt que sur la seule formule théorique.
+  tableauAmortissementUrl String?
+  /// Capital restant dû lu sur le tableau d'amortissement, à la date
+  /// capitalRestantDuDate — sert de point de départ au calcul de l'emprunt
+  /// restant (au lieu de repartir de dateDebut/montant), puis ce capital est
+  /// projeté jusqu'à aujourd'hui via mensualite/tauxInteret.
+  capitalRestantDu     Float?
+  capitalRestantDuDate DateTime?
 }
 
 model BienPhoto {

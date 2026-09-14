@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createPret, updatePret, deletePret } from '@/lib/actions/bien-actions';
 import { IconClose } from '@/components/icons';
 import { MontantField } from '@/components/MontantField';
+import { fileUrl } from '@/lib/file-url';
 import { toDateInputValue } from '@/lib/format';
 
 export type PretDefaults = {
@@ -16,6 +17,9 @@ export type PretDefaults = {
   dureeMois?: number | null;
   dateDebut?: string | null;
   dateFin?: string | null;
+  tableauAmortissementUrl?: string | null;
+  capitalRestantDu?: number | null;
+  capitalRestantDuDate?: string | null;
 };
 
 /**
@@ -169,6 +173,42 @@ export function PretFormModal({
                     Calculée automatiquement (date de début + durée)
                   </div>
                 )}
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--line)', margin: '16px 0 14px', paddingTop: 14 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-soft)', marginBottom: 10 }}>
+                Tableau d&apos;amortissement
+              </div>
+              <div style={{ fontSize: 11.3, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
+                Joindre le dernier tableau reçu de la banque (PDF) et reporter le capital restant dû qui y figure —
+                sert de point de départ au calcul de l&apos;emprunt restant, plus fiable que l&apos;estimation
+                théorique seule.
+              </div>
+              {defaults?.tableauAmortissementUrl && (
+                <div style={{ marginBottom: 10 }}>
+                  <a className="link-row" href={fileUrl(defaults.tableauAmortissementUrl)} target="_blank" rel="noreferrer">
+                    Voir le tableau actuellement joint
+                  </a>
+                </div>
+              )}
+              <div className="field">
+                <label>{defaults?.tableauAmortissementUrl ? 'Remplacer le tableau (PDF)' : 'Tableau (PDF)'}</label>
+                <input name="tableauAmortissement" type="file" accept="application/pdf,.pdf" />
+              </div>
+              <div className="field-row">
+                <div className="field">
+                  <label>Capital restant dû</label>
+                  <MontantField name="capitalRestantDu" defaultValue={defaults?.capitalRestantDu} />
+                </div>
+                <div className="field">
+                  <label>À la date du</label>
+                  <input
+                    name="capitalRestantDuDate"
+                    type="date"
+                    defaultValue={toDateInputValue(defaults?.capitalRestantDuDate)}
+                  />
+                </div>
               </div>
             </div>
           </div>

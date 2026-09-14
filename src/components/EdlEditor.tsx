@@ -44,8 +44,8 @@ type EdlVM = {
 
 const ETAT_ORDER: EtatItem[] = ['MAUVAIS', 'USURE', 'BON'];
 const ETAT_LABEL: Record<EtatItem, string> = { BON: 'Bon état', USURE: 'Usure normale', MAUVAIS: 'Mauvais état' };
+const ETAT_LABEL_COURT: Record<EtatItem, string> = { BON: 'Bon', USURE: 'Usure', MAUVAIS: 'Mauvais' };
 const ETAT_CLASS: Record<EtatItem, string> = { BON: 'good', USURE: 'wear', MAUVAIS: 'bad' };
-const ETAT_GLYPH: Record<EtatItem, string> = { MAUVAIS: '✕', USURE: '~', BON: '✓' };
 
 type PhotoTarget = { pieceId?: string; itemId?: string } | null;
 
@@ -415,11 +415,14 @@ function EdlItemRow({
   const [commentOpen, setCommentOpen] = useState(!!item.commentaire);
   const [commentaire, setCommentaire] = useState(item.commentaire ?? '');
   const [quantite, setQuantite] = useState(item.quantite ?? 0);
+  // État local optimiste : la couleur change au clic sans attendre l'aller-
+  // retour serveur (updateEDLItem + router.refresh() suivent en arrière-plan).
+  const [etatLocal, setEtatLocal] = useState<EtatItem | null>(item.etat);
 
-  async function onSetEtat(etat: EtatItem) {
-    const next = item.etat === etat ? null : etat;
-    await updateEDLItem(item.id, { etat: next });
-    router.refresh();
+  function onSetEtat(etat: EtatItem) {
+    const next = etatLocal === etat ? null : etat;
+    setEtatLocal(next);
+    updateEDLItem(item.id, { etat: next }).then(() => router.refresh());
   }
 
   async function onSaveComment() {
@@ -454,11 +457,11 @@ function EdlItemRow({
                 <button
                   key={e}
                   type="button"
-                  className={`etat-btn ${ETAT_CLASS[e]}${item.etat === e ? ' active' : ''}`}
+                  className={`etat-btn ${ETAT_CLASS[e]}${etatLocal === e ? ' active' : ''}`}
                   title={ETAT_LABEL[e]}
                   onClick={() => onSetEtat(e)}
                 >
-                  {ETAT_GLYPH[e]}
+                  {ETAT_LABEL_COURT[e]}
                 </button>
               ))}
             </div>
