@@ -1285,14 +1285,20 @@ th.col-doc {
   box-shadow: -14px 0 32px rgba(15, 61, 36, 0.16);
   transform: translateX(100%);
   transition: transform 0.22s ease;
-  overflow-y: auto;
   z-index: 51;
+  /* La photo reste fixe en haut ; seul le contenu (.drawer-body) défile,
+     dans une zone bornée avec un ascenseur fin plutôt que toute la fenêtre
+     qui défilait auparavant (photo comprise). */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .drawer.show {
   transform: translateX(0);
 }
 .drawer-photo {
   height: 150px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1322,6 +1328,24 @@ th.col-doc {
 }
 .drawer-body {
   padding: 20px 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.drawer-body::-webkit-scrollbar {
+  width: 6px;
+}
+.drawer-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.drawer-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 10px;
+}
+.drawer-body::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-soft);
 }
 .drawer-body h2 {
   font-size: 17px;
