@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   const horizon = addDays(new Date(), 60);
   const now = new Date();
 
-  const [biens, locationsActives, locataireDocsManquants] = await Promise.all([
+  const [biens, locationsActivesBrutes, locataireDocsManquants] = await Promise.all([
     prisma.bien.findMany({ where: { scopeId: ctx.scopeId } }),
     prisma.location.findMany({
       where: { bien: { scopeId: ctx.scopeId }, statut: 'ACTIF' },
@@ -25,6 +25,13 @@ export default async function DashboardPage() {
       take: 5,
     }),
   ]);
+
+  // Un bail "actif" en base dont la date d'entrée est encore à venir n'est
+  // pas encore en cours — il ne doit ni compter dans les revenus, ni
+  // déclencher d'alerte d'échéance (fin de bail / révision de loyer).
+  const aujourdhuiMinuit = new Date();
+  aujourdhuiMinuit.setHours(0, 0, 0, 0);
+  const locationsActives = locationsActivesBrutes.filter((l) => new Date(l.dateDebut) <= aujourdhuiMinuit);
 
   const nbLoue = biens.filter((b) => b.statut === 'LOUE').length;
   const nbVacant = biens.filter((b) => b.statut === 'VACANT').length;
