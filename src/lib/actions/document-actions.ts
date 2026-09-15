@@ -7,12 +7,14 @@ import { saveFile, readStoredFile } from '@/lib/storage';
 import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { sendMail } from '@/lib/email';
-import { QuittanceDoc } from '@/lib/documents/pdf/QuittanceDoc';
+import { QuittanceDoc, type QuittanceData } from '@/lib/documents/pdf/QuittanceDoc';
 import { ContratDoc, type ContratData } from '@/lib/documents/pdf/ContratDoc';
 import { CautionnementDoc, type CautionnementData } from '@/lib/documents/pdf/CautionnementDoc';
-import { DepotGarantieDoc } from '@/lib/documents/pdf/DepotGarantieDoc';
-import { RevisionLoyerDoc } from '@/lib/documents/pdf/RevisionLoyerDoc';
+import { DepotGarantieDoc, type DepotGarantieData } from '@/lib/documents/pdf/DepotGarantieDoc';
+import { RevisionLoyerDoc, type RevisionLoyerData } from '@/lib/documents/pdf/RevisionLoyerDoc';
 import type { TypeDocumentGenere } from '@/lib/enums';
+
+type AnyDocData = ContratData | CautionnementData | DepotGarantieData | QuittanceData | RevisionLoyerData;
 
 const DOC_LABEL: Record<string, string> = {
   CONTRAT: 'Contrat de location',
@@ -28,7 +30,7 @@ function nomsLocataires(locataires: { locataire: { nom: string; prenom: string }
 }
 
 export type GenerateResult =
-  | { ok: true; documentGenereId: string; fileUrl: string; destinataireEmail?: string | null }
+  | { ok: true; documentGenereId: string; fileUrl: string; destinataireEmail?: string | null; signeLe: string | null }
   | { error: string };
 
 export async function generateDocument(formData: FormData): Promise<GenerateResult> {
@@ -36,6 +38,12 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
   const type = String(formData.get('type')) as TypeDocumentGenere;
   const bienId = String(formData.get('bienId') ?? '');
   const locataireId = String(formData.get('locataireId') ?? '');
+
+  // Signature capturée avant génération (voir Scope.exigerSignatureDocuments)
+  // — incrustée directement dans le PDF dès sa création.
+  const signatureInput = String(formData.get('signature') ?? '');
+  const signeParInput = String(formData.get('signePar') ?? '').trim();
+  const hasSignature = signatureInput.startsWith('data:image/') && !!signeParInput;
 
   const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
   if (!bien) return { error: 'Bien introuvable' };
@@ -54,9 +62,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
 
   let pdfBuffer: Buffer;
   let periode: string | undefined;
-  // Conservé pour CONTRAT/CAUTIONNEMENT afin de pouvoir régénérer le PDF avec
-  // la signature incrustée plus tard, sans dépendre des données live.
-  let dataJson: ContratData | CautionnementData | undefined;
+  // Conservé pour tous les types afin de pouvoir régénérer le PDF avec la
+  // signature incrustée plus tard (signerDocument), sans dépendre des
+  // données live (bien/bail), qui peuvent avoir changé depuis.
+  let dataJson: AnyDocData | undefined;
 
   try {
     switch (type) {
@@ -67,21 +76,20 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
         const periodeDebut = y && m ? new Date(y, m - 1, 1) : new Date();
         const periodeFin = y && m ? new Date(y, m, 0) : new Date();
         periode = periodeStr;
-        pdfBuffer = await renderPdf(
-          QuittanceDoc({
-            data: {
-              bienAdresse: bienLabel(bien),
-              bienCodePostal: bien.codePostal,
-              bienVille: bien.ville,
-              locatairesNoms,
-              loyerHC: location.loyerHC,
-              charges: location.charges,
-              periodeDebut,
-              periodeFin,
-              dateEmission: new Date(),
-            },
-          }),
-        );
+        const quittanceData: QuittanceData = {
+          bienAdresse: bienLabel(bien),
+          bienCodePostal: bien.codePostal,
+          bienVille: bien.ville,
+          locatairesNoms,
+          loyerHC: location.loyerHC,
+          charges: location.charges,
+          periodeDebut,
+          periodeFin,
+          dateEmission: new Date(),
+          signatureLocataire: hasSignature ? signatureInput : undefined,
+        };
+        dataJson = quittanceData;
+        pdfBuffer = await renderPdf(QuittanceDoc({ data: quittanceData }));
         break;
       }
       case 'CONTRAT': {
@@ -107,6 +115,7 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           indiceIRLReference: location.indiceIRLReference,
           dateEmission: new Date(),
           garant: garantNom && garantAdresse ? { nom: garantNom, adresse: garantAdresse, nationalite: garantNationalite } : null,
+          signatureLocataire: hasSignature ? signatureInput : undefined,
         };
         dataJson = contratData;
         pdfBuffer = await renderPdf(ContratDoc({ data: contratData }));
@@ -132,6 +141,7 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           charges: location.charges,
           dateDebut: location.dateDebut,
           dateEmission: new Date(),
+          signatureGarant: hasSignature ? signatureInput : undefined,
         };
         dataJson = cautionnementData;
         pdfBuffer = await renderPdf(CautionnementDoc({ data: cautionnementData }));
@@ -140,19 +150,18 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
       case 'DEPOT_GARANTIE': {
         if (!location) return { error: 'Aucun bail actif trouvé pour ce bien / locataire' };
         const montant = Number(formData.get('montant') ?? location.depotGarantie ?? 0);
-        pdfBuffer = await renderPdf(
-          DepotGarantieDoc({
-            data: {
-              locatairesNoms,
-              bienAdresse: bienLabel(bien),
-              bienCodePostal: bien.codePostal,
-              bienVille: bien.ville,
-              montant,
-              loyerHC: location.loyerHC,
-              dateVersement: new Date(),
-            },
-          }),
-        );
+        const depotData: DepotGarantieData = {
+          locatairesNoms,
+          bienAdresse: bienLabel(bien),
+          bienCodePostal: bien.codePostal,
+          bienVille: bien.ville,
+          montant,
+          loyerHC: location.loyerHC,
+          dateVersement: new Date(),
+          signatureLocataire: hasSignature ? signatureInput : undefined,
+        };
+        dataJson = depotData;
+        pdfBuffer = await renderPdf(DepotGarantieDoc({ data: depotData }));
         break;
       }
       case 'REVISION_LOYER': {
@@ -161,22 +170,21 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
         const indiceRefValeur = Number(formData.get('indiceRefValeur') ?? 0);
         const indiceNouveauValeur = Number(formData.get('indiceNouveauValeur') ?? 0);
         if (!indiceRefValeur || !indiceNouveauValeur) return { error: 'Valeurs des indices IRL requises' };
-        pdfBuffer = await renderPdf(
-          RevisionLoyerDoc({
-            data: {
-              locatairesNoms,
-              bienAdresse: bienLabel(bien),
-              bienCodePostal: bien.codePostal,
-              bienVille: bien.ville,
-              loyerActuel: location.loyerHC,
-              indiceReference,
-              indiceRefValeur,
-              indiceNouveauValeur,
-              dateEffet: new Date(),
-              dateEmission: new Date(),
-            },
-          }),
-        );
+        const revisionData: RevisionLoyerData = {
+          locatairesNoms,
+          bienAdresse: bienLabel(bien),
+          bienCodePostal: bien.codePostal,
+          bienVille: bien.ville,
+          loyerActuel: location.loyerHC,
+          indiceReference,
+          indiceRefValeur,
+          indiceNouveauValeur,
+          dateEffet: new Date(),
+          dateEmission: new Date(),
+          signatureLocataire: hasSignature ? signatureInput : undefined,
+        };
+        dataJson = revisionData;
+        pdfBuffer = await renderPdf(RevisionLoyerDoc({ data: revisionData }));
         break;
       }
       default:
@@ -192,6 +200,14 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
     filename: `${type.toLowerCase()}-${bien.adresse}.pdf`,
   });
 
+  const signatureKey = hasSignature
+    ? await saveFile(Buffer.from(signatureInput.split(',')[1] ?? '', 'base64'), {
+        scopeId: ctx.scopeId,
+        category: 'signatures',
+        filename: `${type.toLowerCase()}-${bien.id}.png`,
+      })
+    : undefined;
+
   const documentGenere = await prisma.documentGenere.create({
     data: {
       scopeId: ctx.scopeId,
@@ -204,11 +220,20 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
       // JSON.stringify/parse convertit les Date en chaînes ISO, seul format
       // accepté par le champ Json — reconverties en Date dans signerDocument.
       dataJson: dataJson ? JSON.parse(JSON.stringify(dataJson)) : undefined,
+      signeLe: hasSignature ? new Date() : undefined,
+      signePar: hasSignature ? signeParInput : undefined,
+      signatureUrl: signatureKey,
     },
   });
 
   revalidatePath('/documents');
-  return { ok: true, documentGenereId: documentGenere.id, fileUrl: key, destinataireEmail: locataire?.email };
+  return {
+    ok: true,
+    documentGenereId: documentGenere.id,
+    fileUrl: key,
+    destinataireEmail: locataire?.email,
+    signeLe: hasSignature ? documentGenere.signeLe!.toISOString() : null,
+  };
 }
 
 export type SendResult =
@@ -253,10 +278,10 @@ export async function sendGeneratedDocument(documentGenereId: string, formData: 
 export type SignResult = { ok: true; fileUrl: string } | { error: string };
 
 /**
- * Régénère le PDF d'un document CONTRAT/CAUTIONNEMENT en y incrustant une
- * signature manuscrite capturée à l'écran, à partir des données exactes
- * ayant servi à la génération initiale (dataJson) plutôt que des données
- * live (bien/bail), qui ont pu changer depuis (loyer révisé, etc.).
+ * Régénère le PDF d'un document en y incrustant une signature manuscrite
+ * capturée à l'écran, à partir des données exactes ayant servi à la
+ * génération initiale (dataJson) plutôt que des données live (bien/bail),
+ * qui ont pu changer depuis (loyer révisé, etc.).
  */
 export async function signerDocument(documentGenereId: string, formData: FormData): Promise<SignResult> {
   const ctx = await getCurrentContext();
@@ -290,6 +315,30 @@ export async function signerDocument(documentGenereId: string, formData: FormDat
         signatureGarant: signature,
       };
       pdfBuffer = await renderPdf(CautionnementDoc({ data }));
+    } else if (doc.type === 'DEPOT_GARANTIE') {
+      const data: DepotGarantieData = {
+        ...(raw as unknown as DepotGarantieData),
+        dateVersement: new Date(raw.dateVersement as string),
+        signatureLocataire: signature,
+      };
+      pdfBuffer = await renderPdf(DepotGarantieDoc({ data }));
+    } else if (doc.type === 'QUITTANCE') {
+      const data: QuittanceData = {
+        ...(raw as unknown as QuittanceData),
+        periodeDebut: new Date(raw.periodeDebut as string),
+        periodeFin: new Date(raw.periodeFin as string),
+        dateEmission: new Date(raw.dateEmission as string),
+        signatureLocataire: signature,
+      };
+      pdfBuffer = await renderPdf(QuittanceDoc({ data }));
+    } else if (doc.type === 'REVISION_LOYER') {
+      const data: RevisionLoyerData = {
+        ...(raw as unknown as RevisionLoyerData),
+        dateEffet: new Date(raw.dateEffet as string),
+        dateEmission: new Date(raw.dateEmission as string),
+        signatureLocataire: signature,
+      };
+      pdfBuffer = await renderPdf(RevisionLoyerDoc({ data }));
     } else {
       return { error: 'Ce type de document ne prend pas en charge la signature électronique.' };
     }

@@ -14,6 +14,7 @@ import {
 import { sendGeneratedDocument } from '@/lib/actions/document-actions';
 import { fileUrl } from '@/lib/file-url';
 import { bienLabel, formatDate } from '@/lib/format';
+import { renderEmailTemplate } from '@/lib/email-template';
 import { IconCamera, IconComment, IconPlus, IconSend } from '@/components/icons';
 import { SignaturePad } from '@/components/SignaturePad';
 import type { EtatItem, TypeItemEDL } from '@/lib/enums';
@@ -54,11 +55,17 @@ export function EdlEditor({
   documentGenereId: documentGenereIdInitial,
   pdfUrlInitial,
   locataireEmail,
+  locatairePrenom,
+  emailTemplate,
+  expediteurNom,
 }: {
   edl: EdlVM;
   documentGenereId: string | null;
   pdfUrlInitial: string | null;
   locataireEmail: string | null;
+  locatairePrenom: string | null;
+  emailTemplate: string;
+  expediteurNom: string;
 }) {
   const router = useRouter();
   const [generating, setGenerating] = useState(false);
@@ -74,7 +81,11 @@ export function EdlEditor({
   const [sendResult, setSendResult] = useState<string | null>(null);
   const [destinataire, setDestinataire] = useState(locataireEmail ?? '');
   const [corps, setCorps] = useState(
-    `Bonjour,\n\nVeuillez trouver ci-joint l'état des lieux ${edl.type === 'ENTREE' ? "d'entrée" : 'de sortie'}.\n\nCordialement,`,
+    renderEmailTemplate(emailTemplate, {
+      prenom: locatairePrenom ?? '',
+      document: `l'état des lieux ${edl.type === 'ENTREE' ? "d'entrée" : 'de sortie'}`,
+      expediteur: expediteurNom,
+    }),
   );
   const [signing, setSigning] = useState<'BAILLEUR' | 'LOCATAIRE' | null>(null);
   const [signError, setSignError] = useState<string | null>(null);

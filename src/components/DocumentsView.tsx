@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { generateDocument, sendGeneratedDocument, signerDocument } from '@/lib/actions/document-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { fileUrl } from '@/lib/file-url';
+import { renderEmailTemplate } from '@/lib/email-template';
 import { IconCheck, IconDocuments, IconEdl, IconReceipt, IconSend, IconShield, IconTrend } from '@/components/icons';
 import { SignaturePad } from '@/components/SignaturePad';
-
-const TYPES_SIGNABLES = ['CONTRAT', 'CAUTIONNEMENT'];
 
 type LocataireVM = { id: string; nom: string; prenom: string; email?: string | null };
 type BienVM = {
@@ -46,7 +45,19 @@ const TYPE_LABEL: Record<string, string> = {
   REVISION_LOYER: 'Révision de loyer',
 };
 
-export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: EnvoiVM[] }) {
+export function DocumentsView({
+  biens,
+  envois,
+  exigerSignature,
+  emailTemplate,
+  expediteurNom,
+}: {
+  biens: BienVM[];
+  envois: EnvoiVM[];
+  exigerSignature: boolean;
+  emailTemplate: string;
+  expediteurNom: string;
+}) {
   const [bienId, setBienId] = useState(biens[0]?.id ?? '');
   const [type, setType] = useState('CONTRAT');
   const [loading, setLoading] = useState(false);
@@ -66,6 +77,8 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
   const [signing, setSigning] = useState(false);
   const [signError, setSignError] = useState<string | null>(null);
 
+  const [signatureAvant, setSignatureAvant] = useState<{ dataUrl: string; nom: string } | null>(null);
+
   const bien = biens.find((b) => b.id === bienId);
   const locataires = useMemo(
     () => bien?.locations.flatMap((loc) => loc.locataires.map((l) => l.locataire)) ?? [],
@@ -81,6 +94,7 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
     setDestinataire('');
     setCorps('');
     setSignError(null);
+    setSignatureAvant(null);
   }
 
   async function onGenerate(e: React.FormEvent<HTMLFormElement>) {
@@ -96,11 +110,14 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
         setError(res.error);
         return;
       }
-      setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl, type, signeLe: null });
-      const nomDest = currentLocataire ? `${currentLocataire.prenom} ${currentLocataire.nom}` : 'Madame, Monsieur';
+      setGenerated({ documentGenereId: res.documentGenereId, fileUrl: res.fileUrl, type, signeLe: res.signeLe });
       setDestinataire(res.destinataireEmail ?? '');
       setCorps(
-        `Bonjour ${nomDest},\n\nVeuillez trouver ci-joint : ${(TYPE_LABEL[type] ?? type).toLowerCase()}.\n\nN'hésitez pas à revenir vers moi pour toute question.\n\nCordialement,\nPierre Jaubert`,
+        renderEmailTemplate(emailTemplate, {
+          prenom: currentLocataire?.prenom ?? '',
+          document: (TYPE_LABEL[type] ?? type).toLowerCase(),
+          expediteur: expediteurNom,
+        }),
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Une erreur est survenue lors de la génération');
@@ -311,7 +328,43 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
                 </div>
               )}
 
-              <button className="btn btn-primary" type="submit" disabled={loading || !currentLocataireId}>
+              <input type="hidden" name="signature" value={signatureAvant?.dataUrl ?? ''} />
+              <input type="hidden" name="signePar" value={signatureAvant?.nom ?? ''} />
+
+              {exigerSignature && (
+                <div style={{ borderTop: '1px solid var(--line)', margin: '4px 0 16px', paddingTop: 14 }}>
+                  <h3 style={{ fontSize: 14, margin: '0 0 8px' }}>Signature avant génération</h3>
+                  {signatureAvant ? (
+                    <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
+                      <span className="txt">Signature de {signatureAvant.nom} enregistrée.</span>
+                      <button type="button" className="link-row" onClick={() => setSignatureAvant(null)}>
+                        Recommencer
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
+                        Ce périmètre exige une signature avant de générer le document. Faites signer{' '}
+                        {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} ci-dessous.
+                      </p>
+                      <SignaturePad
+                        defaultName={
+                          type !== 'CAUTIONNEMENT' && currentLocataire
+                            ? `${currentLocataire.prenom} ${currentLocataire.nom}`
+                            : ''
+                        }
+                        onSubmit={(dataUrl, nom) => setSignatureAvant({ dataUrl, nom })}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+
+              <button
+                className="btn btn-primary"
+                type="submit"
+                disabled={loading || !currentLocataireId || (exigerSignature && !signatureAvant)}
+              >
                 {loading ? 'Génération…' : 'Générer'}
               </button>
             </form>
@@ -340,34 +393,32 @@ export function DocumentsView({ biens, envois }: { biens: BienVM[]; envois: Envo
               Ouvrir dans un nouvel onglet
             </a>
 
-            {TYPES_SIGNABLES.includes(generated.type) && (
-              <div style={{ borderTop: '1px solid var(--line)', margin: '4px 0 20px', paddingTop: 16 }}>
-                <h3 style={{ fontSize: 14, margin: '0 0 10px' }}>Signature électronique</h3>
-                {generated.signeLe ? (
-                  <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
-                    <span className="txt">Document signé le {formatDate(generated.signeLe)}.</span>
-                  </div>
-                ) : (
-                  <>
-                    <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
-                      Faites signer {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} directement
-                      ci-dessous (pas besoin d&apos;ouvrir le PDF) : le document sera automatiquement mis à jour avec
-                      la signature incrustée.
-                    </p>
-                    {signError && <div className="auth-error">{signError}</div>}
-                    <SignaturePad
-                      defaultName={
-                        type === 'CONTRAT' && currentLocataire
-                          ? `${currentLocataire.prenom} ${currentLocataire.nom}`
-                          : ''
-                      }
-                      onSubmit={onSign}
-                      submitting={signing}
-                    />
-                  </>
-                )}
-              </div>
-            )}
+            <div style={{ borderTop: '1px solid var(--line)', margin: '4px 0 20px', paddingTop: 16 }}>
+              <h3 style={{ fontSize: 14, margin: '0 0 10px' }}>Signature électronique</h3>
+              {generated.signeLe ? (
+                <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
+                  <span className="txt">Document signé le {formatDate(generated.signeLe)}.</span>
+                </div>
+              ) : (
+                <>
+                  <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
+                    Faites signer {type === 'CAUTIONNEMENT' ? 'le garant' : 'le(s) locataire(s)'} directement
+                    ci-dessous (pas besoin d&apos;ouvrir le PDF) : le document sera automatiquement mis à jour avec
+                    la signature incrustée.
+                  </p>
+                  {signError && <div className="auth-error">{signError}</div>}
+                  <SignaturePad
+                    defaultName={
+                      type !== 'CAUTIONNEMENT' && currentLocataire
+                        ? `${currentLocataire.prenom} ${currentLocataire.nom}`
+                        : ''
+                    }
+                    onSubmit={onSign}
+                    submitting={signing}
+                  />
+                </>
+              )}
+            </div>
 
             <h3 style={{ fontSize: 14, margin: '4px 0 12px' }}>4. Envoyer par email</h3>
             {sendResult && (

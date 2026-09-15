@@ -1,4 +1,4 @@
-import { Document, Page, Text, View } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
 import { formatDate, montantEnLettres } from '@/lib/format';
@@ -14,6 +14,8 @@ export type QuittanceData = {
   periodeFin: Date;
   dateEmission: Date;
   lieuEmission?: string;
+  /** Signature manuscrite du locataire, capturée à l'écran (data URI PNG). */
+  signatureLocataire?: string | null;
 };
 
 export function QuittanceDoc({ data }: { data: QuittanceData }) {
@@ -60,6 +62,9 @@ export function QuittanceDoc({ data }: { data: QuittanceData }) {
         <Text style={[styles.p, { marginTop: 24 }]}>
           Fait à {data.lieuEmission ?? 'Tours'}, le {formatDate(data.dateEmission)}
         </Text>
+
+        <Text style={[styles.small, { marginTop: data.signatureLocataire ? 10 : 30 }]}>Signature du locataire</Text>
+        {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
 
         <Text style={styles.legal}>
           Cette quittance annule tous les reçus qui auraient pu être établis précédemment en cas de paiement

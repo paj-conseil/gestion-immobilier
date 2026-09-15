@@ -36,6 +36,14 @@ model Scope {
   owner       User         @relation("ScopeOwner", fields: [ownerId], references: [id])
   createdAt   DateTime     @default(now())
   memberships Membership[]
+  /// Si vrai, la signature (souris/tactile) est capturée AVANT la génération
+  /// du PDF pour tout document — elle est alors incrustée dès la création au
+  /// lieu de rester une étape facultative après coup.
+  exigerSignatureDocuments Boolean @default(false)
+  /// Modèle du corps des emails d'envoi de document, avec placeholders
+  /// {{prenom}}, {{document}}, {{expediteur}} — si vide, un modèle par défaut
+  /// est utilisé (voir src/lib/email-template.ts).
+  emailTemplateCorps       String?
 
   biens             Bien[]
   locataires        Locataire[]

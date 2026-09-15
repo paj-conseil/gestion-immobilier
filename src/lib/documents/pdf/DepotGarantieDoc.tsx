@@ -1,4 +1,4 @@
-import { Document, Page, Text, View } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
 import { formatDate, montantEnLettres } from '@/lib/format';
@@ -11,6 +11,8 @@ export type DepotGarantieData = {
   montant: number;
   loyerHC?: number | null;
   dateVersement: Date;
+  /** Signature manuscrite du locataire, capturée à l'écran (data URI PNG). */
+  signatureLocataire?: string | null;
 };
 
 export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
@@ -58,6 +60,13 @@ export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
         <Text style={[styles.p, { marginTop: 24 }]}>Fait à Tours, le {formatDate(data.dateVersement)}</Text>
 
         <View style={styles.signatures}>
+          <View style={styles.signatureBlock}>
+            <Text style={styles.small}>Le locataire</Text>
+            {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
+            <Text style={[styles.signatureLine, data.signatureLocataire ? { marginTop: 4 } : {}]}>
+              {data.locatairesNoms}
+            </Text>
+          </View>
           <View style={styles.signatureBlock}>
             <Text style={styles.small}>Le bailleur</Text>
             <Text style={styles.signatureLine}>{PROPRIETAIRE.nom}</Text>
