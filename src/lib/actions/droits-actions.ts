@@ -69,27 +69,6 @@ export async function changeMembershipRole(membershipId: string, role: Role): Pr
   revalidatePath('/droits');
 }
 
-export async function updateScopeParametres(
-  scopeId: string,
-  formData: FormData,
-): Promise<{ ok: true } | { error: string }> {
-  const ctx = await getCurrentContext();
-  if (!(await canManageScope(ctx.userId, scopeId))) return { error: 'Action non autorisée sur ce périmètre' };
-
-  const exigerSignatureDocuments = formData.get('exigerSignatureDocuments') === 'on';
-  const emailTemplateCorps = String(formData.get('emailTemplateCorps') ?? '').trim() || null;
-
-  await prisma.scope.update({
-    where: { id: scopeId },
-    data: { exigerSignatureDocuments, emailTemplateCorps },
-  });
-
-  revalidatePath('/droits');
-  revalidatePath('/documents');
-  revalidatePath('/edl');
-  return { ok: true };
-}
-
 export async function updateDocumentTypeParametre(
   scopeId: string,
   type: string,

@@ -8,7 +8,6 @@ import {
   changeMembershipRole,
   removeMembership,
   changerMotDePasse,
-  updateScopeParametres,
   updateDocumentTypeParametre,
 } from '@/lib/actions/droits-actions';
 import { initiales } from '@/lib/format';
@@ -30,8 +29,6 @@ type ScopeVM = {
   id: string;
   nom: string;
   memberships: MembershipVM[];
-  exigerSignatureDocuments: boolean;
-  emailTemplateCorps: string | null;
   documentTypeParametres: DocTypeParametreVM[];
 };
 
@@ -186,88 +183,7 @@ function ScopeSection({
         <div style={{ color: 'var(--ink-soft)', fontSize: 12.8 }}>Aucun utilisateur pour l&apos;instant.</div>
       )}
 
-      <ScopeParametresForm scope={scope} onChanged={onChanged} />
       <DocumentTypeParametresForm scope={scope} onChanged={onChanged} />
-    </div>
-  );
-}
-
-function ScopeParametresForm({ scope, onChanged }: { scope: ScopeVM; onChanged: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-    const fd = new FormData(e.currentTarget as HTMLFormElement);
-    try {
-      const res = await updateScopeParametres(scope.id, fd);
-      if ('error' in res) {
-        setError(res.error);
-        return;
-      }
-      setSuccess(true);
-      onChanged();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <div className="panel" style={{ marginTop: 10 }}>
-      <button
-        type="button"
-        className="link-row"
-        style={{ padding: '10px 16px' }}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {open ? '▾' : '▸'} Paramétrage — documents &amp; emails
-      </button>
-      {open && (
-        <div className="panel-body pad" style={{ borderTop: '1px solid var(--line)' }}>
-          <form onSubmit={onSubmit}>
-            {error && <div className="auth-error">{error}</div>}
-            {success && (
-              <div className="auth-error" style={{ background: 'var(--green-100)', color: 'var(--green-700)' }}>
-                Paramètres enregistrés.
-              </div>
-            )}
-
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.8, marginBottom: 16 }}>
-              <input
-                type="checkbox"
-                name="exigerSignatureDocuments"
-                defaultChecked={scope.exigerSignatureDocuments}
-                style={{ width: 'auto' }}
-              />
-              Demander une signature (souris ou tactile) avant de générer chaque document
-            </label>
-
-            <div className="field">
-              <label>Modèle du message des emails</label>
-              <textarea
-                name="emailTemplateCorps"
-                rows={8}
-                defaultValue={scope.emailTemplateCorps ?? DEFAULT_EMAIL_TEMPLATE}
-              />
-              <small style={{ color: 'var(--ink-soft)' }}>
-                Placeholders disponibles : <code>{'{{prenom}}'}</code> (prénom du locataire),{' '}
-                <code>{'{{document}}'}</code> (type de document), <code>{'{{expediteur}}'}</code> (votre nom).
-              </small>
-            </div>
-
-            <button className="btn btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Enregistrement…' : 'Enregistrer'}
-            </button>
-          </form>
-        </div>
-      )}
     </div>
   );
 }
@@ -338,7 +254,7 @@ function DocumentTypeParametresForm({ scope, onChanged }: { scope: ScopeVM; onCh
 
             <div className="field">
               <label>Nom d&apos;affichage</label>
-              <input name="nomAffichage" defaultValue={parametre?.nomAffichage ?? ''} placeholder={defautLabel} />
+              <input name="nomAffichage" defaultValue={parametre?.nomAffichage ?? defautLabel} />
             </div>
 
             <div className="field">
@@ -368,11 +284,20 @@ function DocumentTypeParametresForm({ scope, onChanged }: { scope: ScopeVM; onCh
 
             <div className="field">
               <label>Sujet de l&apos;email</label>
-              <input name="emailSujet" defaultValue={parametre?.emailSujet ?? ''} placeholder={defautLabel} />
+              <input name="emailSujet" defaultValue={parametre?.emailSujet ?? defautLabel} />
             </div>
             <div className="field">
-              <label>Corps de l&apos;email (optionnel — sinon le modèle par défaut du périmètre est utilisé)</label>
-              <textarea name="emailCorps" rows={6} defaultValue={parametre?.emailCorps ?? ''} />
+              <label>Corps de l&apos;email</label>
+              <textarea
+                name="emailCorps"
+                rows={8}
+                defaultValue={parametre?.emailCorps ?? DEFAULT_EMAIL_TEMPLATE}
+              />
+              <small style={{ color: 'var(--ink-soft)' }}>
+                Placeholders disponibles : <code>{'{{prenom}}'}</code> (prénom du locataire),{' '}
+                <code>{'{{document}}'}</code> (nom d&apos;affichage ci-dessus), <code>{'{{expediteur}}'}</code>{' '}
+                (votre nom).
+              </small>
             </div>
 
             <div style={{ marginBottom: 16 }}>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { generateDocument, sendGeneratedDocument, signerDocument } from '@/lib/actions/document-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { fileUrl } from '@/lib/file-url';
-import { renderEmailTemplate } from '@/lib/email-template';
+import { renderEmailTemplate, DEFAULT_EMAIL_TEMPLATE } from '@/lib/email-template';
 import { IconCheck, IconDocuments, IconEdl, IconReceipt, IconSend, IconShield, IconTrend } from '@/components/icons';
 import { SignaturePad } from '@/components/SignaturePad';
 
@@ -55,15 +55,11 @@ const TYPE_LABEL: Record<string, string> = {
 export function DocumentsView({
   biens,
   envois,
-  exigerSignature,
-  emailTemplate,
   expediteurNom,
   docTypeParams,
 }: {
   biens: BienVM[];
   envois: EnvoiVM[];
-  exigerSignature: boolean;
-  emailTemplate: string;
   expediteurNom: string;
   docTypeParams: Record<string, DocTypeParamVM>;
 }) {
@@ -86,9 +82,6 @@ export function DocumentsView({
 
   const [signing, setSigning] = useState<'LOCATAIRE' | 'PROPRIETAIRE' | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
-
-  const [sigAvantLocataire, setSigAvantLocataire] = useState<{ dataUrl: string; nom: string } | null>(null);
-  const [sigAvantProprietaire, setSigAvantProprietaire] = useState<{ dataUrl: string; nom: string } | null>(null);
 
   const bien = biens.find((b) => b.id === bienId);
   const locataires = useMemo(
@@ -115,8 +108,6 @@ export function DocumentsView({
     setDestinataire('');
     setCorps('');
     setSignError(null);
-    setSigAvantLocataire(null);
-    setSigAvantProprietaire(null);
   }
 
   async function onGenerate(e: React.FormEvent<HTMLFormElement>) {
@@ -141,7 +132,7 @@ export function DocumentsView({
       });
       setDestinataire(res.destinataireEmail ?? '');
       setCorps(
-        renderEmailTemplate(docTypeParams[type]?.emailCorps || emailTemplate, {
+        renderEmailTemplate(docTypeParams[type]?.emailCorps || DEFAULT_EMAIL_TEMPLATE, {
           prenom: currentLocataire?.prenom ?? '',
           document: effectiveLabel(type).toLowerCase(),
           expediteur: expediteurNom,
@@ -209,10 +200,6 @@ export function DocumentsView({
   if (biens.length === 0) {
     return <div className="panel panel-body pad">Ajoutez d&apos;abord un bien pour pouvoir générer des documents.</div>;
   }
-
-  const gateLocataire = exigerSignature && requisLocataire(type);
-  const gateProprietaire = exigerSignature && requisProprietaire(type);
-  const gateComplete = (!gateLocataire || sigAvantLocataire) && (!gateProprietaire || sigAvantProprietaire);
 
   return (
     <>
@@ -358,62 +345,7 @@ export function DocumentsView({
                 </div>
               )}
 
-              <input type="hidden" name="signature" value={sigAvantLocataire?.dataUrl ?? ''} />
-              <input type="hidden" name="signePar" value={sigAvantLocataire?.nom ?? ''} />
-              <input type="hidden" name="signatureProprietaire" value={sigAvantProprietaire?.dataUrl ?? ''} />
-              <input type="hidden" name="signeProprietairePar" value={sigAvantProprietaire?.nom ?? ''} />
-
-              {(gateLocataire || gateProprietaire) && (
-                <div style={{ borderTop: '1px solid var(--line)', margin: '4px 0 16px', paddingTop: 14 }}>
-                  <h3 style={{ fontSize: 14, margin: '0 0 8px' }}>Signature avant génération</h3>
-                  <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
-                    Ce périmètre exige une signature avant de générer ce document.
-                  </p>
-
-                  {gateLocataire && (
-                    <div style={{ marginBottom: 16 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
-                        {type === 'CAUTIONNEMENT' ? 'Le garant' : 'Le(s) locataire(s)'}
-                      </div>
-                      {sigAvantLocataire ? (
-                        <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
-                          <span className="txt">Signature de {sigAvantLocataire.nom} enregistrée.</span>
-                          <button type="button" className="link-row" onClick={() => setSigAvantLocataire(null)}>
-                            Recommencer
-                          </button>
-                        </div>
-                      ) : (
-                        <SignaturePad
-                          defaultName={
-                            type !== 'CAUTIONNEMENT' && currentLocataire
-                              ? `${currentLocataire.prenom} ${currentLocataire.nom}`
-                              : ''
-                          }
-                          onSubmit={(dataUrl, nom) => setSigAvantLocataire({ dataUrl, nom })}
-                        />
-                      )}
-                    </div>
-                  )}
-
-                  {gateProprietaire && (
-                    <div>
-                      <div style={{ fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>Le propriétaire</div>
-                      {sigAvantProprietaire ? (
-                        <div className="alert-row" style={{ padding: '10px 0', background: 'var(--green-100)', borderRadius: 8 }}>
-                          <span className="txt">Signature de {sigAvantProprietaire.nom} enregistrée.</span>
-                          <button type="button" className="link-row" onClick={() => setSigAvantProprietaire(null)}>
-                            Recommencer
-                          </button>
-                        </div>
-                      ) : (
-                        <SignaturePad onSubmit={(dataUrl, nom) => setSigAvantProprietaire({ dataUrl, nom })} />
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <button className="btn btn-primary" type="submit" disabled={loading || !currentLocataireId || !gateComplete}>
+              <button className="btn btn-primary" type="submit" disabled={loading || !currentLocataireId}>
                 {loading ? 'Génération…' : 'Générer'}
               </button>
             </form>
