@@ -9,19 +9,39 @@ import {
   removeMembership,
   changerMotDePasse,
   updateScopeParametres,
+  updateDocumentTypeParametre,
 } from '@/lib/actions/droits-actions';
 import { initiales } from '@/lib/format';
 import { IconPlus } from '@/components/icons';
 import { DEFAULT_EMAIL_TEMPLATE } from '@/lib/email-template';
 
 type MembershipVM = { id: string; role: string; statut: string; user: { id: string; nom: string; email: string } };
+type DocTypeParametreVM = {
+  type: string;
+  nomAffichage: string | null;
+  texteIntro: string | null;
+  texteClausesAdditionnelles: string | null;
+  emailSujet: string | null;
+  emailCorps: string | null;
+  signataireLocataire: boolean;
+  signataireProprietaire: boolean;
+};
 type ScopeVM = {
   id: string;
   nom: string;
   memberships: MembershipVM[];
   exigerSignatureDocuments: boolean;
   emailTemplateCorps: string | null;
+  documentTypeParametres: DocTypeParametreVM[];
 };
+
+const DOC_TYPES_CONFIGURABLES: { type: string; label: string }[] = [
+  { type: 'CONTRAT', label: 'Contrat de location' },
+  { type: 'CAUTIONNEMENT', label: 'Acte de cautionnement' },
+  { type: 'DEPOT_GARANTIE', label: 'Dépôt de garantie' },
+  { type: 'QUITTANCE', label: 'Quittance de loyer' },
+  { type: 'REVISION_LOYER', label: 'Révision de loyer' },
+];
 
 const ROLE_LABEL: Record<string, string> = { ADMIN: 'Administrateur', EDITEUR: 'Éditeur', LECTEUR: 'Lecteur' };
 
@@ -167,6 +187,7 @@ function ScopeSection({
       )}
 
       <ScopeParametresForm scope={scope} onChanged={onChanged} />
+      <DocumentTypeParametresForm scope={scope} onChanged={onChanged} />
     </div>
   );
 }
@@ -239,6 +260,140 @@ function ScopeParametresForm({ scope, onChanged }: { scope: ScopeVM; onChanged: 
                 Placeholders disponibles : <code>{'{{prenom}}'}</code> (prénom du locataire),{' '}
                 <code>{'{{document}}'}</code> (type de document), <code>{'{{expediteur}}'}</code> (votre nom).
               </small>
+            </div>
+
+            <button className="btn btn-primary" type="submit" disabled={loading}>
+              {loading ? 'Enregistrement…' : 'Enregistrer'}
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DocumentTypeParametresForm({ scope, onChanged }: { scope: ScopeVM; onChanged: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(DOC_TYPES_CONFIGURABLES[0].type);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const parametre = scope.documentTypeParametres.find((p) => p.type === type);
+  const defautLabel = DOC_TYPES_CONFIGURABLES.find((d) => d.type === type)?.label ?? type;
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    const fd = new FormData(e.currentTarget as HTMLFormElement);
+    try {
+      const res = await updateDocumentTypeParametre(scope.id, type, fd);
+      if ('error' in res) {
+        setError(res.error);
+        return;
+      }
+      setSuccess(true);
+      onChanged();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="panel" style={{ marginTop: 10 }}>
+      <button type="button" className="link-row" style={{ padding: '10px 16px' }} onClick={() => setOpen((v) => !v)}>
+        {open ? '▾' : '▸'} Paramétrage par type de document
+      </button>
+      {open && (
+        <div className="panel-body pad" style={{ borderTop: '1px solid var(--line)' }}>
+          <div className="field" style={{ maxWidth: 320 }}>
+            <label>Type de document</label>
+            <select
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
+                setSuccess(false);
+                setError(null);
+              }}
+            >
+              {DOC_TYPES_CONFIGURABLES.map((d) => (
+                <option key={d.type} value={d.type}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <form onSubmit={onSubmit} key={type}>
+            {error && <div className="auth-error">{error}</div>}
+            {success && (
+              <div className="auth-error" style={{ background: 'var(--green-100)', color: 'var(--green-700)' }}>
+                Paramètres enregistrés pour « {defautLabel} ».
+              </div>
+            )}
+
+            <div className="field">
+              <label>Nom d&apos;affichage</label>
+              <input name="nomAffichage" defaultValue={parametre?.nomAffichage ?? ''} placeholder={defautLabel} />
+            </div>
+
+            <div className="field">
+              <label>Texte d&apos;introduction (optionnel)</label>
+              <textarea
+                name="texteIntro"
+                rows={5}
+                defaultValue={parametre?.texteIntro ?? ''}
+                placeholder="Inséré au début du document, après l'en-tête."
+              />
+            </div>
+
+            <div className="field">
+              <label>Clauses additionnelles (optionnel)</label>
+              <textarea
+                name="texteClausesAdditionnelles"
+                rows={5}
+                defaultValue={parametre?.texteClausesAdditionnelles ?? ''}
+                placeholder="Inséré à la fin du document, avant la formule de clôture et les signatures."
+              />
+            </div>
+            <small style={{ color: 'var(--ink-soft)', display: 'block', marginBottom: 16 }}>
+              Placeholders disponibles : <code>{'{{prenom}}'}</code> (prénom du locataire), <code>{'{{bien}}'}</code>{' '}
+              (adresse du bien), <code>{'{{loyer}}'}</code> (loyer HC). Insérez <code>{'[SAUT_DE_PAGE]'}</code> seul
+              sur une ligne pour forcer un saut de page.
+            </small>
+
+            <div className="field">
+              <label>Sujet de l&apos;email</label>
+              <input name="emailSujet" defaultValue={parametre?.emailSujet ?? ''} placeholder={defautLabel} />
+            </div>
+            <div className="field">
+              <label>Corps de l&apos;email (optionnel — sinon le modèle par défaut du périmètre est utilisé)</label>
+              <textarea name="emailCorps" rows={6} defaultValue={parametre?.emailCorps ?? ''} />
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.8, marginBottom: 8 }}>
+                <input
+                  type="checkbox"
+                  name="signataireLocataire"
+                  defaultChecked={parametre?.signataireLocataire ?? true}
+                  style={{ width: 'auto' }}
+                />
+                Signature du locataire (ou du garant pour un cautionnement) requise
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.8 }}>
+                <input
+                  type="checkbox"
+                  name="signataireProprietaire"
+                  defaultChecked={parametre?.signataireProprietaire ?? false}
+                  style={{ width: 'auto' }}
+                />
+                Signature du propriétaire requise
+              </label>
             </div>
 
             <button className="btn btn-primary" type="submit" disabled={loading}>

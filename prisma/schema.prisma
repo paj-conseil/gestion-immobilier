@@ -50,6 +50,30 @@ model Scope {
   documentsGeneres  DocumentGenere[]
   comptesBancaires  CompteBancaire[]
   postes            Poste[]
+  documentTypeParametres DocumentTypeParametre[]
+}
+
+/// Paramétrage par type de document (nom d'affichage, texte additionnel,
+/// email, signataires requis), propre à chaque périmètre.
+model DocumentTypeParametre {
+  id      String @id @default(cuid())
+  scopeId String
+  scope   Scope  @relation(fields: [scopeId], references: [id])
+  /// Type : CONTRAT | CAUTIONNEMENT | DEPOT_GARANTIE | QUITTANCE | REVISION_LOYER
+  type    String
+
+  nomAffichage String?
+  /// Bloc de texte inséré après l'introduction du document (placeholders
+  /// {{locataire}}, {{bien}}, {{loyer}} ; [SAUT_DE_PAGE] force un saut de page).
+  texteIntro                 String?
+  /// Bloc de texte inséré avant la formule de clôture / signatures.
+  texteClausesAdditionnelles String?
+  emailSujet                 String?
+  emailCorps                 String?
+  signataireLocataire        Boolean @default(true)
+  signataireProprietaire     Boolean @default(false)
+
+  @@unique([scopeId, type])
 }
 
 model Membership {
@@ -238,9 +262,15 @@ model DocumentGenere {
   /// — permet de régénérer le document avec la signature incrustée sans
   /// dépendre des données live (bien/bail), qui peuvent avoir changé depuis.
   dataJson     Json?
+  /// Signature du locataire (ou du garant pour un cautionnement).
   signeLe      DateTime?
   signePar     String?
   signatureUrl String?
+  /// Signature du propriétaire, quand le type de document l'exige (voir
+  /// DocumentTypeParametre.signataireProprietaire).
+  signeProprietaireLe  DateTime?
+  signeProprietairePar String?
+  signatureProprietaireUrl String?
   /// Pour type ETAT_LIEUX : relie ce document généré à son état des lieux
   /// source, pour régénérer/mettre à jour le même PDF (signatures incluses)
   /// au lieu d'en recréer un nouveau à chaque régénération.

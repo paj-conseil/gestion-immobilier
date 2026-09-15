@@ -6,7 +6,7 @@ import { DEFAULT_EMAIL_TEMPLATE } from '@/lib/email-template';
 export default async function DocumentsPage() {
   const ctx = await getCurrentContext();
 
-  const [biens, envois, scope] = await Promise.all([
+  const [biens, envois, scope, docTypeParametres] = await Promise.all([
     prisma.bien.findMany({
       where: { scopeId: ctx.scopeId },
       include: {
@@ -24,7 +24,21 @@ export default async function DocumentsPage() {
       take: 15,
     }),
     prisma.scope.findUnique({ where: { id: ctx.scopeId } }),
+    prisma.documentTypeParametre.findMany({ where: { scopeId: ctx.scopeId } }),
   ]);
+
+  const docTypeParams = Object.fromEntries(
+    docTypeParametres.map((p) => [
+      p.type,
+      {
+        nomAffichage: p.nomAffichage,
+        emailSujet: p.emailSujet,
+        emailCorps: p.emailCorps,
+        signataireLocataire: p.signataireLocataire,
+        signataireProprietaire: p.signataireProprietaire,
+      },
+    ]),
+  );
 
   return (
     <>
@@ -41,6 +55,7 @@ export default async function DocumentsPage() {
         exigerSignature={scope?.exigerSignatureDocuments ?? false}
         emailTemplate={scope?.emailTemplateCorps ?? DEFAULT_EMAIL_TEMPLATE}
         expediteurNom={ctx.userNom}
+        docTypeParams={docTypeParams}
       />
     </>
   );

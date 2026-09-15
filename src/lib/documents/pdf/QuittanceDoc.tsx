@@ -1,6 +1,7 @@
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
+import { TexteLibre, SignatureBlock } from './Fragments';
 import { formatDate, montantEnLettres } from '@/lib/format';
 
 export type QuittanceData = {
@@ -16,6 +17,12 @@ export type QuittanceData = {
   lieuEmission?: string;
   /** Signature manuscrite du locataire, capturée à l'écran (data URI PNG). */
   signatureLocataire?: string | null;
+  signatureProprietaire?: string | null;
+  nomAffichage?: string | null;
+  texteIntro?: string | null;
+  texteClausesAdditionnelles?: string | null;
+  signataireLocataireRequis?: boolean;
+  signataireProprietaireRequis?: boolean;
 };
 
 export function QuittanceDoc({ data }: { data: QuittanceData }) {
@@ -28,9 +35,11 @@ export function QuittanceDoc({ data }: { data: QuittanceData }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <DocHeader
-          title="Quittance de loyer"
+          title={data.nomAffichage || 'Quittance de loyer'}
           sub={`Période du ${formatDate(data.periodeDebut)} au ${formatDate(data.periodeFin)}`}
         />
+
+        <TexteLibre texte={data.texteIntro} />
 
         <View style={styles.box}>
           <Text style={styles.boxLabel}>Logement</Text>
@@ -59,12 +68,20 @@ export function QuittanceDoc({ data }: { data: QuittanceData }) {
           </View>
         </View>
 
+        <TexteLibre texte={data.texteClausesAdditionnelles} />
+
         <Text style={[styles.p, { marginTop: 24 }]}>
           Fait à {data.lieuEmission ?? 'Tours'}, le {formatDate(data.dateEmission)}
         </Text>
 
-        <Text style={[styles.small, { marginTop: data.signatureLocataire ? 10 : 30 }]}>Signature du locataire</Text>
-        {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
+        <SignatureBlock
+          libelleSignataire="Le locataire"
+          nomSignataire={data.locatairesNoms}
+          signature={data.signatureLocataire}
+          requisSignataire={data.signataireLocataireRequis ?? true}
+          requisProprietaire={data.signataireProprietaireRequis ?? false}
+          signatureProprietaire={data.signatureProprietaire}
+        />
 
         <Text style={styles.legal}>
           Cette quittance annule tous les reçus qui auraient pu être établis précédemment en cas de paiement

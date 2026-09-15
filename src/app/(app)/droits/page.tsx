@@ -9,11 +9,17 @@ export default async function DroitsPage() {
   const [myScopes, ownedScopes] = await Promise.all([
     prisma.scope.findMany({
       where: { id: { in: myScopeIds } },
-      include: { memberships: { include: { user: true }, orderBy: { createdAt: 'asc' } } },
+      include: {
+        memberships: { include: { user: true }, orderBy: { createdAt: 'asc' } },
+        documentTypeParametres: true,
+      },
     }),
     prisma.scope.findMany({
       where: { ownerId: ctx.userId, id: { notIn: myScopeIds } },
-      include: { memberships: { include: { user: true }, orderBy: { createdAt: 'asc' } } },
+      include: {
+        memberships: { include: { user: true }, orderBy: { createdAt: 'asc' } },
+        documentTypeParametres: true,
+      },
     }),
   ]);
 

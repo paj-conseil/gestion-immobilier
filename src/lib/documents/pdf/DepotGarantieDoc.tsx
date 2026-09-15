@@ -1,6 +1,7 @@
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
+import { TexteLibre, SignatureBlock } from './Fragments';
 import { formatDate, montantEnLettres } from '@/lib/format';
 
 export type DepotGarantieData = {
@@ -13,6 +14,12 @@ export type DepotGarantieData = {
   dateVersement: Date;
   /** Signature manuscrite du locataire, capturée à l'écran (data URI PNG). */
   signatureLocataire?: string | null;
+  signatureProprietaire?: string | null;
+  nomAffichage?: string | null;
+  texteIntro?: string | null;
+  texteClausesAdditionnelles?: string | null;
+  signataireLocataireRequis?: boolean;
+  signataireProprietaireRequis?: boolean;
 };
 
 export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
@@ -24,7 +31,9 @@ export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <DocHeader title="Reçu dépôt de garantie" />
+        <DocHeader title={data.nomAffichage || 'Reçu dépôt de garantie'} />
+
+        <TexteLibre texte={data.texteIntro} />
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 }}>
           <View>
@@ -57,21 +66,18 @@ export function DepotGarantieDoc({ data }: { data: DepotGarantieData }) {
 
         <Text style={styles.p}>Je vous prie d&apos;agréer, Madame, Monsieur, l&apos;expression de mes salutations distinguées.</Text>
 
+        <TexteLibre texte={data.texteClausesAdditionnelles} />
+
         <Text style={[styles.p, { marginTop: 24 }]}>Fait à Tours, le {formatDate(data.dateVersement)}</Text>
 
-        <View style={styles.signatures}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.small}>Le locataire</Text>
-            {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
-            <Text style={[styles.signatureLine, data.signatureLocataire ? { marginTop: 4 } : {}]}>
-              {data.locatairesNoms}
-            </Text>
-          </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.small}>Le bailleur</Text>
-            <Text style={styles.signatureLine}>{PROPRIETAIRE.nom}</Text>
-          </View>
-        </View>
+        <SignatureBlock
+          libelleSignataire="Le locataire"
+          nomSignataire={data.locatairesNoms}
+          signature={data.signatureLocataire}
+          requisSignataire={data.signataireLocataireRequis ?? true}
+          requisProprietaire={data.signataireProprietaireRequis ?? false}
+          signatureProprietaire={data.signatureProprietaire}
+        />
 
         <DocFooter text="Gestion immo — document généré automatiquement" />
       </Page>

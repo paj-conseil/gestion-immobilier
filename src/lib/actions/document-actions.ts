@@ -7,6 +7,7 @@ import { saveFile, readStoredFile } from '@/lib/storage';
 import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
 import { sendMail } from '@/lib/email';
+import { renderEmailTemplate } from '@/lib/email-template';
 import { QuittanceDoc, type QuittanceData } from '@/lib/documents/pdf/QuittanceDoc';
 import { ContratDoc, type ContratData } from '@/lib/documents/pdf/ContratDoc';
 import { CautionnementDoc, type CautionnementData } from '@/lib/documents/pdf/CautionnementDoc';
@@ -15,6 +16,7 @@ import { RevisionLoyerDoc, type RevisionLoyerData } from '@/lib/documents/pdf/Re
 import type { TypeDocumentGenere } from '@/lib/enums';
 
 type AnyDocData = ContratData | CautionnementData | DepotGarantieData | QuittanceData | RevisionLoyerData;
+type SignerRole = 'LOCATAIRE' | 'PROPRIETAIRE';
 
 const DOC_LABEL: Record<string, string> = {
   CONTRAT: 'Contrat de location',
@@ -29,8 +31,34 @@ function nomsLocataires(locataires: { locataire: { nom: string; prenom: string }
   return locataires.map((x) => `${x.locataire.prenom} ${x.locataire.nom}`).join(' et ') || '—';
 }
 
+/** Rend un PDF à partir de son type et de ses données (utilisé aussi bien à
+ * la génération initiale qu'à la régénération lors d'une signature). */
+async function renderDocPdf(type: string, data: AnyDocData): Promise<Buffer> {
+  switch (type) {
+    case 'CONTRAT':
+      return renderPdf(ContratDoc({ data: data as ContratData }));
+    case 'CAUTIONNEMENT':
+      return renderPdf(CautionnementDoc({ data: data as CautionnementData }));
+    case 'DEPOT_GARANTIE':
+      return renderPdf(DepotGarantieDoc({ data: data as DepotGarantieData }));
+    case 'QUITTANCE':
+      return renderPdf(QuittanceDoc({ data: data as QuittanceData }));
+    case 'REVISION_LOYER':
+      return renderPdf(RevisionLoyerDoc({ data: data as RevisionLoyerData }));
+    default:
+      throw new Error('Type de document inconnu');
+  }
+}
+
 export type GenerateResult =
-  | { ok: true; documentGenereId: string; fileUrl: string; destinataireEmail?: string | null; signeLe: string | null }
+  | {
+      ok: true;
+      documentGenereId: string;
+      fileUrl: string;
+      destinataireEmail?: string | null;
+      signeLe: string | null;
+      signeProprietaireLe: string | null;
+    }
   | { error: string };
 
 export async function generateDocument(formData: FormData): Promise<GenerateResult> {
@@ -39,11 +67,19 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
   const bienId = String(formData.get('bienId') ?? '');
   const locataireId = String(formData.get('locataireId') ?? '');
 
-  // Signature capturée avant génération (voir Scope.exigerSignatureDocuments)
-  // — incrustée directement dans le PDF dès sa création.
+  const parametre = await prisma.documentTypeParametre.findUnique({
+    where: { scopeId_type: { scopeId: ctx.scopeId, type } },
+  });
+
+  // Signature(s) capturée(s) avant génération (voir Scope.exigerSignatureDocuments)
+  // — incrustée(s) directement dans le PDF dès sa création.
   const signatureInput = String(formData.get('signature') ?? '');
   const signeParInput = String(formData.get('signePar') ?? '').trim();
   const hasSignature = signatureInput.startsWith('data:image/') && !!signeParInput;
+
+  const signatureProprietaireInput = String(formData.get('signatureProprietaire') ?? '');
+  const signeProprietaireParInput = String(formData.get('signeProprietairePar') ?? '').trim();
+  const hasSignatureProprietaire = signatureProprietaireInput.startsWith('data:image/') && !!signeProprietaireParInput;
 
   const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
   if (!bien) return { error: 'Bien introuvable' };
@@ -59,6 +95,24 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
     : location?.locataires[0]?.locataire ?? null;
 
   const locatairesNoms = location ? nomsLocataires(location.locataires) : locataire ? `${locataire.prenom} ${locataire.nom}` : '—';
+
+  const champsParametre = {
+    nomAffichage: parametre?.nomAffichage ?? undefined,
+    texteIntro: renderEmailTemplate(parametre?.texteIntro ?? '', {
+      prenom: locataire?.prenom ?? '',
+      bien: bienLabel(bien),
+      loyer: location ? String(location.loyerHC) : '',
+    }) || undefined,
+    texteClausesAdditionnelles:
+      renderEmailTemplate(parametre?.texteClausesAdditionnelles ?? '', {
+        prenom: locataire?.prenom ?? '',
+        bien: bienLabel(bien),
+        loyer: location ? String(location.loyerHC) : '',
+      }) || undefined,
+    signataireLocataireRequis: parametre?.signataireLocataire ?? true,
+    signataireProprietaireRequis: parametre?.signataireProprietaire ?? false,
+    signatureProprietaire: hasSignatureProprietaire ? signatureProprietaireInput : undefined,
+  };
 
   let pdfBuffer: Buffer;
   let periode: string | undefined;
@@ -87,9 +141,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           periodeFin,
           dateEmission: new Date(),
           signatureLocataire: hasSignature ? signatureInput : undefined,
+          ...champsParametre,
         };
         dataJson = quittanceData;
-        pdfBuffer = await renderPdf(QuittanceDoc({ data: quittanceData }));
+        pdfBuffer = await renderDocPdf(type, quittanceData);
         break;
       }
       case 'CONTRAT': {
@@ -116,9 +171,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           dateEmission: new Date(),
           garant: garantNom && garantAdresse ? { nom: garantNom, adresse: garantAdresse, nationalite: garantNationalite } : null,
           signatureLocataire: hasSignature ? signatureInput : undefined,
+          ...champsParametre,
         };
         dataJson = contratData;
-        pdfBuffer = await renderPdf(ContratDoc({ data: contratData }));
+        pdfBuffer = await renderDocPdf(type, contratData);
         break;
       }
       case 'CAUTIONNEMENT': {
@@ -142,9 +198,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           dateDebut: location.dateDebut,
           dateEmission: new Date(),
           signatureGarant: hasSignature ? signatureInput : undefined,
+          ...champsParametre,
         };
         dataJson = cautionnementData;
-        pdfBuffer = await renderPdf(CautionnementDoc({ data: cautionnementData }));
+        pdfBuffer = await renderDocPdf(type, cautionnementData);
         break;
       }
       case 'DEPOT_GARANTIE': {
@@ -159,9 +216,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           loyerHC: location.loyerHC,
           dateVersement: new Date(),
           signatureLocataire: hasSignature ? signatureInput : undefined,
+          ...champsParametre,
         };
         dataJson = depotData;
-        pdfBuffer = await renderPdf(DepotGarantieDoc({ data: depotData }));
+        pdfBuffer = await renderDocPdf(type, depotData);
         break;
       }
       case 'REVISION_LOYER': {
@@ -182,9 +240,10 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
           dateEffet: new Date(),
           dateEmission: new Date(),
           signatureLocataire: hasSignature ? signatureInput : undefined,
+          ...champsParametre,
         };
         dataJson = revisionData;
-        pdfBuffer = await renderPdf(RevisionLoyerDoc({ data: revisionData }));
+        pdfBuffer = await renderDocPdf(type, revisionData);
         break;
       }
       default:
@@ -200,13 +259,22 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
     filename: `${type.toLowerCase()}-${bien.adresse}.pdf`,
   });
 
-  const signatureKey = hasSignature
-    ? await saveFile(Buffer.from(signatureInput.split(',')[1] ?? '', 'base64'), {
-        scopeId: ctx.scopeId,
-        category: 'signatures',
-        filename: `${type.toLowerCase()}-${bien.id}.png`,
-      })
-    : undefined;
+  const [signatureKey, signatureProprietaireKey] = await Promise.all([
+    hasSignature
+      ? saveFile(Buffer.from(signatureInput.split(',')[1] ?? '', 'base64'), {
+          scopeId: ctx.scopeId,
+          category: 'signatures',
+          filename: `${type.toLowerCase()}-${bien.id}-locataire.png`,
+        })
+      : Promise.resolve(undefined),
+    hasSignatureProprietaire
+      ? saveFile(Buffer.from(signatureProprietaireInput.split(',')[1] ?? '', 'base64'), {
+          scopeId: ctx.scopeId,
+          category: 'signatures',
+          filename: `${type.toLowerCase()}-${bien.id}-proprietaire.png`,
+        })
+      : Promise.resolve(undefined),
+  ]);
 
   const documentGenere = await prisma.documentGenere.create({
     data: {
@@ -223,6 +291,9 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
       signeLe: hasSignature ? new Date() : undefined,
       signePar: hasSignature ? signeParInput : undefined,
       signatureUrl: signatureKey,
+      signeProprietaireLe: hasSignatureProprietaire ? new Date() : undefined,
+      signeProprietairePar: hasSignatureProprietaire ? signeProprietaireParInput : undefined,
+      signatureProprietaireUrl: signatureProprietaireKey,
     },
   });
 
@@ -233,6 +304,7 @@ export async function generateDocument(formData: FormData): Promise<GenerateResu
     fileUrl: key,
     destinataireEmail: locataire?.email,
     signeLe: hasSignature ? documentGenere.signeLe!.toISOString() : null,
+    signeProprietaireLe: hasSignatureProprietaire ? documentGenere.signeProprietaireLe!.toISOString() : null,
   };
 }
 
@@ -252,8 +324,13 @@ export async function sendGeneratedDocument(documentGenereId: string, formData: 
   const corps = String(formData.get('corps') ?? '');
   if (!destinataire) return { error: 'Adresse email du destinataire requise' };
 
+  const parametre = await prisma.documentTypeParametre.findUnique({
+    where: { scopeId_type: { scopeId: ctx.scopeId, type: doc.type } },
+  });
+
   const pdfBuffer = await readStoredFile(doc.fileUrl);
-  const subject = `${DOC_LABEL[doc.type]}${doc.periode ? ' — ' + doc.periode : ''}`;
+  const sujetBase = parametre?.emailSujet || parametre?.nomAffichage || DOC_LABEL[doc.type];
+  const subject = `${sujetBase}${doc.periode ? ' — ' + doc.periode : ''}`;
   const result = await sendMail({
     to: destinataire,
     subject,
@@ -279,9 +356,11 @@ export type SignResult = { ok: true; fileUrl: string } | { error: string };
 
 /**
  * Régénère le PDF d'un document en y incrustant une signature manuscrite
- * capturée à l'écran, à partir des données exactes ayant servi à la
- * génération initiale (dataJson) plutôt que des données live (bien/bail),
- * qui ont pu changer depuis (loyer révisé, etc.).
+ * capturée à l'écran (locataire/garant OU propriétaire, selon `role`), à
+ * partir des données exactes ayant servi à la génération initiale (dataJson)
+ * plutôt que des données live (bien/bail), qui ont pu changer depuis (loyer
+ * révisé, etc.). La signature de l'autre rôle, si déjà capturée
+ * précédemment, est relue depuis le stockage pour ne pas être perdue.
  */
 export async function signerDocument(documentGenereId: string, formData: FormData): Promise<SignResult> {
   const ctx = await getCurrentContext();
@@ -289,12 +368,21 @@ export async function signerDocument(documentGenereId: string, formData: FormDat
   if (!doc) return { error: 'Document introuvable' };
   if (!doc.dataJson) return { error: 'Ce document ne peut pas être signé électroniquement.' };
 
+  const role = (String(formData.get('role') ?? 'LOCATAIRE') as SignerRole) === 'PROPRIETAIRE' ? 'PROPRIETAIRE' : 'LOCATAIRE';
   const signature = String(formData.get('signature') ?? '');
   const signePar = String(formData.get('signePar') ?? '').trim();
   if (!signature.startsWith('data:image/')) return { error: 'Signature invalide' };
   if (!signePar) return { error: 'Le nom du signataire est requis' };
 
   const raw = doc.dataJson as Record<string, unknown>;
+
+  const autreSignatureKey = role === 'LOCATAIRE' ? doc.signatureProprietaireUrl : doc.signatureUrl;
+  const autreSignatureDataUri = autreSignatureKey
+    ? `data:image/png;base64,${(await readStoredFile(autreSignatureKey)).toString('base64')}`
+    : null;
+
+  const signaturePrincipale = role === 'LOCATAIRE' ? signature : autreSignatureDataUri;
+  const signatureProprietaire = role === 'PROPRIETAIRE' ? signature : autreSignatureDataUri;
 
   let pdfBuffer: Buffer;
   try {
@@ -304,41 +392,46 @@ export async function signerDocument(documentGenereId: string, formData: FormDat
         dateDebut: new Date(raw.dateDebut as string),
         dateFin: raw.dateFin ? new Date(raw.dateFin as string) : null,
         dateEmission: new Date(raw.dateEmission as string),
-        signatureLocataire: signature,
+        signatureLocataire: signaturePrincipale,
+        signatureProprietaire,
       };
-      pdfBuffer = await renderPdf(ContratDoc({ data }));
+      pdfBuffer = await renderDocPdf(doc.type, data);
     } else if (doc.type === 'CAUTIONNEMENT') {
       const data: CautionnementData = {
         ...(raw as unknown as CautionnementData),
         dateDebut: new Date(raw.dateDebut as string),
         dateEmission: new Date(raw.dateEmission as string),
-        signatureGarant: signature,
+        signatureGarant: signaturePrincipale,
+        signatureProprietaire,
       };
-      pdfBuffer = await renderPdf(CautionnementDoc({ data }));
+      pdfBuffer = await renderDocPdf(doc.type, data);
     } else if (doc.type === 'DEPOT_GARANTIE') {
       const data: DepotGarantieData = {
         ...(raw as unknown as DepotGarantieData),
         dateVersement: new Date(raw.dateVersement as string),
-        signatureLocataire: signature,
+        signatureLocataire: signaturePrincipale,
+        signatureProprietaire,
       };
-      pdfBuffer = await renderPdf(DepotGarantieDoc({ data }));
+      pdfBuffer = await renderDocPdf(doc.type, data);
     } else if (doc.type === 'QUITTANCE') {
       const data: QuittanceData = {
         ...(raw as unknown as QuittanceData),
         periodeDebut: new Date(raw.periodeDebut as string),
         periodeFin: new Date(raw.periodeFin as string),
         dateEmission: new Date(raw.dateEmission as string),
-        signatureLocataire: signature,
+        signatureLocataire: signaturePrincipale,
+        signatureProprietaire,
       };
-      pdfBuffer = await renderPdf(QuittanceDoc({ data }));
+      pdfBuffer = await renderDocPdf(doc.type, data);
     } else if (doc.type === 'REVISION_LOYER') {
       const data: RevisionLoyerData = {
         ...(raw as unknown as RevisionLoyerData),
         dateEffet: new Date(raw.dateEffet as string),
         dateEmission: new Date(raw.dateEmission as string),
-        signatureLocataire: signature,
+        signatureLocataire: signaturePrincipale,
+        signatureProprietaire,
       };
-      pdfBuffer = await renderPdf(RevisionLoyerDoc({ data }));
+      pdfBuffer = await renderDocPdf(doc.type, data);
     } else {
       return { error: 'Ce type de document ne prend pas en charge la signature électronique.' };
     }
@@ -348,13 +441,16 @@ export async function signerDocument(documentGenereId: string, formData: FormDat
 
   const sigBuffer = Buffer.from(signature.split(',')[1] ?? '', 'base64');
   const [sigKey, pdfKey] = await Promise.all([
-    saveFile(sigBuffer, { scopeId: ctx.scopeId, category: 'signatures', filename: `${doc.id}.png` }),
+    saveFile(sigBuffer, { scopeId: ctx.scopeId, category: 'signatures', filename: `${doc.id}-${role.toLowerCase()}.png` }),
     saveFile(pdfBuffer, { scopeId: ctx.scopeId, category: 'generated', filename: `${doc.type.toLowerCase()}-signe.pdf` }),
   ]);
 
   await prisma.documentGenere.update({
     where: { id: doc.id },
-    data: { fileUrl: pdfKey, signeLe: new Date(), signePar, signatureUrl: sigKey },
+    data:
+      role === 'LOCATAIRE'
+        ? { fileUrl: pdfKey, signeLe: new Date(), signePar, signatureUrl: sigKey }
+        : { fileUrl: pdfKey, signeProprietaireLe: new Date(), signeProprietairePar: signePar, signatureProprietaireUrl: sigKey },
   });
 
   revalidatePath('/documents');

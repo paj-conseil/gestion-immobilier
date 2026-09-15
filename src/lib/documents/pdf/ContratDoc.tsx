@@ -1,6 +1,7 @@
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
+import { TexteLibre, SignatureBlock } from './Fragments';
 import { formatDate } from '@/lib/format';
 
 export type ContratData = {
@@ -23,6 +24,13 @@ export type ContratData = {
   garant?: { nom: string; adresse: string; nationalite?: string } | null;
   /** Signature manuscrite du/des locataire(s), capturée à l'écran (data URI PNG). */
   signatureLocataire?: string | null;
+  signatureProprietaire?: string | null;
+  /** Paramétrage du type de document (voir DocumentTypeParametre). */
+  nomAffichage?: string | null;
+  texteIntro?: string | null;
+  texteClausesAdditionnelles?: string | null;
+  signataireLocataireRequis?: boolean;
+  signataireProprietaireRequis?: boolean;
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -67,7 +75,7 @@ export function ContratDoc({ data }: { data: ContratData }) {
   return (
     <Document>
       <Page size="A4" style={styles.page} wrap>
-        <DocHeader title="Contrat de location meublée" sub={adresseComplete} />
+        <DocHeader title={data.nomAffichage || 'Contrat de location meublée'} sub={adresseComplete} />
 
         <Text style={styles.h2}>Entre les soussignés</Text>
         <Text style={styles.p}>
@@ -88,6 +96,8 @@ export function ContratDoc({ data }: { data: ContratData }) {
           à la location meublée, ainsi qu&apos;aux dispositions du Code civil, et notamment les articles 1709 et
           suivants.
         </Text>
+
+        <TexteLibre texte={data.texteIntro} />
 
         {composition && (
           <>
@@ -319,23 +329,18 @@ export function ContratDoc({ data }: { data: ContratData }) {
           </Text>
         </Article>
 
+        <TexteLibre texte={data.texteClausesAdditionnelles} />
+
         <Text style={[styles.p, { marginTop: 10 }]}>Fait à Tours, le {formatDate(data.dateEmission)}</Text>
 
-        <View style={styles.signatures}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.small}>Le(s) locataire(s)</Text>
-            <Text style={styles.small}>« Bon pour accord, lu et approuvé »</Text>
-            {data.signatureLocataire && <Image src={data.signatureLocataire} style={styles.signatureImg} />}
-            <Text style={[styles.signatureLine, data.signatureLocataire ? { marginTop: 4 } : {}]}>
-              {data.locatairesNoms}
-            </Text>
-          </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.small}>Le bailleur</Text>
-            <Text style={styles.small}>« Bon pour accord, lu et approuvé »</Text>
-            <Text style={styles.signatureLine}>{PROPRIETAIRE.nom}</Text>
-          </View>
-        </View>
+        <SignatureBlock
+          libelleSignataire="Le(s) locataire(s)"
+          nomSignataire={data.locatairesNoms}
+          signature={data.signatureLocataire}
+          requisSignataire={data.signataireLocataireRequis ?? true}
+          requisProprietaire={data.signataireProprietaireRequis ?? false}
+          signatureProprietaire={data.signatureProprietaire}
+        />
 
         <DocFooter text="Gestion immo — document généré automatiquement, à faire relire avant signature" />
       </Page>

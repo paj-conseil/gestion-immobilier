@@ -90,6 +90,35 @@ export async function updateScopeParametres(
   return { ok: true };
 }
 
+export async function updateDocumentTypeParametre(
+  scopeId: string,
+  type: string,
+  formData: FormData,
+): Promise<{ ok: true } | { error: string }> {
+  const ctx = await getCurrentContext();
+  if (!(await canManageScope(ctx.userId, scopeId))) return { error: 'Action non autorisée sur ce périmètre' };
+
+  const data = {
+    nomAffichage: String(formData.get('nomAffichage') ?? '').trim() || null,
+    texteIntro: String(formData.get('texteIntro') ?? '').trim() || null,
+    texteClausesAdditionnelles: String(formData.get('texteClausesAdditionnelles') ?? '').trim() || null,
+    emailSujet: String(formData.get('emailSujet') ?? '').trim() || null,
+    emailCorps: String(formData.get('emailCorps') ?? '').trim() || null,
+    signataireLocataire: formData.get('signataireLocataire') === 'on',
+    signataireProprietaire: formData.get('signataireProprietaire') === 'on',
+  };
+
+  await prisma.documentTypeParametre.upsert({
+    where: { scopeId_type: { scopeId, type } },
+    update: data,
+    create: { scopeId, type, ...data },
+  });
+
+  revalidatePath('/droits');
+  revalidatePath('/documents');
+  return { ok: true };
+}
+
 export async function removeMembership(membershipId: string): Promise<void> {
   const ctx = await getCurrentContext();
   const membership = await prisma.membership.findUnique({ where: { id: membershipId } });

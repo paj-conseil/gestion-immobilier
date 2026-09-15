@@ -1,6 +1,7 @@
-import { Document, Page, Text, Image } from '@react-pdf/renderer';
+import { Document, Page, Text } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE, RIB, formatMontantPdf } from './styles';
 import { DocHeader, DocFooter } from './Header';
+import { TexteLibre, SignatureBlock } from './Fragments';
 import { formatDate, montantEnLettres } from '@/lib/format';
 
 export type CautionnementData = {
@@ -18,6 +19,12 @@ export type CautionnementData = {
   dateEmission: Date;
   /** Signature manuscrite du garant, capturée à l'écran (data URI PNG). */
   signatureGarant?: string | null;
+  signatureProprietaire?: string | null;
+  nomAffichage?: string | null;
+  texteIntro?: string | null;
+  texteClausesAdditionnelles?: string | null;
+  signataireLocataireRequis?: boolean;
+  signataireProprietaireRequis?: boolean;
 };
 
 export function CautionnementDoc({ data }: { data: CautionnementData }) {
@@ -29,7 +36,9 @@ export function CautionnementDoc({ data }: { data: CautionnementData }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <DocHeader title="Acte de cautionnement" sub={`Bail du ${formatDate(data.dateDebut)}`} />
+        <DocHeader title={data.nomAffichage || 'Acte de cautionnement'} sub={`Bail du ${formatDate(data.dateDebut)}`} />
+
+        <TexteLibre texte={data.texteIntro} />
 
         <Text style={styles.p}>Monsieur,</Text>
 
@@ -68,9 +77,18 @@ export function CautionnementDoc({ data }: { data: CautionnementData }) {
           résiliation. »
         </Text>
 
+        <TexteLibre texte={data.texteClausesAdditionnelles} />
+
         <Text style={[styles.p, { marginTop: 20 }]}>Fait à Tours, le {formatDate(data.dateEmission)}</Text>
-        <Text style={[styles.small, { marginTop: data.signatureGarant ? 10 : 30 }]}>Signature</Text>
-        {data.signatureGarant && <Image src={data.signatureGarant} style={styles.signatureImg} />}
+
+        <SignatureBlock
+          libelleSignataire="La caution"
+          nomSignataire={data.garantNom}
+          signature={data.signatureGarant}
+          requisSignataire={data.signataireLocataireRequis ?? true}
+          requisProprietaire={data.signataireProprietaireRequis ?? false}
+          signatureProprietaire={data.signatureProprietaire}
+        />
 
         <DocFooter text="Gestion immo — document généré automatiquement, à faire relire avant signature" />
       </Page>
