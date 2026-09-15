@@ -79,8 +79,7 @@ export async function updateDocumentTypeParametre(
 
   const data = {
     nomAffichage: String(formData.get('nomAffichage') ?? '').trim() || null,
-    texteIntro: String(formData.get('texteIntro') ?? '').trim() || null,
-    texteClausesAdditionnelles: String(formData.get('texteClausesAdditionnelles') ?? '').trim() || null,
+    texteDocument: String(formData.get('texteDocument') ?? '').trim() || null,
     emailSujet: String(formData.get('emailSujet') ?? '').trim() || null,
     emailCorps: String(formData.get('emailCorps') ?? '').trim() || null,
     signataireLocataire: formData.get('signataireLocataire') === 'on',

@@ -1,26 +1,40 @@
 import { Text, View, Image } from '@react-pdf/renderer';
 import { styles, PROPRIETAIRE } from './styles';
+import { SAUT_DE_PAGE } from './text-template';
 
-/** Marqueur que l'utilisateur peut insérer dans un bloc de texte éditable
- * (paramétrage d'un type de document) pour forcer un saut de page. */
-export const SAUT_DE_PAGE = '[SAUT_DE_PAGE]';
+export { SAUT_DE_PAGE };
 
-/** Rend un bloc de texte libre paramétré par l'utilisateur (intro ou clauses
- * additionnelles), en respectant les sauts de page manuels. */
+/**
+ * Rend le texte (éditable depuis le paramétrage) d'un document : chaque
+ * ligne devient un paragraphe, une ligne commençant par "## " devient un
+ * titre de section, et [SAUT_DE_PAGE] seul sur une ligne force un saut de
+ * page à cet endroit.
+ */
 export function TexteLibre({ texte }: { texte?: string | null }) {
   if (!texte) return null;
   const blocs = texte.split(SAUT_DE_PAGE);
   return (
     <>
-      {blocs.map((bloc, i) => {
-        const t = bloc.trim();
-        if (!t) return null;
-        return (
-          <Text key={i} break={i > 0} style={styles.p}>
-            {t}
-          </Text>
-        );
-      })}
+      {blocs.map((bloc, i) => (
+        <View key={i} break={i > 0}>
+          {bloc.split('\n').map((ligne, j) => {
+            const t = ligne.trim();
+            if (!t) return null;
+            if (t.startsWith('## ')) {
+              return (
+                <Text key={j} style={styles.h2}>
+                  {t.slice(3).trim()}
+                </Text>
+              );
+            }
+            return (
+              <Text key={j} style={styles.p}>
+                {t}
+              </Text>
+            );
+          })}
+        </View>
+      ))}
     </>
   );
 }

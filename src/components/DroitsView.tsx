@@ -13,13 +13,13 @@ import {
 import { initiales } from '@/lib/format';
 import { IconPlus } from '@/components/icons';
 import { DEFAULT_EMAIL_TEMPLATE } from '@/lib/email-template';
+import { DEFAULT_DOC_TEXT, PLACEHOLDERS_PAR_TYPE, SAUT_DE_PAGE } from '@/lib/documents/pdf/text-template';
 
 type MembershipVM = { id: string; role: string; statut: string; user: { id: string; nom: string; email: string } };
 type DocTypeParametreVM = {
   type: string;
   nomAffichage: string | null;
-  texteIntro: string | null;
-  texteClausesAdditionnelles: string | null;
+  texteDocument: string | null;
   emailSujet: string | null;
   emailCorps: string | null;
   signataireLocataire: boolean;
@@ -258,29 +258,26 @@ function DocumentTypeParametresForm({ scope, onChanged }: { scope: ScopeVM; onCh
             </div>
 
             <div className="field">
-              <label>Texte d&apos;introduction (optionnel)</label>
+              <label>Texte du document</label>
               <textarea
-                name="texteIntro"
-                rows={5}
-                defaultValue={parametre?.texteIntro ?? ''}
-                placeholder="Inséré au début du document, après l'en-tête."
+                name="texteDocument"
+                rows={24}
+                className="mono"
+                style={{ fontSize: 11.5 }}
+                defaultValue={parametre?.texteDocument ?? DEFAULT_DOC_TEXT[type] ?? ''}
               />
+              <small style={{ color: 'var(--ink-soft)', display: 'block' }}>
+                Une ligne commençant par <code>## </code> devient un titre de section. Insérez{' '}
+                <code>{SAUT_DE_PAGE}</code> seul sur une ligne pour forcer un saut de page. Placeholders disponibles
+                pour « {defautLabel} » :{' '}
+                {(PLACEHOLDERS_PAR_TYPE[type] ?? []).map((p, i) => (
+                  <span key={p.cle}>
+                    {i > 0 && ', '}
+                    <code>{`{{${p.cle}}}`}</code> ({p.description})
+                  </span>
+                ))}
+              </small>
             </div>
-
-            <div className="field">
-              <label>Clauses additionnelles (optionnel)</label>
-              <textarea
-                name="texteClausesAdditionnelles"
-                rows={5}
-                defaultValue={parametre?.texteClausesAdditionnelles ?? ''}
-                placeholder="Inséré à la fin du document, avant la formule de clôture et les signatures."
-              />
-            </div>
-            <small style={{ color: 'var(--ink-soft)', display: 'block', marginBottom: 16 }}>
-              Placeholders disponibles : <code>{'{{prenom}}'}</code> (prénom du locataire), <code>{'{{bien}}'}</code>{' '}
-              (adresse du bien), <code>{'{{loyer}}'}</code> (loyer HC). Insérez <code>{'[SAUT_DE_PAGE]'}</code> seul
-              sur une ligne pour forcer un saut de page.
-            </small>
 
             <div className="field">
               <label>Sujet de l&apos;email</label>

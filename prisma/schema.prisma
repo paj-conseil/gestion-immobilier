@@ -63,15 +63,14 @@ model DocumentTypeParametre {
   type    String
 
   nomAffichage String?
-  /// Bloc de texte inséré après l'introduction du document (placeholders
-  /// {{locataire}}, {{bien}}, {{loyer}} ; [SAUT_DE_PAGE] force un saut de page).
-  texteIntro                 String?
-  /// Bloc de texte inséré avant la formule de clôture / signatures.
-  texteClausesAdditionnelles String?
-  emailSujet                 String?
-  emailCorps                 String?
-  signataireLocataire        Boolean @default(true)
-  signataireProprietaire     Boolean @default(false)
+  /// Corps entier du document, éditable (placeholders spécifiques au type,
+  /// voir src/lib/documents/pdf/text-template.ts ; [SAUT_DE_PAGE] force un
+  /// saut de page, "## " démarre un titre de section).
+  texteDocument           String?
+  emailSujet              String?
+  emailCorps               String?
+  signataireLocataire     Boolean @default(true)
+  signataireProprietaire  Boolean @default(false)
 
   @@unique([scopeId, type])
 }
