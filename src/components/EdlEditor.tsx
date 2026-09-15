@@ -7,6 +7,7 @@ import {
   addEDLItem,
   addEDLPhoto,
   addEDLPiece,
+  deleteEDLPhoto,
   generateEtatDesLieuxPdf,
   signerEtatDesLieux,
   updateEDLItem,
@@ -90,9 +91,26 @@ export function EdlEditor({
   const [signing, setSigning] = useState<'BAILLEUR' | 'LOCATAIRE' | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
 
-  const photosGenerales = edl.photos.filter((p) => !p.pieceId && !p.itemId);
-  const photosDePiece = (pieceId: string) => edl.photos.filter((p) => p.pieceId === pieceId && !p.itemId);
-  const photosDItem = (itemId: string) => edl.photos.filter((p) => p.itemId === itemId);
+  const [deletedPhotoIds, setDeletedPhotoIds] = useState<Set<string>>(new Set());
+  const photosVisibles = edl.photos.filter((p) => !deletedPhotoIds.has(p.id));
+  const photosGenerales = photosVisibles.filter((p) => !p.pieceId && !p.itemId);
+  const photosDePiece = (pieceId: string) => photosVisibles.filter((p) => p.pieceId === pieceId && !p.itemId);
+  const photosDItem = (itemId: string) => photosVisibles.filter((p) => p.itemId === itemId);
+
+  async function onDeletePhoto(photoId: string) {
+    if (!confirm('Supprimer cette photo ?')) return;
+    setDeletedPhotoIds((prev) => new Set(prev).add(photoId));
+    try {
+      const res = await deleteEDLPhoto(photoId);
+      if ('error' in res) throw new Error(res.error);
+    } catch {
+      setDeletedPhotoIds((prev) => {
+        const next = new Set(prev);
+        next.delete(photoId);
+        return next;
+      });
+    }
+  }
 
   async function onAddPiece() {
     if (!newPieceName.trim()) return;
@@ -112,18 +130,18 @@ export function EdlEditor({
     sharedPhotoInputRef.current?.click();
   }
 
-  async function onSharedPhotoChosen(file: File | undefined) {
-    if (!file) return;
+  async function onSharedPhotoChosen(files: FileList | null) {
+    if (!files || files.length === 0) return;
     const fd = new FormData();
-    fd.set('photo', file);
+    Array.from(files).forEach((file) => fd.append('photos', file));
     await addEDLPhoto(edl.id, fd, photoTarget ?? undefined);
     router.refresh();
   }
 
-  async function onGeneralPhoto(file: File | undefined) {
-    if (!file) return;
+  async function onGeneralPhoto(files: FileList | null) {
+    if (!files || files.length === 0) return;
     const fd = new FormData();
-    fd.set('photo', file);
+    Array.from(files).forEach((file) => fd.append('photos', file));
     await addEDLPhoto(edl.id, fd);
     router.refresh();
   }
@@ -230,9 +248,10 @@ export function EdlEditor({
         type="file"
         accept="image/*"
         capture="environment"
+        multiple
         style={{ display: 'none' }}
         onChange={(e) => {
-          onSharedPhotoChosen(e.target.files?.[0]);
+          onSharedPhotoChosen(e.target.files);
           e.target.value = '';
         }}
       />
@@ -273,9 +292,19 @@ export function EdlEditor({
                 {piecePhotos.length > 0 && (
                   <div className="room-photos">
                     {piecePhotos.map((p) => (
-                      <a key={p.id} className="photo-slot small" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
-                        <img src={fileUrl(p.url)} alt="" />
-                      </a>
+                      <div className="photo-slot-wrap" key={p.id}>
+                        <a className="photo-slot small" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
+                          <img src={fileUrl(p.url)} alt="" />
+                        </a>
+                        <button
+                          type="button"
+                          className="photo-delete-btn"
+                          title="Supprimer cette photo"
+                          onClick={() => onDeletePhoto(p.id)}
+                        >
+                          ✕
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -286,6 +315,7 @@ export function EdlEditor({
                       item={item}
                       photos={photosDItem(item.id)}
                       onAddPhoto={() => openPhotoPicker({ itemId: item.id })}
+                      onDeletePhoto={onDeletePhoto}
                     />
                   ))}
                 </div>
@@ -314,18 +344,29 @@ export function EdlEditor({
         </div>
         <div className="panel-body pad" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {photosGenerales.map((p) => (
-            <a key={p.id} className="photo-slot" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
-              <img src={fileUrl(p.url)} alt="" />
-            </a>
+            <div className="photo-slot-wrap" key={p.id}>
+              <a className="photo-slot" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
+                <img src={fileUrl(p.url)} alt="" />
+              </a>
+              <button
+                type="button"
+                className="photo-delete-btn"
+                title="Supprimer cette photo"
+                onClick={() => onDeletePhoto(p.id)}
+              >
+                ✕
+              </button>
+            </div>
           ))}
           <input
             ref={generalPhotoInputRef}
             type="file"
             accept="image/*"
             capture="environment"
+            multiple
             style={{ display: 'none' }}
             onChange={(e) => {
-              onGeneralPhoto(e.target.files?.[0]);
+              onGeneralPhoto(e.target.files);
               e.target.value = '';
             }}
           />
@@ -417,10 +458,12 @@ function EdlItemRow({
   item,
   photos,
   onAddPhoto,
+  onDeletePhoto,
 }: {
   item: ItemVM;
   photos: PhotoVM[];
   onAddPhoto: () => void;
+  onDeletePhoto: (photoId: string) => void;
 }) {
   const router = useRouter();
   const [commentOpen, setCommentOpen] = useState(!!item.commentaire);
@@ -507,9 +550,19 @@ function EdlItemRow({
       {photos.length > 0 && (
         <div className="item-photos">
           {photos.map((p) => (
-            <a key={p.id} className="photo-slot small" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
-              <img src={fileUrl(p.url)} alt="" />
-            </a>
+            <div className="photo-slot-wrap" key={p.id}>
+              <a className="photo-slot small" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
+                <img src={fileUrl(p.url)} alt="" />
+              </a>
+              <button
+                type="button"
+                className="photo-delete-btn"
+                title="Supprimer cette photo"
+                onClick={() => onDeletePhoto(p.id)}
+              >
+                ✕
+              </button>
+            </div>
           ))}
         </div>
       )}

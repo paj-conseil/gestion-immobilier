@@ -116,9 +116,9 @@ export async function addEDLItem(pieceId: string, label: string, type: TypeItemE
 }
 
 /**
- * Une photo est toujours rattachée à l'état des lieux dans son ensemble, et
- * optionnellement aussi à une pièce précise et/ou un élément précis — sinon
- * elle compte comme photo générale du rapport.
+ * Une ou plusieurs photos, toujours rattachées à l'état des lieux dans son
+ * ensemble, et optionnellement aussi à une pièce précise et/ou un élément
+ * précis — sinon elles comptent comme photos générales du rapport.
  */
 export async function addEDLPhoto(
   edlId: string,
@@ -128,8 +128,8 @@ export async function addEDLPhoto(
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({ where: { id: edlId, bien: { scopeId: ctx.scopeId } } });
   if (!edl) return;
-  const file = formData.get('photo');
-  if (!(file instanceof File) || file.size === 0) return;
+  const files = formData.getAll('photos').filter((f): f is File => f instanceof File && f.size > 0);
+  if (files.length === 0) return;
 
   let pieceId: string | undefined;
   let itemId: string | undefined;
@@ -144,11 +144,28 @@ export async function addEDLPhoto(
     if (piece) pieceId = piece.id;
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
-  const count = await prisma.eDLPhoto.count({ where: { edlId } });
-  await prisma.eDLPhoto.create({ data: { edlId, pieceId, itemId, url: key, ordre: count } });
+  let count = await prisma.eDLPhoto.count({ where: { edlId } });
+  for (const file of files) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
+    await prisma.eDLPhoto.create({ data: { edlId, pieceId, itemId, url: key, ordre: count } });
+    count += 1;
+  }
   revalidatePath(`/edl/${edlId}`);
+}
+
+export async function deleteEDLPhoto(photoId: string): Promise<{ ok: true } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const photo = await prisma.eDLPhoto.findFirst({
+    where: { id: photoId, edl: { bien: { scopeId: ctx.scopeId } } },
+  });
+  if (!photo) return { error: 'Photo introuvable' };
+
+  await deleteStoredFile(photo.url).catch(() => undefined);
+  await prisma.eDLPhoto.delete({ where: { id: photoId } });
+
+  revalidatePath(`/edl/${photo.edlId}`);
+  return { ok: true };
 }
 
 export async function generateEtatDesLieuxPdf(

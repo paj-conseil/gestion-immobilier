@@ -1035,6 +1035,28 @@ th.col-doc {
   height: 100%;
   object-fit: cover;
 }
+.photo-slot-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.photo-delete-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--brick, #b3402a);
+  color: #fff;
+  border: 1.5px solid #fff;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
 
 /* ---------- COMPTA ---------- */
 .dropzone {
