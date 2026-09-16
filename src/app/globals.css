@@ -47,7 +47,7 @@ button {
 /* ---------- LAYOUT ---------- */
 .app {
   display: grid;
-  grid-template-columns: 236px 1fr;
+  grid-template-columns: 236px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -69,7 +69,7 @@ button {
 /* ---------- MOBILE NAV (sidebar becomes a slide-in drawer) ---------- */
 @media (max-width: 860px) {
   .app {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .mobile-topbar {
     display: flex;
@@ -334,18 +334,18 @@ button {
 /* ---------- KPI ---------- */
 .kpi-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin-bottom: 26px;
 }
 @media (max-width: 860px) {
   .kpi-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 420px) {
   .kpi-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .kpi {
@@ -501,22 +501,22 @@ button {
 /* ---------- BIENS ---------- */
 .bien-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 @media (min-width: 1200px) {
   .bien-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 @media (max-width: 900px) {
   .bien-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 480px) {
   .bien-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .bien-card {
@@ -678,6 +678,15 @@ th.col-doc {
   white-space: normal;
   line-height: 1.25;
 }
+/* Colonnes secondaires masquées sur petit écran plutôt que forcer un
+   défilement horizontal de tableau — les infos restent accessibles via la
+   fiche (clic sur le nom / bouton modifier). */
+@media (max-width: 760px) {
+  .col-doc,
+  .col-optional {
+    display: none;
+  }
+}
 .person {
   display: flex;
   align-items: center;
@@ -795,14 +804,23 @@ th.col-doc {
 /* ---------- DOCUMENTS ---------- */
 .doc-type-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 22px;
 }
 @media (max-width: 900px) {
   .doc-type-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+@media (max-width: 420px) {
+  .doc-type-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.doc-type strong,
+.doc-type span {
+  overflow-wrap: break-word;
 }
 .doc-type {
   background: var(--white);
@@ -1269,12 +1287,12 @@ th.col-doc {
 }
 .field-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
 @media (max-width: 560px) {
   .field-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .modal-foot {
@@ -1403,22 +1421,22 @@ th.col-doc {
 }
 .dt {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px 18px;
 }
 @media (max-width: 480px) {
   .dt {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .two-col {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 20px;
 }
 @media (max-width: 600px) {
   .two-col {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .dt div {

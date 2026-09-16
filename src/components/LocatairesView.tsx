@@ -84,9 +84,9 @@ export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[
                 <th>Statut</th>
                 <th>Bien</th>
                 <th>Loyer HC</th>
-                <th>Charges</th>
-                <th>Entrée</th>
-                <th>Sortie</th>
+                <th className="col-optional">Charges</th>
+                <th className="col-optional">Entrée</th>
+                <th className="col-optional">Sortie</th>
                 <th className="col-doc">
                   Contrat
                   <br />
@@ -108,17 +108,21 @@ export function LocatairesView({ locataires, biens }: { locataires: LocataireVM[
                 const actif = estActif(l);
                 return (
                   <tr key={l.id}>
-                    <td style={{ whiteSpace: 'nowrap' }}>{l.prenom} {l.nom}</td>
+                    <td>
+                      <button type="button" className="link-row" onClick={() => setEditingId(l.id)}>
+                        {l.prenom} {l.nom}
+                      </button>
+                    </td>
                     <td>
                       <span className={`chip ${actif ? 'green' : 'neutral'}`}>{actif ? 'Actif' : 'Inactif'}</span>
                     </td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{bail ? bienLabel(bail.bien) : '—'}</td>
+                    <td>{bail ? bienLabel(bail.bien) : '—'}</td>
                     <td className="mono">{bail ? formatMontant(bail.loyerHC) : '—'}</td>
-                    <td className="mono">{bail ? formatMontant(bail.charges) : '—'}</td>
-                    <td className="mono" style={{ fontSize: 12 }}>
+                    <td className="mono col-optional">{bail ? formatMontant(bail.charges) : '—'}</td>
+                    <td className="mono col-optional" style={{ fontSize: 12 }}>
                       {bail ? formatDate(bail.dateDebut) : '—'}
                     </td>
-                    <td className="mono" style={{ fontSize: 12 }}>
+                    <td className="mono col-optional" style={{ fontSize: 12 }}>
                       {bail?.dateFin ? formatDate(bail.dateFin) : '—'}
                     </td>
                     <td className="col-doc">
