@@ -116,20 +116,21 @@ export async function addEDLItem(pieceId: string, label: string, type: TypeItemE
 }
 
 /**
- * Une ou plusieurs photos, toujours rattachées à l'état des lieux dans son
- * ensemble, et optionnellement aussi à une pièce précise et/ou un élément
- * précis — sinon elles comptent comme photos générales du rapport.
+ * Rattache une ou plusieurs photos déjà envoyées vers le stockage (upload
+ * direct navigateur → Vercel Blob, voir /api/upload/edl-photo — une photo de
+ * smartphone dépasse vite la limite de taille de requête d'une Server
+ * Action) à l'état des lieux dans son ensemble, et optionnellement aussi à
+ * une pièce précise et/ou un élément précis — sinon elles comptent comme
+ * photos générales du rapport.
  */
-export async function addEDLPhoto(
+export async function addEDLPhotosFromKeys(
   edlId: string,
-  formData: FormData,
+  keys: string[],
   scope?: { pieceId?: string; itemId?: string },
 ): Promise<void> {
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({ where: { id: edlId, bien: { scopeId: ctx.scopeId } } });
-  if (!edl) return;
-  const files = formData.getAll('photos').filter((f): f is File => f instanceof File && f.size > 0);
-  if (files.length === 0) return;
+  if (!edl || keys.length === 0) return;
 
   let pieceId: string | undefined;
   let itemId: string | undefined;
@@ -144,13 +145,10 @@ export async function addEDLPhoto(
     if (piece) pieceId = piece.id;
   }
 
-  let count = await prisma.eDLPhoto.count({ where: { edlId } });
-  for (const file of files) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
-    await prisma.eDLPhoto.create({ data: { edlId, pieceId, itemId, url: key, ordre: count } });
-    count += 1;
-  }
+  const count = await prisma.eDLPhoto.count({ where: { edlId } });
+  await prisma.eDLPhoto.createMany({
+    data: keys.map((url, i) => ({ edlId, pieceId, itemId, url, ordre: count + i })),
+  });
   revalidatePath(`/edl/${edlId}`);
 }
 

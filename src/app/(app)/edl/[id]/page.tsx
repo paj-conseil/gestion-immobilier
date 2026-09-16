@@ -36,6 +36,7 @@ export default async function EdlDetailPage({ params }: { params: Promise<{ id: 
       locatairePrenom={locatairePrenom}
       emailTemplate={scope?.emailTemplateCorps ?? DEFAULT_EMAIL_TEMPLATE}
       expediteurNom={ctx.userNom}
+      scopeId={ctx.scopeId}
     />
   );
 }

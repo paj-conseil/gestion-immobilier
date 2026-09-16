@@ -3,9 +3,10 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { upload } from '@vercel/blob/client';
 import {
   addEDLItem,
-  addEDLPhoto,
+  addEDLPhotosFromKeys,
   addEDLPiece,
   deleteEDLPhoto,
   generateEtatDesLieuxPdf,
@@ -51,6 +52,10 @@ const ETAT_CLASS: Record<EtatItem, string> = { BON: 'good', USURE: 'wear', MAUVA
 
 type PhotoTarget = { pieceId?: string; itemId?: string } | null;
 
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+}
+
 export function EdlEditor({
   edl,
   documentGenereId: documentGenereIdInitial,
@@ -59,6 +64,7 @@ export function EdlEditor({
   locatairePrenom,
   emailTemplate,
   expediteurNom,
+  scopeId,
 }: {
   edl: EdlVM;
   documentGenereId: string | null;
@@ -67,6 +73,7 @@ export function EdlEditor({
   locatairePrenom: string | null;
   emailTemplate: string;
   expediteurNom: string;
+  scopeId: string;
 }) {
   const router = useRouter();
   const [generating, setGenerating] = useState(false);
@@ -125,25 +132,46 @@ export function EdlEditor({
     router.refresh();
   }
 
+  const [photoUploadError, setPhotoUploadError] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+
   function openPhotoPicker(target: PhotoTarget) {
     setPhotoTarget(target);
     sharedPhotoInputRef.current?.click();
   }
 
+  // Chaque photo part directement du navigateur vers Vercel Blob (et non via
+  // une Server Action) : une photo de smartphone pèse facilement plusieurs
+  // Mo, et plusieurs à la fois dépassaient la limite de taille de requête
+  // des fonctions serverless Vercel — l'envoi échouait silencieusement.
+  async function uploadPhotos(files: FileList, scope?: { pieceId?: string; itemId?: string }) {
+    setPhotoUploadError(null);
+    setPhotoUploading(true);
+    try {
+      const keys = await Promise.all(
+        Array.from(files).map(async (file) => {
+          const key = `edl/${scopeId}/${crypto.randomUUID()}-${sanitizeFilename(file.name)}`;
+          const blob = await upload(key, file, { access: 'private', handleUploadUrl: '/api/upload/edl-photo' });
+          return blob.pathname;
+        }),
+      );
+      await addEDLPhotosFromKeys(edl.id, keys, scope);
+      router.refresh();
+    } catch (e) {
+      setPhotoUploadError(e instanceof Error ? e.message : "Échec de l'envoi des photos");
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
+
   async function onSharedPhotoChosen(files: FileList | null) {
     if (!files || files.length === 0) return;
-    const fd = new FormData();
-    Array.from(files).forEach((file) => fd.append('photos', file));
-    await addEDLPhoto(edl.id, fd, photoTarget ?? undefined);
-    router.refresh();
+    await uploadPhotos(files, photoTarget ?? undefined);
   }
 
   async function onGeneralPhoto(files: FileList | null) {
     if (!files || files.length === 0) return;
-    const fd = new FormData();
-    Array.from(files).forEach((file) => fd.append('photos', file));
-    await addEDLPhoto(edl.id, fd);
-    router.refresh();
+    await uploadPhotos(files);
   }
 
   async function onGenerate() {
@@ -227,6 +255,15 @@ export function EdlEditor({
             Télécharger le PDF
           </a>
         </div>
+      )}
+
+      {photoUploading && (
+        <div className="alert-row" style={{ padding: '10px 14px', background: 'var(--stone-100)', borderRadius: 8, marginBottom: 18 }}>
+          <span className="txt">Envoi des photos…</span>
+        </div>
+      )}
+      {photoUploadError && (
+        <div className="auth-error" style={{ marginBottom: 18 }}>{photoUploadError}</div>
       )}
 
       <div className="toggle-pair">
