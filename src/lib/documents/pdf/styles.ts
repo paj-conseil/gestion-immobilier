@@ -136,6 +136,21 @@ export const styles = StyleSheet.create({
     color: '#5B665C',
     marginTop: 16,
   },
+  edlPhotoRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 6,
+    marginBottom: 8,
+  },
+  edlPhoto: {
+    width: 150,
+    height: 115,
+    objectFit: 'contain',
+    border: '0.75 solid #DEE3DA',
+    borderRadius: 4,
+    backgroundColor: '#F5F6F3',
+  },
 });
 
 // Coordonnées du bailleur : lues depuis les variables d'environnement (voir

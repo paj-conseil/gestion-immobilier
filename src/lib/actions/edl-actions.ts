@@ -17,6 +17,31 @@ function readEdlDate(formData: FormData): Date {
   return Number.isNaN(d.getTime()) ? new Date() : d;
 }
 
+/** Devine le type MIME à partir de l'extension de la clé de stockage — les
+ * photos n'ont pas de colonne dédiée, seules les signatures (toujours des
+ * PNG) en avaient rarement besoin jusqu'ici. */
+function mimeTypeFromKey(key: string): string {
+  const ext = key.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'png':
+      return 'image/png';
+    case 'webp':
+      return 'image/webp';
+    case 'heic':
+    case 'heif':
+      return 'image/heic';
+    case 'gif':
+      return 'image/gif';
+    default:
+      return 'image/jpeg';
+  }
+}
+
+async function readPhotoAsDataUri(key: string): Promise<string> {
+  const buffer = await readStoredFile(key);
+  return `data:${mimeTypeFromKey(key)};base64,${buffer.toString('base64')}`;
+}
+
 /**
  * Le bail actif du bien qui concerne le locataire choisi, le cas échéant —
  * un bien peut avoir plusieurs locataires (colocation) voire, en théorie,
@@ -194,6 +219,7 @@ export async function generateEtatDesLieuxPdf(
     include: {
       bien: true,
       pieces: { orderBy: { ordre: 'asc' }, include: { items: { orderBy: { ordre: 'asc' } } } },
+      photos: { orderBy: { ordre: 'asc' } },
       location: { include: { locataires: { include: { locataire: true } } } },
     },
   });
@@ -214,6 +240,24 @@ export async function generateEtatDesLieuxPdf(
       : Promise.resolve(null),
   ]);
 
+  // Chaque photo est rattachée à un élément, à défaut à une pièce, à défaut
+  // c'est une photo générale du rapport — toutes incrustées dans le PDF pour
+  // illustrer l'état constaté.
+  const photosData = await Promise.all(edl.photos.map((p) => readPhotoAsDataUri(p.url)));
+  const photosParItem = new Map<string, string[]>();
+  const photosParPiece = new Map<string, string[]>();
+  const photosGenerales: string[] = [];
+  edl.photos.forEach((p, i) => {
+    const src = photosData[i];
+    if (p.itemId) {
+      photosParItem.set(p.itemId, [...(photosParItem.get(p.itemId) ?? []), src]);
+    } else if (p.pieceId) {
+      photosParPiece.set(p.pieceId, [...(photosParPiece.get(p.pieceId) ?? []), src]);
+    } else {
+      photosGenerales.push(src);
+    }
+  });
+
   const pdfBuffer = await renderPdf(
     EtatLieuxDoc({
       data: {
@@ -226,14 +270,17 @@ export async function generateEtatDesLieuxPdf(
         numeroCompteur: edl.bien.numeroCompteur,
         pieces: edl.pieces.map((p) => ({
           nom: p.nom,
+          photos: photosParPiece.get(p.id) ?? [],
           items: p.items.map((i) => ({
             label: i.label,
             type: i.type as TypeItemEDL,
             etat: i.etat as EtatItem | null,
             quantite: i.quantite,
             commentaire: i.commentaire,
+            photos: photosParItem.get(i.id) ?? [],
           })),
         })),
+        photosGenerales,
         signatureBailleur,
         signatureLocataire,
       },

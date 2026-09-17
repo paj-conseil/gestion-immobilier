@@ -9,8 +9,10 @@ export type EDLItemData = {
   etat: 'BON' | 'USURE' | 'MAUVAIS' | null;
   quantite?: number | null;
   commentaire?: string | null;
+  /** Photos de l'élément, en data URI (voir generateEtatDesLieuxPdf). */
+  photos: string[];
 };
-export type EDLPieceData = { nom: string; items: EDLItemData[] };
+export type EDLPieceData = { nom: string; items: EDLItemData[]; photos: string[] };
 export type EtatLieuxData = {
   type: 'ENTREE' | 'SORTIE';
   date: Date;
@@ -20,9 +22,22 @@ export type EtatLieuxData = {
   locatairesNoms: string;
   numeroCompteur?: string | null;
   pieces: EDLPieceData[];
+  /** Photos non rattachées à une pièce ou un élément précis. */
+  photosGenerales: string[];
   signatureBailleur?: string | null;
   signatureLocataire?: string | null;
 };
+
+function PhotoRow({ photos }: { photos: string[] }) {
+  if (photos.length === 0) return null;
+  return (
+    <View style={styles.edlPhotoRow}>
+      {photos.map((src, i) => (
+        <Image key={i} src={src} style={styles.edlPhoto} />
+      ))}
+    </View>
+  );
+}
 
 const ETAT_LABEL: Record<string, string> = { BON: 'Bon état', USURE: 'Usure normale', MAUVAIS: 'Mauvais état' };
 
@@ -47,23 +62,34 @@ export function EtatLieuxDoc({ data }: { data: EtatLieuxData }) {
         </View>
 
         {data.pieces.map((piece) => (
-          <View key={piece.nom} wrap={false} style={{ marginBottom: 12 }}>
+          <View key={piece.nom} style={{ marginBottom: 12 }}>
             <Text style={styles.h2}>{piece.nom}</Text>
+            <PhotoRow photos={piece.photos} />
             {piece.items.map((item, i) => (
-              <View key={i} style={styles.tr}>
-                <Text style={styles.td}>{item.label}</Text>
-                <Text style={[styles.td, { flex: 0.6 }]}>
-                  {item.type === 'QUANTITE'
-                    ? `Quantité : ${item.quantite ?? 0}`
-                    : item.etat
-                      ? ETAT_LABEL[item.etat]
-                      : 'Non évalué'}
-                </Text>
-                {item.commentaire ? <Text style={[styles.small, { flex: 1 }]}>{item.commentaire}</Text> : <View style={{ flex: 1 }} />}
+              <View key={i} wrap={false} style={{ marginBottom: item.photos.length > 0 ? 8 : 0 }}>
+                <View style={styles.tr}>
+                  <Text style={styles.td}>{item.label}</Text>
+                  <Text style={[styles.td, { flex: 0.6 }]}>
+                    {item.type === 'QUANTITE'
+                      ? `Quantité : ${item.quantite ?? 0}`
+                      : item.etat
+                        ? ETAT_LABEL[item.etat]
+                        : 'Non évalué'}
+                  </Text>
+                  {item.commentaire ? <Text style={[styles.small, { flex: 1 }]}>{item.commentaire}</Text> : <View style={{ flex: 1 }} />}
+                </View>
+                <PhotoRow photos={item.photos} />
               </View>
             ))}
           </View>
         ))}
+
+        {data.photosGenerales.length > 0 && (
+          <View style={{ marginBottom: 12 }}>
+            <Text style={styles.h2}>Photos générales</Text>
+            <PhotoRow photos={data.photosGenerales} />
+          </View>
+        )}
 
         <Text style={styles.legal}>
           Le présent état des lieux, établi contradictoirement entre les parties, fait foi jusqu&apos;à preuve du
