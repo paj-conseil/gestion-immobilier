@@ -10,6 +10,13 @@ export default async function DashboardPage() {
   const horizon = addDays(new Date(), 60);
   const now = new Date();
 
+  // Un bail "actif" en base dont la date d'entrée est encore à venir n'est
+  // pas encore en cours — il ne doit ni compter dans les revenus, ni
+  // déclencher d'alerte d'échéance (fin de bail / révision de loyer / dossier
+  // incomplet).
+  const aujourdhuiMinuit = new Date();
+  aujourdhuiMinuit.setHours(0, 0, 0, 0);
+
   const [biens, locationsActivesBrutes, locataireDocsManquants] = await Promise.all([
     prisma.bien.findMany({ where: { scopeId: ctx.scopeId } }),
     prisma.location.findMany({
@@ -20,17 +27,29 @@ export default async function DashboardPage() {
       },
     }),
     prisma.documentLocataire.findMany({
-      where: { statut: 'MANQUANT', locataire: { scopeId: ctx.scopeId } },
+      where: {
+        statut: 'MANQUANT',
+        locataire: {
+          scopeId: ctx.scopeId,
+          // Ne relance que pour un locataire dont le bail est réellement en
+          // cours aujourd'hui — pas un ancien locataire dont le dossier n'a
+          // jamais été complété/nettoyé après son départ.
+          locations: {
+            some: {
+              location: {
+                statut: 'ACTIF',
+                dateDebut: { lte: aujourdhuiMinuit },
+                OR: [{ dateFin: null }, { dateFin: { gte: aujourdhuiMinuit } }],
+              },
+            },
+          },
+        },
+      },
       include: { locataire: true },
       take: 5,
     }),
   ]);
 
-  // Un bail "actif" en base dont la date d'entrée est encore à venir n'est
-  // pas encore en cours — il ne doit ni compter dans les revenus, ni
-  // déclencher d'alerte d'échéance (fin de bail / révision de loyer).
-  const aujourdhuiMinuit = new Date();
-  aujourdhuiMinuit.setHours(0, 0, 0, 0);
   const locationsActives = locationsActivesBrutes.filter((l) => new Date(l.dateDebut) <= aujourdhuiMinuit);
 
   const nbLoue = biens.filter((b) => b.statut === 'LOUE').length;
