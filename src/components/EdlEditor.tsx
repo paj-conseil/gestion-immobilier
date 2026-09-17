@@ -277,14 +277,14 @@ export function EdlEditor({
 
       {/* Input de photo partagé par toutes les sections/éléments : on stocke la
           cible (pièce/élément) visée dans photoTarget avant de déclencher le
-          sélecteur, plutôt que de gérer une ref par élément. capture="environment"
-          propose l'appareil photo en priorité sur mobile, sans empêcher de choisir
-          une photo déjà prise dans la galerie. */}
+          sélecteur. Pas d'attribut `capture` : sur Android notamment, il fait
+          ouvrir l'appareil photo directement et empêche de choisir plusieurs
+          photos déjà présentes dans la galerie — le navigateur propose son
+          propre choix "Appareil photo / Galerie / Fichiers" sans lui. */}
       <input
         ref={sharedPhotoInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         multiple
         style={{ display: 'none' }}
         onChange={(e) => {
@@ -399,7 +399,6 @@ export function EdlEditor({
             ref={generalPhotoInputRef}
             type="file"
             accept="image/*"
-            capture="environment"
             multiple
             style={{ display: 'none' }}
             onChange={(e) => {
