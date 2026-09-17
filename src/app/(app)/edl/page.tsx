@@ -11,7 +11,16 @@ export default async function EdlPage() {
       include: { bien: true, location: { include: { locataires: { include: { locataire: true } } } } },
       orderBy: { date: 'desc' },
     }),
-    prisma.bien.findMany({ where: { scopeId: ctx.scopeId }, orderBy: { adresse: 'asc' } }),
+    prisma.bien.findMany({
+      where: { scopeId: ctx.scopeId },
+      include: {
+        locations: {
+          where: { statut: 'ACTIF' },
+          include: { locataires: { include: { locataire: true } } },
+        },
+      },
+      orderBy: { adresse: 'asc' },
+    }),
   ]);
 
   return (
@@ -22,7 +31,11 @@ export default async function EdlPage() {
           <p>Entrée ou sortie, pièce par pièce, avec photos</p>
         </div>
       </div>
-      <EdlListView edls={JSON.parse(JSON.stringify(edls))} biens={JSON.parse(JSON.stringify(biens))} />
+      <EdlListView
+        edls={JSON.parse(JSON.stringify(edls))}
+        biens={JSON.parse(JSON.stringify(biens))}
+        scopeId={ctx.scopeId}
+      />
     </>
   );
 }

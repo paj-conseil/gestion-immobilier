@@ -13,6 +13,7 @@ export default async function EdlDetailPage({ params }: { params: Promise<{ id: 
     include: {
       bien: true,
       location: { include: { locataires: { include: { locataire: true } } } },
+      locataire: true,
       pieces: { orderBy: { ordre: 'asc' }, include: { items: { orderBy: { ordre: 'asc' } } } },
       photos: { orderBy: { ordre: 'asc' } },
     },
@@ -24,8 +25,11 @@ export default async function EdlDetailPage({ params }: { params: Promise<{ id: 
     prisma.documentGenere.findFirst({ where: { edlId: id } }),
     prisma.scope.findUnique({ where: { id: ctx.scopeId } }),
   ]);
-  const locataireEmail = edl.location?.locataires[0]?.locataire.email ?? null;
-  const locatairePrenom = edl.location?.locataires[0]?.locataire.prenom ?? null;
+  // Le locataire explicitement choisi à la création prime sur le premier
+  // locataire du bail (utile en colocation, où le bail peut en lister
+  // plusieurs).
+  const locataireEmail = edl.locataire?.email ?? edl.location?.locataires[0]?.locataire.email ?? null;
+  const locatairePrenom = edl.locataire?.prenom ?? edl.location?.locataires[0]?.locataire.prenom ?? null;
 
   return (
     <EdlEditor

@@ -1,12 +1,25 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { upload } from '@vercel/blob/client';
 import { createEtatDesLieux, importEtatDesLieux, deleteEtatDesLieux } from '@/lib/actions/edl-actions';
 import { bienLabel, formatDate } from '@/lib/format';
 import { IconClose, IconPlus } from '@/components/icons';
+import { BienFormModal } from '@/components/BienFormModal';
+import { LocataireFormModal } from '@/components/LocataireFormModal';
 
-type BienOption = { id: string; adresse: string; complement?: string | null };
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+}
+
+type LocataireOption = { id: string; nom: string; prenom: string };
+type BienOption = {
+  id: string;
+  adresse: string;
+  complement?: string | null;
+  locations: { locataires: { locataire: LocataireOption }[] }[];
+};
 type EdlVM = {
   id: string;
   type: 'ENTREE' | 'SORTIE';
@@ -16,11 +29,13 @@ type EdlVM = {
   location: { locataires: { locataire: { nom: string; prenom: string } }[] } | null;
 };
 
-export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[] }) {
+export function EdlListView({ edls, biens, scopeId }: { edls: EdlVM[]; biens: BienOption[]; scopeId: string }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'structure' | 'import'>('structure');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bienId, setBienId] = useState(biens[0]?.id ?? '');
+  const [locataireId, setLocataireId] = useState('');
   // Retiré de l'affichage dès la confirmation, sans attendre le
   // rafraîchissement serveur (router.refresh() suit derrière pour la
   // cohérence, mais la ligne disparaît immédiatement à l'écran).
@@ -28,12 +43,34 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
   const visibleEdls = edls.filter((e) => !deletedIds.has(e.id));
   const router = useRouter();
 
+  const bien = biens.find((b) => b.id === bienId);
+  const locataires = useMemo(
+    () => bien?.locations.flatMap((loc) => loc.locataires.map((x) => x.locataire)) ?? [],
+    [bien],
+  );
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const fd = new FormData(e.currentTarget as HTMLFormElement);
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
     try {
+      if (mode === 'import') {
+        // Un scan/PDF dépasse facilement la limite de taille de requête
+        // d'une Server Action — il part directement du navigateur vers le
+        // stockage, seule sa clé transite ensuite par l'action.
+        const fileInput = form.elements.namedItem('fichier') as HTMLInputElement | null;
+        const file = fileInput?.files?.[0];
+        fd.delete('fichier');
+        if (!file || file.size === 0) {
+          setError('Aucun fichier sélectionné');
+          return;
+        }
+        const key = `edl/${scopeId}/${crypto.randomUUID()}-${sanitizeFilename(file.name)}`;
+        const blob = await upload(key, file, { access: 'private', handleUploadUrl: '/api/upload/edl-photo' });
+        fd.set('fichierUrl', blob.pathname);
+      }
       const res = mode === 'import' ? await importEtatDesLieux(fd) : await createEtatDesLieux(fd);
       if ('error' in res) {
         setError(res.error);
@@ -164,11 +201,51 @@ export function EdlListView({ edls, biens }: { edls: EdlVM[]; biens: BienOption[
                 </p>
               )}
               <div className="field">
-                <label>Bien</label>
-                <select name="bienId" required>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label>Bien</label>
+                  <BienFormModal
+                    trigger={
+                      <span className="link-row" style={{ fontSize: 11.5 }}>
+                        + Nouveau bien
+                      </span>
+                    }
+                    onSaved={(id) => setBienId(id)}
+                  />
+                </div>
+                <select
+                  name="bienId"
+                  required
+                  value={bienId}
+                  onChange={(e) => {
+                    setBienId(e.target.value);
+                    setLocataireId('');
+                  }}
+                >
                   {biens.map((b) => (
                     <option key={b.id} value={b.id}>
                       {bienLabel(b)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label>Locataire</label>
+                  <LocataireFormModal
+                    biens={biens}
+                    trigger={
+                      <span className="link-row" style={{ fontSize: 11.5 }}>
+                        + Nouveau locataire
+                      </span>
+                    }
+                    onSaved={(id) => setLocataireId(id)}
+                  />
+                </div>
+                <select name="locataireId" value={locataireId} onChange={(e) => setLocataireId(e.target.value)}>
+                  <option value="">— Non précisé —</option>
+                  {locataires.map((l) => (
+                    <option key={l.id} value={l.id}>
+                      {l.prenom} {l.nom}
                     </option>
                   ))}
                 </select>

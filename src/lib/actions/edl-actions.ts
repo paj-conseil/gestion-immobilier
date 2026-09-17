@@ -17,21 +17,39 @@ function readEdlDate(formData: FormData): Date {
   return Number.isNaN(d.getTime()) ? new Date() : d;
 }
 
+/**
+ * Le bail actif du bien qui concerne le locataire choisi, le cas échéant —
+ * un bien peut avoir plusieurs locataires (colocation) voire, en théorie,
+ * plusieurs baux actifs ; sans locataire précisé, on retombe sur le premier
+ * bail actif du bien (comportement historique).
+ */
+async function findLocationPourEdl(bienId: string, locataireId?: string) {
+  return prisma.location.findFirst({
+    where: {
+      bienId,
+      statut: 'ACTIF',
+      ...(locataireId ? { locataires: { some: { locataireId } } } : {}),
+    },
+  });
+}
+
 export async function createEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
   const ctx = await getCurrentContext();
   const bienId = String(formData.get('bienId') ?? '');
+  const locataireId = String(formData.get('locataireId') ?? '') || undefined;
   const type = String(formData.get('type') ?? 'ENTREE') as 'ENTREE' | 'SORTIE';
   const date = readEdlDate(formData);
 
   const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
   if (!bien) return { error: 'Bien introuvable' };
 
-  const location = await prisma.location.findFirst({ where: { bienId, statut: 'ACTIF' } });
+  const location = await findLocationPourEdl(bienId, locataireId);
 
   const edl = await prisma.etatDesLieux.create({
     data: {
       bienId,
       locationId: location?.id,
+      locataireId,
       type,
       date,
       pieces: {
@@ -57,26 +75,27 @@ export async function createEtatDesLieux(formData: FormData): Promise<{ id: stri
 /**
  * Attache directement un document d'état des lieux déjà existant (scan/PDF),
  * sans passer par la saisie structurée — pour un dossier déjà en cours dont
- * l'état des lieux n'a pas été fait via l'application.
+ * l'état des lieux n'a pas été fait via l'application. Le fichier est déjà
+ * envoyé vers le stockage côté navigateur avant cet appel (voir
+ * /api/upload/edl-photo) — un PDF scanné dépasse facilement la limite de
+ * taille de requête d'une Server Action — seule sa clé transite ici.
  */
 export async function importEtatDesLieux(formData: FormData): Promise<{ id: string } | { error: string }> {
   const ctx = await getCurrentContext();
   const bienId = String(formData.get('bienId') ?? '');
+  const locataireId = String(formData.get('locataireId') ?? '') || undefined;
   const type = String(formData.get('type') ?? 'ENTREE') as 'ENTREE' | 'SORTIE';
   const date = readEdlDate(formData);
-  const file = formData.get('fichier');
-  if (!(file instanceof File) || file.size === 0) return { error: 'Aucun fichier sélectionné' };
+  const key = String(formData.get('fichierUrl') ?? '');
+  if (!key) return { error: 'Aucun fichier sélectionné' };
 
   const bien = await prisma.bien.findFirst({ where: { id: bienId, scopeId: ctx.scopeId } });
   if (!bien) return { error: 'Bien introuvable' };
 
-  const location = await prisma.location.findFirst({ where: { bienId, statut: 'ACTIF' } });
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'edl', filename: file.name });
+  const location = await findLocationPourEdl(bienId, locataireId);
 
   const edl = await prisma.etatDesLieux.create({
-    data: { bienId, locationId: location?.id, type, date, fileUrl: key },
+    data: { bienId, locationId: location?.id, locataireId, type, date, fileUrl: key },
   });
 
   revalidatePath('/edl');

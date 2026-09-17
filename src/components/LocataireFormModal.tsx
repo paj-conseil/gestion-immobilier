@@ -8,7 +8,15 @@ import { IconClose, IconPlus } from '@/components/icons';
 
 type BienOption = { id: string; adresse: string; complement?: string | null };
 
-export function LocataireFormModal({ biens }: { biens: BienOption[] }) {
+export function LocataireFormModal({
+  biens,
+  trigger,
+  onSaved,
+}: {
+  biens: BienOption[];
+  trigger?: React.ReactNode;
+  onSaved?: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,6 +38,7 @@ export function LocataireFormModal({ biens }: { biens: BienOption[] }) {
       }
       setOpen(false);
       router.refresh();
+      onSaved?.(result.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Une erreur est survenue');
     } finally {
@@ -39,10 +48,14 @@ export function LocataireFormModal({ biens }: { biens: BienOption[] }) {
 
   return (
     <>
-      <button className="btn btn-primary" onClick={() => setOpen(true)}>
-        <IconPlus />
-        Ajouter un locataire
-      </button>
+      <span onClick={() => setOpen(true)}>
+        {trigger ?? (
+          <button type="button" className="btn btn-primary">
+            <IconPlus />
+            Ajouter un locataire
+          </button>
+        )}
+      </span>
 
       <div className={`overlay${open ? ' show' : ''}`} onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
         <div className="modal">

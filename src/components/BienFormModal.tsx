@@ -34,7 +34,7 @@ export function BienFormModal({
 }: {
   trigger?: React.ReactNode;
   defaults?: BienDefaults;
-  onSaved?: () => void;
+  onSaved?: (id: string) => void;
   /**
    * Mode contrôlé (pas de `trigger` rendu ici) : à utiliser quand la modale
    * doit être rendue HORS de tout ancêtre avec `transform` (ex. le drawer
@@ -70,7 +70,7 @@ export function BienFormModal({
       setOpen(false);
       formRef.current?.reset();
       router.refresh();
-      onSaved?.();
+      onSaved?.('id' in result ? result.id : defaults!.id!);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Une erreur est survenue');
     } finally {

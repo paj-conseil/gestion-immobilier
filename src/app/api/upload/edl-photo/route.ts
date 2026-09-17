@@ -6,14 +6,15 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 
 /**
- * Génère un jeton d'upload client pour les photos d'état des lieux. Une
- * photo de smartphone pèse facilement plusieurs Mo, et plusieurs photos
- * envoyées d'un coup dans une même Server Action dépassaient la limite de
- * taille de requête des fonctions serverless Vercel (bien plus basse que le
- * `bodySizeLimit` de Next.js) — l'envoi échouait silencieusement, sans
- * qu'aucune erreur ne remonte à l'écran. Le navigateur envoie donc chaque
- * photo directement à Vercel Blob (voir /api/upload/pret-tableau pour le
- * même principe, déjà utilisé pour les tableaux d'amortissement).
+ * Génère un jeton d'upload client pour les fichiers d'état des lieux (photos
+ * ET document importé — scan/PDF). Un fichier de plusieurs Mo (photo de
+ * smartphone, PDF scanné) dépasse la limite de taille de requête des
+ * fonctions serverless Vercel (bien plus basse que le `bodySizeLimit` de
+ * Next.js) — l'envoi échouait silencieusement (photos) ou avec une erreur
+ * générique ("réponse inattendue du serveur", import de document). Le
+ * navigateur envoie donc chaque fichier directement à Vercel Blob (voir
+ * /api/upload/pret-tableau pour le même principe, déjà utilisé pour les
+ * tableaux d'amortissement).
  *
  * N'utilise pas getCurrentContext() (lib/scope.ts) : ce helper redirige vers
  * /login en cas d'échec, ce qui casse l'appel fetch() du SDK Blob.
@@ -47,14 +48,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           throw new Error('Chemin de fichier invalide');
         }
         return {
-          allowedContentTypes: ['image/*'],
+          allowedContentTypes: ['image/*', 'application/pdf'],
           maximumSizeInBytes: 20 * 1024 * 1024,
         };
       },
     });
     return NextResponse.json(jsonResponse);
   } catch (e) {
-    console.error("Échec de la génération du jeton d'upload (photo EDL) :", e);
+    console.error("Échec de la génération du jeton d'upload (fichier EDL) :", e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Échec de l'upload" },
       { status: 400 },
