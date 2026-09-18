@@ -144,12 +144,14 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   edlPhoto: {
-    width: 150,
-    height: 115,
-    objectFit: 'contain',
+    // Ni width ni height fixes : react-pdf mesure les dimensions réelles de
+    // l'image et respecte son ratio d'origine (portrait ou paysage) tant
+    // qu'on ne fixe qu'un plafond — imposer un cadre paysage fixe écrasait
+    // ou réduisait à rien les photos prises en portrait.
+    maxWidth: 160,
+    maxHeight: 160,
     border: '0.75 solid #DEE3DA',
     borderRadius: 4,
-    backgroundColor: '#F5F6F3',
   },
 });
 
