@@ -196,6 +196,27 @@ export async function addEDLPhotosFromKeys(
   revalidatePath(`/edl/${edlId}`);
 }
 
+/**
+ * Remplace le fichier d'une photo déjà enregistrée par une version pivotée,
+ * déjà envoyée vers le stockage côté navigateur (le pivot se fait via
+ * <canvas>, aucune bibliothèque de traitement d'image côté serveur n'étant
+ * disponible) — l'ancien fichier est supprimé, la ligne EDLPhoto conserve le
+ * même id (ordre, rattachement pièce/élément inchangés).
+ */
+export async function updateEDLPhotoUrl(photoId: string, newKey: string): Promise<{ ok: true } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const photo = await prisma.eDLPhoto.findFirst({
+    where: { id: photoId, edl: { bien: { scopeId: ctx.scopeId } } },
+  });
+  if (!photo) return { error: 'Photo introuvable' };
+
+  await prisma.eDLPhoto.update({ where: { id: photoId }, data: { url: newKey } });
+  await deleteStoredFile(photo.url).catch(() => undefined);
+
+  revalidatePath(`/edl/${photo.edlId}`);
+  return { ok: true };
+}
+
 export async function deleteEDLPhoto(photoId: string): Promise<{ ok: true } | { error: string }> {
   const ctx = await getCurrentContext();
   const photo = await prisma.eDLPhoto.findFirst({

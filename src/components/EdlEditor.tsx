@@ -12,6 +12,7 @@ import {
   generateEtatDesLieuxPdf,
   signerEtatDesLieux,
   updateEDLItem,
+  updateEDLPhotoUrl,
 } from '@/lib/actions/edl-actions';
 import { sendGeneratedDocument } from '@/lib/actions/document-actions';
 import { fileUrl } from '@/lib/file-url';
@@ -54,6 +55,39 @@ type PhotoTarget = { pieceId?: string; itemId?: string } | null;
 
 function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Impossible de charger l'image"));
+    img.src = src;
+  });
+}
+
+/** Pivote une image de 90° dans le sens horaire via <canvas> — aucune
+ * bibliothèque de traitement d'image n'est disponible, et le pivot
+ * physique (plutôt qu'une métadonnée EXIF) garantit que l'orientation
+ * corrigée s'affiche aussi bien à l'écran que dans le PDF généré (react-pdf
+ * ignore l'orientation EXIF). */
+async function rotateImageBlob(src: string): Promise<Blob> {
+  const img = await loadImage(src);
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalHeight;
+  canvas.height = img.naturalWidth;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Rotation indisponible sur ce navigateur');
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error("Échec de la rotation de l'image"))),
+      'image/jpeg',
+      0.92,
+    );
+  });
 }
 
 export function EdlEditor({
@@ -116,6 +150,27 @@ export function EdlEditor({
         next.delete(photoId);
         return next;
       });
+    }
+  }
+
+  const [rotatingId, setRotatingId] = useState<string | null>(null);
+
+  async function onRotatePhoto(photo: PhotoVM) {
+    setRotatingId(photo.id);
+    setPhotoUploadError(null);
+    try {
+      const src = fileUrl(photo.url);
+      if (!src) throw new Error('Photo introuvable');
+      const rotatedBlob = await rotateImageBlob(src);
+      const key = `edl/${scopeId}/${crypto.randomUUID()}-rotated.jpg`;
+      const blob = await upload(key, rotatedBlob, { access: 'private', handleUploadUrl: '/api/upload/edl-photo' });
+      const res = await updateEDLPhotoUrl(photo.id, blob.pathname);
+      if ('error' in res) throw new Error(res.error);
+      router.refresh();
+    } catch (e) {
+      setPhotoUploadError(e instanceof Error ? e.message : 'Échec de la rotation de la photo');
+    } finally {
+      setRotatingId(null);
     }
   }
 
@@ -335,6 +390,15 @@ export function EdlEditor({
                         </a>
                         <button
                           type="button"
+                          className="photo-rotate-btn"
+                          title="Pivoter cette photo"
+                          disabled={rotatingId === p.id}
+                          onClick={() => onRotatePhoto(p)}
+                        >
+                          ↻
+                        </button>
+                        <button
+                          type="button"
                           className="photo-delete-btn"
                           title="Supprimer cette photo"
                           onClick={() => onDeletePhoto(p.id)}
@@ -353,6 +417,8 @@ export function EdlEditor({
                       photos={photosDItem(item.id)}
                       onAddPhoto={() => openPhotoPicker({ itemId: item.id })}
                       onDeletePhoto={onDeletePhoto}
+                      onRotatePhoto={onRotatePhoto}
+                      rotatingId={rotatingId}
                     />
                   ))}
                 </div>
@@ -385,6 +451,15 @@ export function EdlEditor({
               <a className="photo-slot" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
                 <img src={fileUrl(p.url)} alt="" />
               </a>
+              <button
+                type="button"
+                className="photo-rotate-btn"
+                title="Pivoter cette photo"
+                disabled={rotatingId === p.id}
+                onClick={() => onRotatePhoto(p)}
+              >
+                ↻
+              </button>
               <button
                 type="button"
                 className="photo-delete-btn"
@@ -495,11 +570,15 @@ function EdlItemRow({
   photos,
   onAddPhoto,
   onDeletePhoto,
+  onRotatePhoto,
+  rotatingId,
 }: {
   item: ItemVM;
   photos: PhotoVM[];
   onAddPhoto: () => void;
   onDeletePhoto: (photoId: string) => void;
+  onRotatePhoto: (photo: PhotoVM) => void;
+  rotatingId: string | null;
 }) {
   const router = useRouter();
   const [commentOpen, setCommentOpen] = useState(!!item.commentaire);
@@ -590,6 +669,15 @@ function EdlItemRow({
               <a className="photo-slot small" href={fileUrl(p.url)} target="_blank" rel="noreferrer">
                 <img src={fileUrl(p.url)} alt="" />
               </a>
+              <button
+                type="button"
+                className="photo-rotate-btn"
+                title="Pivoter cette photo"
+                disabled={rotatingId === p.id}
+                onClick={() => onRotatePhoto(p)}
+              >
+                ↻
+              </button>
               <button
                 type="button"
                 className="photo-delete-btn"
