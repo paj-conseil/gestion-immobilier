@@ -14,6 +14,7 @@ import {
   IconEdl,
   IconLocataires,
   IconMenu,
+  IconTrend,
 } from '@/components/icons';
 import { setActiveScope } from '@/lib/actions/scope-actions';
 
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { href: '/edl', label: 'États des lieux', icon: IconEdl },
   { href: '/echeances', label: 'Échéances', icon: IconEcheances, badgeKey: 'echeances' as const },
   { href: '/compta', label: 'Comptabilité', icon: IconCompta },
+  { href: '/projets', label: 'Projets', icon: IconTrend },
   { href: '/droits', label: 'Droits & accès', icon: IconDroits },
 ];
 

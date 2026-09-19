@@ -44,7 +44,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // Même convention `<category>/<scopeId>/...` que le reste du
         // stockage — /api/files/[...key] vérifie le périmètre à partir de
         // ce même chemin.
-        if (!pathname.startsWith(`edl/${scopeId}/`)) {
+        // Photos/documents d'état des lieux et photo d'illustration d'un projet.
+        if (!pathname.startsWith(`edl/${scopeId}/`) && !pathname.startsWith(`projets/${scopeId}/`)) {
           throw new Error('Chemin de fichier invalide');
         }
         return {

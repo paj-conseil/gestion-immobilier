@@ -1,0 +1,34 @@
+-- CreateTable
+CREATE TABLE "Projet" (
+    "id" TEXT NOT NULL,
+    "scopeId" TEXT NOT NULL,
+    "nom" TEXT NOT NULL,
+    "adresse" TEXT,
+    "codePostal" TEXT,
+    "ville" TEXT,
+    "type" TEXT NOT NULL DEFAULT 'APPARTEMENT',
+    "surface" DOUBLE PRECISION,
+    "photoUrl" TEXT,
+    "prixAchat" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "fraisAgence" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "tauxNotaire" DOUBLE PRECISION NOT NULL DEFAULT 0.075,
+    "montantTravaux" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "apport" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "dureeAns" INTEGER NOT NULL DEFAULT 20,
+    "tauxCredit" DOUBLE PRECISION NOT NULL DEFAULT 0.035,
+    "tauxAssurance" DOUBLE PRECISION NOT NULL DEFAULT 0.002,
+    "loyerMensuel" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "chargesRecuperablesMensuel" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "revenuNetMensuel" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "endettementMax" DOUBLE PRECISION NOT NULL DEFAULT 0.35,
+    "regimeFiscal" TEXT NOT NULL DEFAULT 'MICRO_BIC',
+    "tmi" DOUBLE PRECISION NOT NULL DEFAULT 0.30,
+    "charges" JSONB NOT NULL DEFAULT '[]',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Projet_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Projet" ADD CONSTRAINT "Projet_scopeId_fkey" FOREIGN KEY ("scopeId") REFERENCES "Scope"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

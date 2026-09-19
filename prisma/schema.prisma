@@ -51,6 +51,7 @@ model Scope {
   comptesBancaires  CompteBancaire[]
   postes            Poste[]
   documentTypeParametres DocumentTypeParametre[]
+  projets                Projet[]
 }
 
 /// Paramétrage par type de document (nom d'affichage, texte additionnel,
@@ -425,4 +426,48 @@ model Transaction {
   source  String @default("MANUEL")
 
   createdAt DateTime @default(now())
+}
+
+/// Simulation d'achat d'un nouveau bien (onglet "Analyse projet" du classeur
+/// Excel) : acquisition, financement, revenus et charges estimés.
+model Projet {
+  id      String @id @default(cuid())
+  scopeId String
+  scope   Scope  @relation(fields: [scopeId], references: [id])
+  nom     String
+  adresse String?
+  codePostal String?
+  ville   String?
+  type    String @default("APPARTEMENT")
+  surface Float?
+  /// Clé de stockage de la photo d'illustration (facultative)
+  photoUrl String?
+
+  prixAchat       Float @default(0)
+  fraisAgence     Float @default(0)
+  /// Taux des frais de notaire (0.075 = 7,5 % dans l'ancien, ~0.025 dans le neuf)
+  tauxNotaire     Float @default(0.075)
+  montantTravaux  Float @default(0)
+
+  apport          Float @default(0)
+  dureeAns        Int   @default(20)
+  tauxCredit      Float @default(0.035)
+  tauxAssurance   Float @default(0.002)
+
+  loyerMensuel                Float @default(0)
+  chargesRecuperablesMensuel  Float @default(0)
+
+  revenuNetMensuel Float @default(0)
+  endettementMax   Float @default(0.35)
+
+  /// MICRO_BIC (meublé, abattement 50 %) | MICRO_FONCIER (nu, abattement 30 %)
+  regimeFiscal String @default("MICRO_BIC")
+  /// Tranche marginale d'imposition (0.30 = 30 %)
+  tmi          Float  @default(0.30)
+
+  /// Charges complémentaires annuelles : [{ id, label, montantAnnuel }]
+  charges Json @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
