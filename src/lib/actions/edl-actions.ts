@@ -30,19 +30,40 @@ const PHOTO_MAX_H = 300;
  * applique l'orientation aux pixels (rotate()), réduit l'image (le PDF
  * reste léger) et fournit les dimensions finales pour un cadre au bon ratio.
  */
-async function readPhotoForPdf(key: string): Promise<EdlPhotoData> {
+async function readPhotoForPdf(key: string, maxSide: number, quality: number): Promise<EdlPhotoData & { octets: number }> {
   const buffer = await readStoredFile(key);
   const { data, info } = await sharp(buffer)
     .rotate()
-    .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-    .jpeg({ quality: 82 })
+    .resize({ width: maxSide, height: maxSide, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality, mozjpeg: true })
     .toBuffer({ resolveWithObject: true });
   const scale = Math.min(PHOTO_MAX_W / info.width, PHOTO_MAX_H / info.height);
   return {
     src: `data:image/jpeg;base64,${data.toString('base64')}`,
     width: Math.round(info.width * scale),
     height: Math.round(info.height * scale),
+    octets: data.length,
   };
+}
+
+/**
+ * Un état des lieux doit rester envoyable par email (limite courante : 10 à
+ * 25 Mo, souvent 10 Mo) : la résolution et la qualité des photos sont
+ * choisies selon leur nombre, puis resserrées tant que le total dépasse le
+ * budget. Une photo affichée à 240x300 pt (≈ 3,3x4,2 pouces) n'a de toute
+ * façon aucun intérêt au-delà de ~900 px.
+ */
+const BUDGET_PHOTOS_OCTETS = 5 * 1024 * 1024;
+
+async function preparerPhotosPourPdf(keys: string[]): Promise<EdlPhotoData[]> {
+  const paliers: [number, number][] =
+    keys.length <= 20 ? [[900, 72], [700, 62], [560, 52]] : keys.length <= 45 ? [[720, 65], [600, 55], [480, 48]] : [[600, 58], [480, 50], [400, 45]];
+  let resultat: (EdlPhotoData & { octets: number })[] = [];
+  for (const [maxSide, quality] of paliers) {
+    resultat = await Promise.all(keys.map((k) => readPhotoForPdf(k, maxSide, quality)));
+    if (resultat.reduce((s, r) => s + r.octets, 0) <= BUDGET_PHOTOS_OCTETS) break;
+  }
+  return resultat.map(({ src, width, height }) => ({ src, width, height }));
 }
 
 /**
@@ -236,7 +257,7 @@ export async function deleteEDLPhoto(photoId: string): Promise<{ ok: true } | { 
 
 export async function generateEtatDesLieuxPdf(
   edlId: string,
-): Promise<{ fileUrl: string; documentGenereId: string } | { error: string }> {
+): Promise<{ fileUrl: string; documentGenereId: string; tailleMo: number } | { error: string }> {
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({
     where: { id: edlId, bien: { scopeId: ctx.scopeId } },
@@ -267,7 +288,7 @@ export async function generateEtatDesLieuxPdf(
   // Chaque photo est rattachée à un élément, à défaut à une pièce, à défaut
   // c'est une photo générale du rapport — toutes incrustées dans le PDF pour
   // illustrer l'état constaté.
-  const photosData = await Promise.all(edl.photos.map((p) => readPhotoForPdf(p.url)));
+  const photosData = await preparerPhotosPourPdf(edl.photos.map((p) => p.url));
   const photosParItem = new Map<string, EdlPhotoData[]>();
   const photosParPiece = new Map<string, EdlPhotoData[]>();
   const photosGenerales: EdlPhotoData[] = [];
@@ -338,7 +359,7 @@ export async function generateEtatDesLieuxPdf(
   revalidatePath('/edl');
   revalidatePath(`/edl/${edl.id}`);
   revalidatePath('/documents');
-  return { fileUrl: key, documentGenereId: documentGenere.id };
+  return { fileUrl: key, documentGenereId: documentGenere.id, tailleMo: Math.round((pdfBuffer.length / 1048576) * 10) / 10 };
 }
 
 /**
@@ -350,7 +371,7 @@ export async function generateEtatDesLieuxPdf(
 export async function signerEtatDesLieux(
   edlId: string,
   formData: FormData,
-): Promise<{ fileUrl: string; documentGenereId: string } | { error: string }> {
+): Promise<{ fileUrl: string; documentGenereId: string; tailleMo: number } | { error: string }> {
   const ctx = await getCurrentContext();
   const edl = await prisma.etatDesLieux.findFirst({ where: { id: edlId, bien: { scopeId: ctx.scopeId } } });
   if (!edl) return { error: 'État des lieux introuvable' };

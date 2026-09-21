@@ -112,6 +112,7 @@ export function EdlEditor({
   const router = useRouter();
   const [generating, setGenerating] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(pdfUrlInitial);
+  const [tailleMo, setTailleMo] = useState<number | null>(null);
   const [documentGenereId, setDocumentGenereId] = useState<string | null>(documentGenereIdInitial);
   const [newPieceName, setNewPieceName] = useState('');
   const generalPhotoInputRef = useRef<HTMLInputElement>(null);
@@ -235,6 +236,7 @@ export function EdlEditor({
     setGenerating(false);
     if ('fileUrl' in res) {
       setPdfUrl(res.fileUrl);
+      setTailleMo(res.tailleMo);
       setDocumentGenereId(res.documentGenereId);
     }
   }
@@ -253,6 +255,7 @@ export function EdlEditor({
         return;
       }
       setPdfUrl(res.fileUrl);
+      setTailleMo(res.tailleMo);
       setDocumentGenereId(res.documentGenereId);
       router.refresh();
     } catch (e) {
@@ -305,7 +308,7 @@ export function EdlEditor({
 
       {pdfUrl && (
         <div className="alert-row" style={{ padding: '10px 14px', background: 'var(--green-100)', borderRadius: 8, marginBottom: 18 }}>
-          <span className="txt">Document généré avec succès.</span>
+          <span className="txt">Document généré avec succès{tailleMo !== null ? ` (${tailleMo} Mo)` : ''}.</span>
           <a className="btn" href={fileUrl(pdfUrl)} target="_blank" rel="noreferrer">
             Télécharger le PDF
           </a>
