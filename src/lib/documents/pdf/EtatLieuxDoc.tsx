@@ -3,6 +3,9 @@ import { styles, PROPRIETAIRE } from './styles';
 import { DocHeader, DocFooter } from './Header';
 import { formatDate } from '@/lib/format';
 
+/** Photo prête pour le PDF : orientation déjà appliquée, taille finale en points. */
+export type EdlPhotoData = { src: string; width: number; height: number };
+
 export type EDLItemData = {
   label: string;
   type: 'ETAT' | 'QUANTITE';
@@ -10,9 +13,9 @@ export type EDLItemData = {
   quantite?: number | null;
   commentaire?: string | null;
   /** Photos de l'élément, en data URI (voir generateEtatDesLieuxPdf). */
-  photos: string[];
+  photos: EdlPhotoData[];
 };
-export type EDLPieceData = { nom: string; items: EDLItemData[]; photos: string[] };
+export type EDLPieceData = { nom: string; items: EDLItemData[]; photos: EdlPhotoData[] };
 export type EtatLieuxData = {
   type: 'ENTREE' | 'SORTIE';
   date: Date;
@@ -23,17 +26,17 @@ export type EtatLieuxData = {
   numeroCompteur?: string | null;
   pieces: EDLPieceData[];
   /** Photos non rattachées à une pièce ou un élément précis. */
-  photosGenerales: string[];
+  photosGenerales: EdlPhotoData[];
   signatureBailleur?: string | null;
   signatureLocataire?: string | null;
 };
 
-function PhotoRow({ photos }: { photos: string[] }) {
+function PhotoRow({ photos }: { photos: EdlPhotoData[] }) {
   if (photos.length === 0) return null;
   return (
     <View style={styles.edlPhotoRow}>
-      {photos.map((src, i) => (
-        <Image key={i} src={src} style={styles.edlPhoto} />
+      {photos.map((p, i) => (
+        <Image key={i} src={p.src} style={[styles.edlPhoto, { width: p.width, height: p.height }]} />
       ))}
     </View>
   );

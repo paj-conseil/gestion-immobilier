@@ -6,7 +6,8 @@ import { getCurrentContext } from '@/lib/scope';
 import { saveFile, readStoredFile, deleteStoredFile } from '@/lib/storage';
 import { bienLabel } from '@/lib/format';
 import { renderPdf } from '@/lib/documents/render';
-import { EtatLieuxDoc } from '@/lib/documents/pdf/EtatLieuxDoc';
+import sharp from 'sharp';
+import { EtatLieuxDoc, type EdlPhotoData } from '@/lib/documents/pdf/EtatLieuxDoc';
 import { EDL_TEMPLATE } from '@/lib/edl-templates';
 import type { EtatItem, TypeEDL, TypeItemEDL } from '@/lib/enums';
 
@@ -17,29 +18,31 @@ function readEdlDate(formData: FormData): Date {
   return Number.isNaN(d.getTime()) ? new Date() : d;
 }
 
-/** Devine le type MIME à partir de l'extension de la clé de stockage — les
- * photos n'ont pas de colonne dédiée, seules les signatures (toujours des
- * PNG) en avaient rarement besoin jusqu'ici. */
-function mimeTypeFromKey(key: string): string {
-  const ext = key.split('.').pop()?.toLowerCase();
-  switch (ext) {
-    case 'png':
-      return 'image/png';
-    case 'webp':
-      return 'image/webp';
-    case 'heic':
-    case 'heif':
-      return 'image/heic';
-    case 'gif':
-      return 'image/gif';
-    default:
-      return 'image/jpeg';
-  }
-}
+/** Boîte maximale (en points PDF) dans laquelle une photo est insérée : le
+ * ratio réel de l'image est conservé, portrait ou paysage. */
+const PHOTO_MAX_W = 240;
+const PHOTO_MAX_H = 300;
 
-async function readPhotoAsDataUri(key: string): Promise<string> {
+/**
+ * Prépare une photo pour le PDF : react-pdf ignore l'orientation EXIF que
+ * les téléphones enregistrent (les pixels sont stockés en paysage même pour
+ * une photo prise en portrait), d'où des photos affichées couchées. sharp
+ * applique l'orientation aux pixels (rotate()), réduit l'image (le PDF
+ * reste léger) et fournit les dimensions finales pour un cadre au bon ratio.
+ */
+async function readPhotoForPdf(key: string): Promise<EdlPhotoData> {
   const buffer = await readStoredFile(key);
-  return `data:${mimeTypeFromKey(key)};base64,${buffer.toString('base64')}`;
+  const { data, info } = await sharp(buffer)
+    .rotate()
+    .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 82 })
+    .toBuffer({ resolveWithObject: true });
+  const scale = Math.min(PHOTO_MAX_W / info.width, PHOTO_MAX_H / info.height);
+  return {
+    src: `data:image/jpeg;base64,${data.toString('base64')}`,
+    width: Math.round(info.width * scale),
+    height: Math.round(info.height * scale),
+  };
 }
 
 /**
@@ -264,10 +267,10 @@ export async function generateEtatDesLieuxPdf(
   // Chaque photo est rattachée à un élément, à défaut à une pièce, à défaut
   // c'est une photo générale du rapport — toutes incrustées dans le PDF pour
   // illustrer l'état constaté.
-  const photosData = await Promise.all(edl.photos.map((p) => readPhotoAsDataUri(p.url)));
-  const photosParItem = new Map<string, string[]>();
-  const photosParPiece = new Map<string, string[]>();
-  const photosGenerales: string[] = [];
+  const photosData = await Promise.all(edl.photos.map((p) => readPhotoForPdf(p.url)));
+  const photosParItem = new Map<string, EdlPhotoData[]>();
+  const photosParPiece = new Map<string, EdlPhotoData[]>();
+  const photosGenerales: EdlPhotoData[] = [];
   edl.photos.forEach((p, i) => {
     const src = photosData[i];
     if (p.itemId) {
