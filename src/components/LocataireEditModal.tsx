@@ -4,7 +4,14 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { bienLabel, toDateInputValue } from '@/lib/format';
 import { fileUrl } from '@/lib/file-url';
-import { uploadLocataireDocument, createBail, updateLocataire, updateBail } from '@/lib/actions/locataire-actions';
+import { upload } from '@vercel/blob/client';
+import {
+  getLocataireUploadPrefix,
+  attachLocataireDocument,
+  createBail,
+  updateLocataire,
+  updateBail,
+} from '@/lib/actions/locataire-actions';
 import { IconClose } from '@/components/icons';
 
 export type DocVM = { id: string; type: string; statut: string; fileUrl: string | null };
@@ -88,6 +95,7 @@ export function LocataireEditModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<string | null>(null);
+  const [docError, setDocError] = useState<string | null>(null);
   const [showBail, setShowBail] = useState(false);
   const inputsRef = useRef<Record<string, HTMLInputElement | null>>({});
   const router = useRouter();
@@ -96,20 +104,32 @@ export function LocataireEditModal({
   async function onFileChosen(type: string, file: File | undefined) {
     if (!file) return;
     setUploading(type);
-    setError(null);
-    const fd = new FormData();
-    fd.set('fichier', file);
+    setDocError(null);
     try {
-      const res = await uploadLocataireDocument(locataire.id, type as never, fd);
+      // Envoi direct navigateur → Vercel Blob : une Server Action est plafonnée
+      // à ~4,5 Mo par Vercel, trop peu pour un contrat signé scanné.
+      const pre = await getLocataireUploadPrefix(locataire.id);
+      if ('error' in pre) {
+        setDocError(pre.error);
+        return;
+      }
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+      const blob = await upload(`${pre.prefix}${crypto.randomUUID()}-${safeName}`, file, {
+        access: 'private',
+        handleUploadUrl: '/api/upload/locataire-doc',
+      });
+      const res = await attachLocataireDocument(locataire.id, type as never, blob.pathname);
       if ('error' in res) {
-        setError(res.error);
+        setDocError(res.error);
         return;
       }
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Échec de l'envoi du document");
+      setDocError(e instanceof Error ? e.message : "Échec de l'envoi du document");
     } finally {
       setUploading(null);
+      const input = inputsRef.current[type];
+      if (input) input.value = '';
     }
   }
 
@@ -302,6 +322,7 @@ export function LocataireEditModal({
             <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-soft)', margin: '18px 0 10px', borderTop: '1px solid var(--line)', paddingTop: 14 }}>
               Documents du dossier
             </div>
+            {docError && <div className="auth-error" style={{ marginBottom: 10 }}>{docError}</div>}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[...DOC_TYPES, { type: 'RIB', label: 'RIB' }, { type: 'AUTRE', label: 'Autre document' }].map((dt) => {
                 const doc = locataire.documents.find((d) => d.type === dt.type);

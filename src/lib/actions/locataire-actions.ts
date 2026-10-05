@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { getCurrentContext } from '@/lib/scope';
-import { saveFile, deleteStoredFile } from '@/lib/storage';
+import { deleteStoredFile } from '@/lib/storage';
 
 const numOrUndef = z.preprocess(
   (v) => (v === '' || v === null || v === undefined ? undefined : Number(v)),
@@ -153,24 +153,39 @@ export async function updateLocataire(
   return { ok: true };
 }
 
-export async function uploadLocataireDocument(
+type LocataireDocType = 'CONTRAT_SIGNE' | 'CNI' | 'ATTESTATION_ASSURANCE' | 'RIB' | 'AUTRE';
+
+/**
+ * Préfixe de stockage à utiliser côté navigateur pour un document locataire.
+ * Le fichier part directement du navigateur vers Vercel Blob (route
+ * /api/upload/locataire-doc) : une Server Action est plafonnée à ~4,5 Mo par
+ * Vercel, ce qui faisait échouer silencieusement les contrats signés scannés.
+ */
+export async function getLocataireUploadPrefix(
   locataireId: string,
-  type: 'CONTRAT_SIGNE' | 'CNI' | 'ATTESTATION_ASSURANCE' | 'RIB' | 'AUTRE',
-  formData: FormData,
+): Promise<{ prefix: string } | { error: string }> {
+  const ctx = await getCurrentContext();
+  const locataire = await prisma.locataire.findFirst({ where: { id: locataireId, scopeId: ctx.scopeId } });
+  if (!locataire) return { error: 'Locataire introuvable' };
+  return { prefix: `locataires/${ctx.scopeId}/` };
+}
+
+/** Rattache au dossier un fichier déjà envoyé dans le stockage (seule la clé transite). */
+export async function attachLocataireDocument(
+  locataireId: string,
+  type: LocataireDocType,
+  key: string,
 ): Promise<{ ok: true } | { error: string }> {
   const ctx = await getCurrentContext();
   const locataire = await prisma.locataire.findFirst({ where: { id: locataireId, scopeId: ctx.scopeId } });
   if (!locataire) return { error: 'Locataire introuvable' };
-
-  const file = formData.get('fichier');
-  if (!(file instanceof File) || file.size === 0) return { error: 'Aucun fichier sélectionné' };
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const key = await saveFile(buffer, { scopeId: ctx.scopeId, category: 'locataires', filename: file.name });
+  if (!key.startsWith(`locataires/${ctx.scopeId}/`) || key.includes('..')) {
+    return { error: 'Fichier invalide' };
+  }
 
   const existingDoc = await prisma.documentLocataire.findFirst({ where: { locataireId, type } });
   if (existingDoc) {
-    if (existingDoc.fileUrl) await deleteStoredFile(existingDoc.fileUrl);
+    if (existingDoc.fileUrl && existingDoc.fileUrl !== key) await deleteStoredFile(existingDoc.fileUrl);
     await prisma.documentLocataire.update({
       where: { id: existingDoc.id },
       data: { fileUrl: key, statut: 'RECU', uploadedAt: new Date() },
@@ -182,6 +197,7 @@ export async function uploadLocataireDocument(
   }
 
   revalidatePath('/locataires');
+  revalidatePath('/biens');
   return { ok: true };
 }
 
