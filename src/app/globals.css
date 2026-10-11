@@ -1515,3 +1515,35 @@ th.col-doc {
   font-size: 12.8px;
   margin-bottom: 14px;
 }
+
+.auth-success {
+  background: var(--green-100);
+  color: var(--green-900);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+  font-size: 12.8px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.auth-hint {
+  color: var(--ink-soft);
+  font-size: 12.8px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.auth-links {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12.8px;
+}
+
+.auth-links a {
+  color: var(--green-700);
+  text-decoration: none;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}

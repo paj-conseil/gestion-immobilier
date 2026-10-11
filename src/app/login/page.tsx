@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -77,6 +78,10 @@ function LoginForm() {
             {loading ? 'Connexion…' : 'Se connecter'}
           </button>
         </form>
+
+        <div className="auth-links">
+          <Link href="/mot-de-passe-oublie">Mot de passe oublié ?</Link>
+        </div>
       </div>
     </div>
   );

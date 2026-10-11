@@ -5,9 +5,10 @@ export const config = {
     /*
      * Protège toutes les routes sauf :
      * - /login (page de connexion)
+     * - /mot-de-passe-oublie, /reinitialiser-mot-de-passe
      * - /api/auth/* (routes NextAuth)
      * - /_next/*, fichiers statiques
      */
-    '/((?!login|api/auth|_next/static|_next/image|favicon.ico).*)',
+    '/((?!login|mot-de-passe-oublie|reinitialiser-mot-de-passe|api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 };
